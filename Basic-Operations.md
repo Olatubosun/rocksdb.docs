@@ -84,6 +84,7 @@ The database provides <code>Put</code>, <code>Delete</code>, and <code>Get</code
   if (s.ok()) s = db->Put(rocksdb::WriteOptions(), key2, value);
   if (s.ok()) s = db->Delete(rocksdb::WriteOptions(), key1);
 ```
+Right now, value size must be smaller than 4GB.
 RocksDB also allows [[Single Delete]] which is useful in some special cases.
 
 Each `Get` results into at least a memcpy from the source to the value string. If the source is in the block cache, you can avoid the extra copy by using a PinnableSlice.
