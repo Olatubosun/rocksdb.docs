@@ -65,7 +65,7 @@ If you can pre-process the data offline before inserting. There is a faster way:
 
 **Q: Does RocksJava support all the features?**
 
-A: We are working toward making RocksJava feature compatible.  However, you're more than welcomed to submit pull request if you find something is missing
+A: We are working toward making RocksJava feature compatible.  However, you're more than welcome to submit pull request if you find something is missing
 
 **Q: Who is using RocksDB?**
 
