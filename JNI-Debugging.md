@@ -4,7 +4,7 @@ There are several techniques which we can use to try and help get to the bottom 
 
 1. [[Interpreting hs_err_pid files | JNI-Debugging#interpreting-hs_err_pid-files]]
 2. [[ASAN | JNI-Debugging#asan]]
-3. [[C++ Debugger | JNI-Debugging#c++-debugger]]
+3. [[C++ Debugger | JNI-Debugging#c-debugger]]
 
 
 # Interpreting hs_err_pid files
