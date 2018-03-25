@@ -539,6 +539,7 @@ When things get desperate you can also run your RocksJava tests through GDB (GNU
     DEBUG_LEVEL=2 make rocksdbjavastatic
     ```
 
+4. Run a single RocksJava test through GDB:
 ```bash
     gdb --args java -ea -Xcheck:jni -Djava.library.path=target -cp "target/classes:target/test-classes:test-libs/junit-4.12.jar:test-libs/hamcrest-core-1.3.jar:test-libs/mockito-all-1.10.19.jar:test-libs/cglib-2.2.2.jar:test-libs/assertj-core-1.7.1.jar:target/*" org.rocksdb.test.RocksJunitRunner org.rocksdb.ComparatorTest
 ```
