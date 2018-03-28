@@ -216,7 +216,7 @@ The compaction will keep working like this:
 Compaction is only triggered when number of input sorted runs would be at least options.compaction_options_universal.min_merge_width and number of sorted runs as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
 
 #### 3. Compaction Triggered by number of sorted runs
-If for every time we try to schedule a compaction, neither of 1 and 2 are triggered, we will try to compaction whatever sorted runs from R1, R2..., so that after the compaction the total number of sorted runs is not greater than options.level0_file_num_compaction_trigger + 1. If we need to compact more than options.compaction_options_universal.max_merge_width number of sorted runs, we cap it to options.compaction_options_universal.max_merge_width.
+If for every time we try to schedule a compaction, neither of 1 and 2 are triggered, we will try to compaction whatever sorted runs from R1, R2..., so that after the compaction the total number of sorted runs is not greater than options.level0_file_num_compaction_trigger. If we need to compact more than options.compaction_options_universal.max_merge_width number of sorted runs, we cap it to options.compaction_options_universal.max_merge_width.
 
 "Try to schedule" I mentioned below will happen when after flushing a memtable, finished a compaction. Sometimes duplicated attempts are scheduled.
 
