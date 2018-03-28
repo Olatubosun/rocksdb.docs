@@ -165,13 +165,13 @@ And it keeps going like this:
 We calculated a value of _size ratio trigger_ as
 
 ```
-     size_ratio_trigger = 1 + options.compaction_options_universal.size_ratio / 100
+     size_ratio_trigger = 100 + options.compaction_options_universal.size_ratio / 100
 ```
 Usually options.compaction_options_universal.size_ratio is close to 0 so _size ratio trigger_ is close to 1.
 
 We start from R1, if size(R2) / size(R1) <= _size ratio trigger_, then (R1, R2) are qualified to be compacted together. We continue from here to determine whether R3 can be added too. If size(R3) / size(R1 + R2) <= _size ratio trigger_, we would include (R1, R2, R3). Then we do the same for F4. We keep comparing total existing size to the next sorted run until the _size ratio trigger_ condition doesn't hold any more.
 
-Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, total mem table flush size is always 1, compacted size always equals to total input sizes, compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 1 (so number of files won't block a compaction from running). Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction:
+Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, total mem table flush size is always 1, compacted size always equals to total input sizes, compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 2 (so number of files won't block a compaction from running). Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction because 1/1 <= 1:
 
 ```
 1 1  =>  2
@@ -189,7 +189,7 @@ which doesn't qualify a flush because 2/1 > 1. But another mem table flush will 
 1 1 2  =>  4
 ```
 
-This is because 1/1 >=1 and 2 / (1+1) >= 1.
+This is because 1/1 <=1 and 2 / (1+1) <= 1.
 
 The compaction will keep working like this:
 
