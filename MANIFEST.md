@@ -82,7 +82,7 @@ Captures the comparator name
 
 Log number edit record:
 ```
-Lates WAL log file number
+Latest WAL log file number
 
 +-------------+----------------+
 | kLogNumber  | log number     |
