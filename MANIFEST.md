@@ -2,7 +2,7 @@
 
 RocksDB is file system and storage medium agnostic. File system operations are not atomic, and are susceptible to inconsistencies in the event of system failure. Even with journaling turned on, file systems do not guarantee consistency on unclean restart. POSIX file system does not support atomic batching of operations either. Hence, it is not possible to rely on metadata embedded in RocksDB datastore files to reconstruct the last consistent state of the RocksDB on restart. 
 
-RocksDB has a built-in mechanism to overcome these limitations of POSIX file system by keeping a transactional log of RocksDB state changes called the MANIFEST. MANIFEST is used to restore RocksDB to the latest know consistent state on a restart.    
+RocksDB has a built-in mechanism to overcome these limitations of POSIX file system by keeping a transactional log of RocksDB state changes called the MANIFEST. MANIFEST is used to restore RocksDB to the latest known consistent state on a restart.    
 
 ## Terminology
 
