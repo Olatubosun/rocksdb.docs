@@ -419,7 +419,9 @@ Because of the way <code>rocksdb</code> data is organized on disk, a single <cod
 
 ```cpp
    rocksdb::Options options;
-   options.filter_policy = NewBloomFilter(10, false /* use block based filter */);
+   rocksdb::BlockBasedTableOptions bbto;
+   bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10));
+   options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
    rocksdb::DB* db;
    rocksdb::DB::Open(options, "/tmp/testdb", &db);
    ... use the database ...
