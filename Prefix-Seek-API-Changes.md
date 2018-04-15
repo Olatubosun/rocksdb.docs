@@ -46,11 +46,11 @@ iter->Seek("foobar"); // Seek inside prefix "foo"
 
 ```
 
-From release 3.5, we support a read option to allow RocksDB to use total order even if options.prefix_extractor is given. To enable the feature set ReadOption.total_order_mode=true to the read option passed when doing NewIterator(), example:
+From release 3.5, we support a read option to allow RocksDB to use total order even if options.prefix_extractor is given. To enable the feature set ReadOption.total_order_seek=true to the read option passed when doing NewIterator(), example:
 
 ```cpp
 ReadOptions read_options;
-read_options.total_order_mode = true;
+read_options.total_order_seek = true;
 auto iter = db->NewIterator(read_options);
 Slice key = "foobar";
 iter->Seek(key);  // Seek "foobar" in total order
