@@ -45,7 +45,7 @@ With kEnableTimeExceptForMutex, RocksDB may call the timing function dozens of t
 
 kEnableTime further allows timing within shared mutex, but profiling an operation may slow down other operations. When we suspect that mutex contention is the performance bottleneck, we use this level to verify the problem.
 
-How do we deal with the counters disabled in a level? If a counter is disabled, it we won’t be updated.
+How do we deal with the counters disabled in a level? If a counter is disabled, it won’t be updated.
 
 ## Stats
 We are giving some typical examples of how to use those stats to solve your problems. We are not introducing all the stats here. A full description of all stats can be found in the header files.
