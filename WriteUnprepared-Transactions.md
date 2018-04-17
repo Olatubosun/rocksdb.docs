@@ -1,4 +1,6 @@
-This document presents the implementation details for moving memtable writes from the prepare phase to unprepared phase when the write batch is still being written to.
+This document presents the initial design for moving memtable writes from the prepare phase to unprepared phase when the write batch is still being written to.
+
+> _WriteUnprepared_ are to be announced as production-ready soon.
 
 # Goals
 
