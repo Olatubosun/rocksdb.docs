@@ -1,14 +1,12 @@
 RocksDB supports both optimistic and pessimistic concurrency controls. The pessimistic transactions make use of locks to provide isolation between the transactions. The default write policy in pessimistic transactions is _WriteCommitted_, which means that the data is written to the DB, i.e., the memtable, only after the transaction is committed. This policy simplified the implementation but came with some limitations in throughput, transaction size, and variety in supported isolation levels. In the below, we explain these in detail and present the other write policies, _WritePrepared_ and _WriteUnprepared_. We then dive into the design of _WritePrepared_ transactions.
 
-> _WritePrepared_ are to be announced as production-ready soon.
-
 # _WriteCommitted_, Pros and Cons
 
 With _WriteCommitted_ write policy, the data is written to the memtable only after the transaction commits. This greatly simplifies the read path as any data that is read by other transactions can be assumed to be committed. This write policy, however, implies that the writes are buffered in memory in the meanwhile. This makes memory a bottleneck for large transactions. The delay of the commit phase in 2PC (two-phase commit) also becomes noticeable since most of the work, i.e., writing to memtable, is done at the commit phase. When the commit of multiple transactions are done in a serial fashion, such as in 2PC implementation of MySQL, the lengthy commit latency becomes a major contributor to lower throughput. Moreover this write policy cannot provide weaker isolation levels, such as READ UNCOMMITTED, that could potentially provide higher throughput for some applications.
 
 # Alternatives: _WritePrepared_ and _WriteUnprepared_
 
-To tackle the lengthy commit issue, we should do memtable writes at earlier phases of 2PC so that the commit phase become lightweight and fast. 2PC is composed of Write stage, where the transaction `::Put` is invoked, the prepare phase, where `::Prepare` is invoked (upon which the DB promises to commit the transaction if later is requested), and commit phase, where `::Commit` is invoked and the transaction writes become visible to all readers. To make the commit phase lightweight, the memtable write could be done at either `::Prepare` or `::Put` stages, resulting into _WritePrepared_ and _WriteUnprepared_ write policies respectively. The downside is that when another transaction is reading data, it would need a way to tell apart which data is committed, and if they are, whether they are committed before the transaction's start, i.e., in the read snapshot of the transaction. _WritePrepared_ would still have the issue of buffering the data, which makes the memory the bottleneck for large transactions. It however provides a good milestone for transitioning from _WriteCommitted_ to _WriteUnprepared_ write policy. Here we explain the design of _WritePrepared_ policy. We will cover the changes that make the design to also supported _WriteUnprepared_ in an upcoming post.
+To tackle the lengthy commit issue, we should do memtable writes at earlier phases of 2PC so that the commit phase become lightweight and fast. 2PC is composed of Write stage, where the transaction `::Put` is invoked, the prepare phase, where `::Prepare` is invoked (upon which the DB promises to commit the transaction if later is requested), and commit phase, where `::Commit` is invoked and the transaction writes become visible to all readers. To make the commit phase lightweight, the memtable write could be done at either `::Prepare` or `::Put` stages, resulting into _WritePrepared_ and _WriteUnprepared_ write policies respectively. The downside is that when another transaction is reading data, it would need a way to tell apart which data is committed, and if they are, whether they are committed before the transaction's start, i.e., in the read snapshot of the transaction. _WritePrepared_ would still have the issue of buffering the data, which makes the memory the bottleneck for large transactions. It however provides a good milestone for transitioning from _WriteCommitted_ to _WriteUnprepared_ write policy. Here we explain the design of _WritePrepared_ policy. The changes that make the design to also support _WriteUnprepared_ can be found [here](https://github.com/facebook/rocksdb/wiki/WriteUnprepared-Transactions).
 
 # _WritePrepared_ in a nutshell
 
@@ -45,13 +43,25 @@ To rollback an aborted transaction, for each written key/value we write another 
 
 Special care needs to be taken if there is a live snapshot after `prepare_seq` but before the sequence number of the newly written value since they might end up assuming the rolled back value is actually committed, as they will not find it in OldPrepared if `max_evicted_seq` advances the `prepare_seq`. This is currently not an issue with the way we do rollbacks of prepared transactions in MySQL: a prepared transaction could be rolled back only a crash and before new transactions start, which implies that there is no live snapshot at the time of rollback. We will soon extend the implementation of rollback to also cover live snapshots, a feature that will be a must for transaction run under _WriteUnprepared_ write policy.
 
+_Update_: since this [commit](https://github.com/facebook/rocksdb/commit/bb2a2ec7313e9af648fc9ac613289e18ed019eb0) rollback works with live snapshots as well.
+
 ## Atomic Commit
 
 During a commit, a commit marker is written to the WAL and also a commit entry is added to the _CommitCache_. These two needs to be done atomically otherwise a reading transaction at one point might miss the update into the _CommitCache_ but later sees that. We achieve that by updating the _CommitCache_ before publishing the sequence number of the commit entry. In this way, if a reading snapshot can see the commit sequence number it is guaranteed that the _CommitCache_ is already updated as well. This is done via a `PreReleaseCallback` that is added to `::WriteImpl` logic for this purpose.
 
+When we have two write queue (`two_write_queues`=`true`) then the primary write queue can write to both WAL and memtbale and the 2nd one can write only to the WAL, which will be used for writing the commit marker in `WritePrepared` transactions. So in this case the primary queue could update the last sequence number while the 2nd queue has not written the commit marker yet. To avoid such concurrency issue we introduce the notion of last published sequence number, which will be used when taking a snapshot. When we have one write queue, this is the same as the last sequence number and when we have two write queues this is the last committed entry (either a commit marker or a write batch without 2pc). To avoid race condition for updating the last published sequence number, we always do that from the 2nd queue. This means that non-2PC transactions which always go to the first write queue need to do a 2nd dummy write to the 2nd queue just to publish the sequence number.
+
 ## Flush/Compaction
 
 We provide a `IsInSnapshot(prepare_seq, commit_seq)` interface on top of the _CommitCache_ and related data structures, which can be used by the reading transactions. Flush/Compaction threads are also considered a reader and use the same API to figure which versions can be safely garbage collected without affecting the live snapshots.
+
+## Duplicate keys
+
+WritePrepared writes all data of the same write batch with the same sequence number. This is assuming that there is no duplicate key in the write batch. To be able to handle duplicate keys, we divide a write batch to multiple sub-batches, one after each duplicate key. The memtable returns false if it receives a key with the same sequence number. The mentable inserter then advances the sequence number and tries again.
+
+The limitation with this approach is that the write process needs to know the number of sub-batches beforehand so that it could allocate the sequence numbers for each write accordingly. When using transaction API this is done cheaply via the index of WriteBatchWithIndex as it already has mechanisms to detect duplicate insertions. When calling `::CommitBatch` to write a batch directly to the DB, however, the DB has to pay the cost of iterating over the write batch and count the number of sub-patches. This would result into a non-negligible overhead if there are many of such writes.
+
+Detecting duplicate keys requires knowing the comparator of the column family (cf). If a cf is dropped, we need to first make sure that the WAL does not have an entry belonging to that cf. Otherwise if the DB crashes afterwards the recovery process will see the entry but does not have the comparator to tell whether it is a duplicate.
 
 # Optimizations
 
@@ -75,19 +85,38 @@ We need to guarantee that the concurrent reader will be able to read all the sna
 
 If the number of snapshots exceed the array size, the remaining updates will be stored in a vector protected by a mutex. This is just to ensure correctness in the corner cases and is not expected to happen in a normal run.
 
-# Preliminary Results
+## Smallest Uncommitted
 
-The full experimental results are to be reported soon. Here we present the improvement in tps observed in some preliminary experiments with MyRocks:
-* sysbench update-noindex: 25%
-* sysbench read-write: 7.6%
-* linkbench: 3.7%
+We keep track of smallest uncommitted data and store it in the snapshot. When reading the data if its sequence number lower than the smallest uncommitted data, then we skip lookup into CommitCache to reduce cpu cache misses. To be able to correctly maintain what is the smallest uncommitted data, we used the `PrepareHeap` structure and make the transactions to add to this heap in order so that if the heap top will always increase over time. To ensure in order call to `AddPrepared` we do that in the PreReleaseCallback of the primary write queue.
+
+## rocksdb_commit_time_batch_for_recovery
+
+To make `two_write_queues` optimization effective, the commit should only write to the WAL so that it could be directed to the 2nd queue. When the commit is accompanied with `CommitTimeWriteBatch` however, then it would write to memtable too, which essentially disables the `two_write_queues` optimization. To mitigate that the users can set `rocksdb_commit_time_batch_for_recovery` configuration variable to true which tells RocksDB that such data will only be required during recovery. RocksDB benefits from that by writing the `CommitTimeWriteBatch` only to the WAL. It still keeps the last copy around in memory to write it to the SST file after each flush. When using this option `CommitTimeWriteBatch` cannot have duplicate entries since we do not want to pay the cost of counting sub-batches upon each commit request.
+
+# Experimantal Results
+
+Here are a summary of improvements on some sysbench benchmarks as well as linkbench (done via MyRocks). Read more about them here.
+* benchmark........tps......p95 latency....cpu/query
+* update-noindex...%30......%38
+* update-index.....%61......%28
+* read-write.......%6.......%3.5
+* read-only........-%1.2....-%1.8
+* linkbench........%1.9.....+overall........%0.6
 
 # Current Limitations
 
-By default RocksDB assigns a separate sequence number to each key/value. This allows for duplicate keys in transactions as they will be simply inserted with separate sequence numbers. With _WritePrepared_ policy, all the key/values in a transaction are inserted with the same sequence number, which would make problems for duplicate keys. We currently have a mechanism to detect the duplicate keys and collapse the write batch to get around this problem. This solution however currently does not cover the cases where the last occurrence of the duplicate key is a Merge. This mechanism is applied only to WriteBatchWithIndex which means that the `::CommitBatch` interface is not covered and the user must ensure there is not duplication when using `::CommitBatch` interface.
+There is ~1% overhead for read workloads. This is due to the extra work that needs to be done to tell apart uncommitted data from committed ones.
 
-Currently we assume that there is no live snapshot when a transactions are rolled back. This is the case in the way MySQL rolls back transactions only after a crash. We will generalize the rollback logic so that it can be performed at any point in the lifetime of the DB.
+The rollback of merge operands is currently disabled. This is to hack around a problem in MyRocks that does not lock the key before using the merge operand on it.
 
 Currently `Iterator::Refresh` is not supported. There is no fundamental obstacle and it can be added upon request.
 
 Although the DB generated by _WritePrepared_ policy is backward/forward compatible with the classic _WriteCommitted_ policy, the WAL format is not. Therefore to change the _WritePolicy_ the WAL has to be empties first by flushing the DB.
+
+Non-2PC transactions will result into two writes if `two_write_queues` is enabled. If majority of transactions are non-2PC, the `two_write_queues` optimization should be disabled.
+
+TransactionDB::Write incurs additional cost of detecting duplicate keys in the write batch.
+
+If a column family is dropped, the WAL has to be cleaned up beforehand so that there would be no entry belonging to that CF in the WAL.
+
+When using `rocksdb_commit_time_batch_for_recovery`, the data passed to `CommitTimeWriteBatch` cannot have duplicate keys and will be visible only after a memtable flush.
