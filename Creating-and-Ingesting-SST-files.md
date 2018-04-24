@@ -8,7 +8,7 @@ This is an example of how to create SST file in `/home/usr/file1.sst`
 ```cpp
 Options options;
 
-SstFileWriter sst_file_writer(EnvOptions(), options, options.comparator);
+SstFileWriter sst_file_writer(EnvOptions(), options);
 // Path to where we will write the SST file
 std::string file_path = "/home/usr/file1.sst";
 
@@ -23,7 +23,7 @@ if (!s.ok()) {
 // Insert rows into the SST file, note that inserted keys must be 
 // strictly increasing (based on options.comparator)
 for (...) {
-  s = sst_file_writer.Add(key, value);
+  s = sst_file_writer.Put(key, value);
   if (!s.ok()) {
     printf("Error while adding Key: %s, Error: %s\n", key.c_str(),
            s.ToString().c_str());
