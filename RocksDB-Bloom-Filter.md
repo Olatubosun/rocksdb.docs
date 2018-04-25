@@ -26,16 +26,13 @@ The individual filter blocks in the old format are not cache aligned and could r
 
 Full filter limits the probe bits for a key to be all within the same CPU cache line. The ensures fast lookups by limiting the CPU cache misses to one per key. Note that this is essentially sharding the bloom space and will not affect the false positive rate of the bloom.
 
-Users are able to specify which kind of Bloom filter to use when calling `NewBloomFilterPolicy`. The default is old block-based format.
+At read time, RocksDB uses the same format that was used when creating the SST file. Users can specify the format for the newly created SST files by setting `filter_policy` in options. The helper function `NewBloomFilterPolicy` to create both old block-based (the default) and new full filter.
 
-#### Usage of New Bloom Filter
-By default, the bloom filter remains the original format. To enable new filter format, you just need to add a parameter when creating FilterPolicy like:
-
-    NewBloomFilterPolicy(10, false).
- 
-The second parameter means "not use original filter format".
- 
-When reading filter block, RocksDB could tell the filter format and create the appropriate reader.
+```
+extern const FilterPolicy* NewBloomFilterPolicy(int bits_per_key,
+    bool use_block_based_builder = true);
+}
+```
 
 #### Customize your own FilterPolicy
 FilterPolicy ((include/rocksdb/filter_policy.h)) can be extended to defined custom filters. The two main functions to implement are:
