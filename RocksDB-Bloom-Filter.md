@@ -20,7 +20,7 @@ At read time, the offset of the block that might contain the key/value is obtain
 ### Full Filters (new format)
 The individual filter blocks in the old format are not cache aligned and could result into a lot of cache misses during lookup. Moreover although negative responses (i.e., key does not exist) of the filter saves the search from the data block, the index is already loaded and looked into. The new format, full filter, addresses these issues by creating one filter for the entire SST file. The tradeoff is that more memory is required to cache a hash of every key in the file (versus only keys of a 2KB block in the old format).
 
-Full filter limits the probe bits for a key to be all within the same CPU cache line. This ensures fast lookups by limiting the CPU cache misses to one per key. Note that this is essentially sharding the bloom space and will not affect the false positive rate of the bloom. Refer to "The Math" section below for more details.
+Full filter limits the probe bits for a key to be all within the same CPU cache line. This ensures fast lookups by limiting the CPU cache misses to one per key. Note that this is essentially sharding the bloom space and will not affect the false positive rate of the bloom as long as we have many keys. Refer to "The Math" section below for more details.
 
 At read time, RocksDB uses the same format that was used when creating the SST file. Users can specify the format for the newly created SST files by setting `filter_policy` in options. The helper function `NewBloomFilterPolicy` can be used to create both old block-based (the default) and new full filter.
 
@@ -70,13 +70,18 @@ Read [here](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters).
 ### The math
 
 Here is the math to compute the false positive rate (FPR) of bloom filters.
-- `m` bits split into `p` shards each of size `m/p`.
+- `m` bits split into `s` shards each of size `m/s`.
 - `n` keys
 - `k` probe/key
 - For each key a shard is selected randomly, and `k` bits are set randomly within the shard.
-- After inserting `n` keys, the probability that a particular bit is still 0 is that all the previous keys are either set on other shard `prob = (p-1)/p` or set other bits in the shard that contains the bit `prob = 1 - 1/(m/p)`.
-   * prob_0 = `((p-1)/p) + 1/p (1-p/m)) ^ kn` = `(1 - 1/m) ^ kn`
-- So the false positive probably is that any of the k bits are 1:
-   * FPR = `(1 - prob_0) ^ k` = `(1- (1-1/m)^kn) ^ k`
+- After inserting a key, the probability that a particular bit is still 0 is that all the previous keys are either set on other shard `prob = (s-1)/s` or set other bits in the same shard with probability `1 - 1/(m/s)`.
+   * prob_0 = `(s-1)/s) + 1/s (1-s/m)) ^ k`
+- Using binomial approximation of `(1+x)^k ~= 1 + xk` if `|xk| << 1` and `|x| < 1` we have
+   * prob_0 = `1-1/s + 1/s (1-sk/m)` = `1 - k/m` = `(1-1/m)^k`
+- Note that with the approximation prob_0(s=1) is equal to prob_0.
+- Probability of a bit remained 0 after inserting `n` keys is
+   * prob_0_n = `(1-1/m)^nk`
+- So the false positive probability is that all of the `k` bits are 1:
+   * FPR = `(1 - prob_0_n) ^ k` = `(1- (1-1/m)^kn) ^ k`
 
-Note that the FPR rate is independent of `p`, number of shards. In full blooms, each shard is of CPU cache line size to reduce cpu cache misses during next probes. `m` will be set `n * bits_per_key + epsilon` to ensure that it is a multiple of the shard size, i.e., the cpu cache line size.
+Note that the FPR rate is independent of `s`, number of shards. In other words sharding does not affect the FPR as long as `s k/m << 1`. For typical values of `s=512` and `k=6`, 10 bits per key, this is satisfied as long as `n << 307 key`. In full blooms, each shard is of CPU cache line size to reduce cpu cache misses during next probes. `m` will be set `n * bits_per_key + epsilon` to ensure that it is a multiple of the shard size, i.e., the cpu cache line size.
