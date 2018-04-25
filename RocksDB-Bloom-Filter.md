@@ -35,25 +35,26 @@ extern const FilterPolicy* NewBloomFilterPolicy(int bits_per_key,
 ```
 #### Prefix vs. whole key
 
-By default a hash of every whole key is added to the bloom filter. This can be disabled by setting `BlockBasedTableOptions::whole_key_filtering` to false. When Options.prefix_extractor is set, a hash of the prefix is also added to the bloom. Since there are less unique prefixes than the whole keys, storing only the prefixes in bloom will result into smaller blooms with the down side of having larger false positive rate. Moreover the prefix blooms are also used during `::Seek` and `::SeekForPrev` whereas the whole key blooms are only used for point lookups.
+By default a hash of every whole key is added to the bloom filter. This can be disabled by setting `BlockBasedTableOptions::whole_key_filtering` to false. When Options.prefix_extractor is set, a hash of the prefix is also added to the bloom. Since there are less unique prefixes than the whole keys, storing only the prefixes in bloom will result into smaller blooms with the down side of having larger false positive rate. Moreover the prefix blooms can be optionally (using `check_filter` when creating the iterator) used during `::Seek` and `::SeekForPrev` whereas the whole key blooms are only used for point lookups.
 
 #### Statistic
 
 Here are the statistics that can be used to gain insight of how well your full bloom filter settings are performing in production:
 
-The following stats are updated after each ::Seek and ::SeekForPrev if prefix is enabled and check_filter is set.
-- rocksdb.bloom.filter.prefix.checked: 
-- rocksdb.bloom.filter.prefix.useful: negatives
+The following stats are updated after each `::Seek` and `::SeekForPrev` if prefix is enabled and `check_filter` is set.
+- `rocksdb.bloom.filter.prefix.checked`: seek_negatives + seek_positives
+- `rocksdb.bloom.filter.prefix.useful`: seek_negatives
 
-The following stats are updated after each point lookup. if whole_key_filtering is set, this is the result of checking the bloom of the whole key, otherwise this is the result of checking the bloom of the prefix.
-- rocksdb.bloom.filter.useful: negaitves
-- rocksdb.bloom.filter.full.positive: 
-- rocksdb.bloom.filter.full.true.positive:
+The following stats are updated after each point lookup. If `whole_key_filtering` is set, this is the result of checking the bloom of the whole key, otherwise this is the result of checking the bloom of the prefix.
+- `rocksdb.bloom.filter.useful`: negatives
+- `rocksdb.bloom.filter.full.positive`: positives
+- `rocksdb.bloom.filter.full.true.positive`: true positives
 
-so here are the confusing scenarios:
-1. if both whole_key_filtering and prefix are set, prefix are not checking during point lookups.
-2. If only the prefix is set, the total number of times prefix bloom is checked is the sum of the stats of point lookup and seeks. Due to absence of true positive stats in seeks, we then cannot have the total FPR: only the FPR of point lookups.
+So the false positive rate of point lookups is computed by (positives - true positives) / negatives.
 
+Pay attention to these the confusing scenarios:
+1. If both whole_key_filtering and prefix are set, prefix are not checked during point lookups.
+2. If only the prefix is set, the total number of times prefix bloom is checked is the sum of the stats of point lookup and seeks. Due to absence of true positive stats in seeks, we then cannot have the total false positive rate: only that of of point lookups.
 
 ### Customize your own FilterPolicy
 FilterPolicy ((include/rocksdb/filter_policy.h)) can be extended to defined custom filters. The two main functions to implement are:
