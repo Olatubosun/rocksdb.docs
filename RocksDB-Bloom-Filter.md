@@ -5,7 +5,7 @@ In RocksDB, every SST file contains a Bloom filter, which is used to determine i
 
 For a more detailed explanation of how Bloom filters work, see this [Wikipedia article](http://en.wikipedia.org/wiki/Bloom_filter).
 
-#### Life Cycle
+### Life Cycle
 In RocksDB, each SST file has a corresponding Bloom filter. It is created when the SST file is written to storage, and is stored as part of the associated SST file. Bloom filters are constructed for files in all levels in the same way. 
 
 Bloom filters may only be created from a set of keys - there is no operation to combine Bloom filters. When we combine two SST files, a new Bloom filter is created from the keys of the new file. 
@@ -14,14 +14,14 @@ When we open an SST file, the corresponding Bloom filter is also opened and load
 
 To cache the Bloom filter in block cache, use: `BlockBasedTableOptions::cache_index_and_filter_blocks=true,` otherwise they are always pinned into memory.  
 
-#### Block-based Bloom Filter (old format)
+### Block-based Bloom Filter (old format)
 
 A Bloom filter may only be built if all keys fit in memory. On the other hand, sharding a bloom filter will not affect its false positive rate. Therefore, to alleviate the memory pressure when creating the SST file, in the old format a separate bloom filter is created per each 2KB block of key values.
 Details for the format can be found [here](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format#filter-meta-block). At the end an array of the offsets of individual bloom blocks are stored in SST file.
 
 At read time, the offset of the block that might contain the key/value is obtained from the SST index. Based on the offset the corresponding bloom filter is then loaded. If the filter suggests that the key might exist, then it searches the actual data block for the key.
 
-#### Full Filters (new format)
+### Full Filters (new format)
 The individual filter blocks in the old format are not cache aligned and could result into a lot of cache misses during lookup. Moreover although negative responses (i.e., key does not exist) of the filter saves only searching into the data block, the index is already loaded and looked into. The new format, full filter, addresses these issues by creating one filter for the entire SST file. The tradeoff is that more memory is required to cache a hash of every key in the file (versus only keys of a 2KB block in the old format).
 
 Full filter limits the probe bits for a key to be all within the same CPU cache line. The ensures fast lookups by limiting the CPU cache misses to one per key. Note that this is essentially sharding the bloom space and will not affect the false positive rate of the bloom.
@@ -33,8 +33,29 @@ extern const FilterPolicy* NewBloomFilterPolicy(int bits_per_key,
     bool use_block_based_builder = true);
 }
 ```
+#### Prefix vs. whole key
 
-#### Customize your own FilterPolicy
+By default a hash of every whole key is added to the bloom filter. This can be disabled by setting `BlockBasedTableOptions::whole_key_filtering` to false. When Options.prefix_extractor is set, a hash of the prefix is also added to the bloom. Since there are less unique prefixes than the whole keys, storing only the prefixes in bloom will result into smaller blooms with the down side of having larger false positive rate. Moreover the prefix blooms are also used during `::Seek` and `::SeekForPrev` whereas the whole key blooms are only used for point lookups.
+
+#### Statistic
+
+Here are the statistics that can be used to gain insight of how well your full bloom filter settings are performing in production:
+
+The following stats are updated after each ::Seek and ::SeekForPrev if prefix is enabled and check_filter is set.
+- rocksdb.bloom.filter.prefix.checked: 
+- rocksdb.bloom.filter.prefix.useful: negatives
+
+The following stats are updated after each point lookup. if whole_key_filtering is set, this is the result of checking the bloom of the whole key, otherwise this is the result of checking the bloom of the prefix.
+- rocksdb.bloom.filter.useful: negaitves
+- rocksdb.bloom.filter.full.positive: 
+- rocksdb.bloom.filter.full.true.positive:
+
+so here are the confusing scenarios:
+1. if both whole_key_filtering and prefix are set, prefix are not checking during point lookups.
+2. If only the prefix is set, the total number of times prefix bloom is checked is the sum of the stats of point lookup and seeks. Due to absence of true positive stats in seeks, we then cannot have the total FPR: only the FPR of point lookups.
+
+
+### Customize your own FilterPolicy
 FilterPolicy ((include/rocksdb/filter_policy.h)) can be extended to defined custom filters. The two main functions to implement are:
 
     FilterBitsBuilder* GetFilterBitsBuilder()
@@ -46,4 +67,5 @@ Notice: This two new interface just works for new filter format. Original filter
 
 ### Partitioned Bloom Filter
 
+It is a storage format for full filters. It partitions the filter block into multiple smaller blocks to alleviate the load on block cache.
 Read [here](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters).
