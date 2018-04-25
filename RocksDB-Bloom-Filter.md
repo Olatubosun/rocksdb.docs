@@ -74,14 +74,14 @@ Here is the math to compute the false positive rate (FPR) of bloom filters.
 - `n` keys
 - `k` probe/key
 - For each key a shard is selected randomly, and `k` bits are set randomly within the shard.
-- After inserting a key, the probability that a particular bit is still 0 is that all the previous keys are either set on other shard `prob = (s-1)/s` or set other bits in the same shard with probability `1 - 1/(m/s)`.
+- After inserting a key, the probability that a particular bit is still 0 is that all the previous hashes of the key are either set on other shards with probability `(s-1)/s` or set other bits in the same shard with probability `1 - 1/(m/s)`.
    * prob_0 = `(s-1)/s) + 1/s (1-s/m)) ^ k`
 - Using binomial approximation of `(1+x)^k ~= 1 + xk` if `|xk| << 1` and `|x| < 1` we have
    * prob_0 = `1-1/s + 1/s (1-sk/m)` = `1 - k/m` = `(1-1/m)^k`
 - Note that with the approximation prob_0(s=1) is equal to prob_0.
 - Probability of a bit remained 0 after inserting `n` keys is
-   * prob_0_n = `(1-1/m)^nk`
+   * prob_0_n = `(1-1/m)^kn`
 - So the false positive probability is that all of the `k` bits are 1:
    * FPR = `(1 - prob_0_n) ^ k` = `(1- (1-1/m)^kn) ^ k`
 
-Note that the FPR rate is independent of `s`, number of shards. In other words sharding does not affect the FPR as long as `s k/m << 1`. For typical values of `s=512` and `k=6`, 10 bits per key, this is satisfied as long as `n << 307 key`. In full blooms, each shard is of CPU cache line size to reduce cpu cache misses during next probes. `m` will be set `n * bits_per_key + epsilon` to ensure that it is a multiple of the shard size, i.e., the cpu cache line size.
+Note that the FPR rate is independent of `s`, number of shards. In other words sharding does not affect the FPR as long as `sk/m << 1`. For typical values of `s=512` and `k=6`, and 10 bits per key, this is satisfied as long as `n >> 307` keys. In full blooms, each shard is of CPU cache line size to allow them to be aligned with cpu cache lines and reduce cpu cache misses during next probes. `m` will be set `n * bits_per_key + epsilon` to ensure that it is a multiple of the shard size, i.e., the cpu cache line size.
