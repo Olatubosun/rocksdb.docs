@@ -75,7 +75,7 @@ Here is the math to compute the false positive rate (FPR) of bloom filters.
 - `k` probe/key
 - For each key a shard is selected randomly, and `k` bits are set randomly within the shard.
 - After inserting a key, the probability that a particular bit is still 0 is that all the previous hashes of the key are either set on other shards with probability `(s-1)/s` or set other bits in the same shard with probability `1 - 1/(m/s)`.
-   * prob_0 = `(s-1)/s) + 1/s (1-s/m)) ^ k`
+   * prob_0 = `(s-1)/s + 1/s (1-s/m) ^ k`
 - Using binomial approximation of `(1+x)^k ~= 1 + xk` if `|xk| << 1` and `|x| < 1` we have
    * prob_0 = `1-1/s + 1/s (1-sk/m)` = `1 - k/m` = `(1-1/m)^k`
 - Note that with the approximation prob_0(s=1) is equal to prob_0.
