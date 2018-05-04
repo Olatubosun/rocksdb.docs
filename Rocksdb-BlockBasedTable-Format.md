@@ -30,7 +30,7 @@ See [this document](https://developers.google.com/protocol-buffers/docs/encoding
 
 (2) After the data blocks, we store a bunch of meta blocks. The supported meta block types are described below. More meta block types may be added in the future. Each meta block is again formatted using `block_builder.cc` and then optionally compressed.
 
-(3) A `metaindex` block contains one entry for every other meta block, where the key is the name of the meta block and the value is a `BlockHandle` pointing to that meta block.
+(3) A `metaindex` block contains one entry for every meta block, where the key is the name of the meta block and the value is a `BlockHandle` pointing to that meta block.
 
 (4) An `index` block contains one entry per data block, where the key is a string `>=` last key in that data block and before the first key in the successive data block. The value is the `BlockHandle` for the data block. If [kTwoLevelIndexSearch](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters) is used as IndexType the `index` block is a 2nd level index on index partitions, i.e., each entry points to another `index` block that contains one entry per data block. In this case, the format will be
 
