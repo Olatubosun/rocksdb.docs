@@ -15,7 +15,7 @@ Limitations:
 We have plans to reduce some of the limitations in future.
 
 ### Usage
-A new table factory can be created by calling `NewCuckooTableFactory()` function in `table.h`. See comments in [`include/rocksdb/table.h`](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/table.h) or [blogpost](http://rocksdb.org/blog/1367/cuckoo/) for description of parameters.
+A new table factory can be created by calling `NewCuckooTableFactory()` function in `table.h`. See comments in [`include/rocksdb/table.h`](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/table.h) or [blogpost](https://rocksdb.org/blog/2014/09/12/cuckoo.html) for description of parameters.
  
 Examples:
 ```cpp
