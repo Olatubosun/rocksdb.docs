@@ -1,4 +1,4 @@
-We introduce a new SST file format based on [Cuckoo Hashing](http://en.wikipedia.org/wiki/Cuckoo_hashing) which is optimized for very high point lookup rates. Applications which don't use range scan but require very fast point lookups can use this new table format. See [here](http://rocksdb.org/blog/1367/cuckoo/) for a detailed description of algorithm.
+We introduce a new SST file format based on [Cuckoo Hashing](http://en.wikipedia.org/wiki/Cuckoo_hashing) which is optimized for very high point lookup rates. Applications which don't use range scan but require very fast point lookups can use this new table format. See [here](https://rocksdb.org/blog/2014/09/12/cuckoo.html) for a detailed description of algorithm.
  
 Advantages:
 * For most lookups, only one memory access required per lookup.
