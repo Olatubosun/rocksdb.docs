@@ -12,6 +12,7 @@ BlockBasedTable is the default SST table format in RocksDB.
     [meta block 1: filter block]                  (see section: "filter" Meta Block)
     [meta block 2: stats block]                   (see section: "properties" Meta Block)
     [meta block 3: compression dictionary block]  (see section: "compression dictionary" Meta Block)
+    [meta block 4: range deletion block]          (see section: "range deletion" Meta Block)
     ...
     [meta block K: future extended block]  (we may add more meta blocks in the future)
     [metaindex block]
@@ -122,3 +123,16 @@ Our solution is to initialize the compression library with a dictionary built fr
 More specifically, the compression dictionary is built only during compaction to the bottommost level, where the data is largest and most stable. To avoid iterating over input data multiple times, the dictionary includes samples from the subcompaction's first output file only. Then, the dictionary is applied to and stored in meta-blocks of all subsequent output files. Note the dictionary is not applied to or stored in the first file since its contents are not finalized until that file has been fully processed.
 
 Currently the sampling is uniformly random and each sample is 64 bytes. We do not know in advance the size of the output file when selecting the sample offsets, so we assume it'll reach the maximum size, which is usually true since it's the first file in the subcompaction. In case the file is smaller, some sample intervals will refer to offsets beyond EOF, which just means the dictionary will be a bit smaller than `CompressionOptions::max_dict_bytes`.
+
+#### `Range Deletion` Meta Block
+
+This metablock contains the range deletions in the file's key-range and seqnum-range. Range deletions cannot be inlined in the data blocks together with point data since the ranges would then not be binary searchable.
+
+The block format is the standard key-value format. A range deletion is encoded as follows:
+
+- User key: the range's begin key
+- Sequence number: the sequence number at which the range deletion was inserted to the DB
+- Value type: kTypeRangeDeletion
+- Value: the range's end key
+
+Range deletions are assigned sequence numbers when inserted using the same mechanism as non-range data types (puts, deletes, etc.). They also traverse through the LSM using the same flush/compaction mechanism as point data. They can be obsoleted (i.e., dropped) only during compaction to the bottommost level.
