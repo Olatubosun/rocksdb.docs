@@ -29,6 +29,8 @@ table_options.filter_policy.reset(NewBloomFilterPolicy(10, false));
 ```
 To learn more about bloom filters, see [Bloom Filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter).
 
+**Set rate_limiter**. It's always a good idea to limit the compaction and flush speed to smooth I/O, in order to avoid the read latency outliers. Make sure pass the same rate_limiter object to all the DB in your process. See [[Rate-Limiter]]
+
 Then set some options to be the values specified below. We've set defaults for most options to achieve reasonable out-of-box performance. We didn't change these options because of the concern of incompatibility or regression when users upgrade their existing RocksDB instance to a newer version. But we suggest users to start their new DB with those setting:
 ```
 cf_options.level_compaction_dynamic_level_bytes = true;
