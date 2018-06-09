@@ -31,7 +31,7 @@ To learn more about bloom filters, see [Bloom Filter](https://github.com/faceboo
 
 **Set rate_limiter**. It's always a good idea to limit the compaction and flush speed to smooth I/O, in order to avoid the read latency outliers. Make sure pass the same rate_limiter object to all the DB in your process. See [[Rate Limiter]]
 
-**Enable SST File Manager** if you are running on flash and mounted the file system with discard. We recommend users to mount the file system with discard, in order to improve write amplification. However, it calls trimming, with can cause bad I/O latency temporarily if the trim size is too large. SST File Manager can cap the file deletion speed, so that each trim's size is controlled. 
+**Enable SST File Manager** if you are running on flash and mounted the file system with discard. We recommend users to mount the file system with discard, in order to improve write amplification. However, it calls trimming, with can cause bad I/O latency temporarily if the trim size is too large. SST File Manager can cap the file deletion speed, so that each trim's size is controlled. See [code](https://github.com/facebook/rocksdb/blob/5.14.fb/include/rocksdb/options.h#L372-L386).
 
 Then set some options to be the values specified below. We've set defaults for most options to achieve reasonable out-of-box performance. We didn't change these options because of the concern of incompatibility or regression when users upgrade their existing RocksDB instance to a newer version. But we suggest users to start their new DB with those setting:
 ```
