@@ -12,7 +12,7 @@ To find out whether your DB is suffering from write stalls, you can look at:
 
 Stalls may be triggered for the following reasons:
 
-* **Too many memtables.** When the number of memtables waiting to flush is greater or equal to `max_write_buffer_number`, writes are fully stopped to wait for flush finishes. In addition, if `max_write_buffer_number` is greater than 3, and the number of memtables waiting for flush is greater or equal to `max_write_buffer_number - 1`, writes are stalled. In these cases, you will get info logs in LOG file similar to:
+* **Too many memtables.** When the number of memtables waiting to flush is greater or equal to `max_write_buffer_number`, writes are fully stopped to wait for flush finishes. In addition, if `max_write_buffer_number` is greater than 3, and the number of memtables waiting for flush is greater than or equal to `max_write_buffer_number - 1`, writes are stalled. In these cases, you will get info logs in LOG file similar to:
 
     > Stopping writes because we have 5 immutable memtables (waiting for flush), max_write_buffer_number is set to 5
 
