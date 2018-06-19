@@ -5,7 +5,7 @@ RocksDB has extensive system to slow down writes when flush or compaction can't 
 
 The idea is to slow down incoming writes to the speed that the database can handle. However, sometimes the database can be too sensitive to a temporary write burst, or underestimate what the hardware can handle, so that you may get unexpected slowness or query timeouts.
 
-To find out whether your DB is suffer from write stalls, you can look at:
+To find out whether your DB is suffering from write stalls, you can look at:
 
 * LOG file, which will contain info log when write stalls are triggered;
 * [Compaction stats](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#compaction-stats) found in LOG file.
