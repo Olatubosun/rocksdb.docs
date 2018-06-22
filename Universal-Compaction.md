@@ -205,6 +205,7 @@ And no compaction is triggered, so we hold the compaction. Only when another flu
 ```
 1 1 2 3 4 5 => 16
 ```
+
 Because 1/1 <=1, 2/(1+1) <= 1, 3/(1+1+2) <= 1, 4/(1+1+2+3) <= 1 and 5/(1+1+2+3+4) <= 1.
 
 Compaction is only triggered when number of input sorted runs would be at least options.compaction_options_universal.min_merge_width and number of sorted runs as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
