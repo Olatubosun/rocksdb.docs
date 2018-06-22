@@ -184,7 +184,6 @@ After 4 mem table flushes make it 5 files again. First 4 files qualifies for mer
 ```
 They go on like that for several rounds:
 ```
-```
 1 1 1 1 1  =>  5
 1 5  (no compaction triggered)
 1 1 5  (no compaction triggered)
