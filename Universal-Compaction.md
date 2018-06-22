@@ -171,47 +171,41 @@ Usually options.compaction_options_universal.size_ratio is close to 0 so _size r
 
 We start from R1, if size(R2) / size(R1) <= _size ratio trigger_, then (R1, R2) are qualified to be compacted together. We continue from here to determine whether R3 can be added too. If size(R3) / size(R1 + R2) <= _size ratio trigger_, we would include (R1, R2, R3). Then we do the same for F4. We keep comparing total existing size to the next sorted run until the _size ratio trigger_ condition doesn't hold any more.
 
-Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, total mem table flush size is always 1, compacted size always equals to total input sizes, compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 2 (so number of files won't block a compaction from running). Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction because 1/1 <= 1:
+Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, total mem table flush size is always 1, compacted size always equals to total input sizes, compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 5. Starting from an empty DB, after 5 mem table flushes, we have 5 files size of 1, which triggers a compaction of all files because 1/1 <= 1, 1/(1+1) <= 1, 1/(1+1+1) <=1 and 1/(1+1+1+1) <= 1:
 
 ```
-1 1  =>  2
+1 1 1 1 1  =>  5
 ```
 
-After another mem table flush,
+After 4 mem table flushes make it 5 files again. First 4 files qualifies for merging: 1/1 <= 1, 1/(1+1) <= 1, 1/(1+1+1) <=1. While the 5th one doesn't: 5/(1+1+1+1) > 1:
 
 ```
-1 2  (no compaction triggered)
+1 1 1 1 5  => 4 5
 ```
-
-which doesn't qualify a flush because 2/1 > 1. But another mem table flush will trigger a compaction of all the files:
+They go on like that for several rounds:
+```
+```
+1 1 1 1 1  =>  5
+1 5  (no compaction triggered)
+1 1 5  (no compaction triggered)
+1 1 1 5  (no compaction triggered)
+1 1 1 1 5  => 4 5
+1 4 5  (no compaction triggered)
+1 1 4 5  (no compaction triggered)
+1 1 1 4 5 => 3 4 5
+1 3 4 5  (no compaction triggered)
+1 1 3 4 5 => 2 3 4 5
+```
+Another flush bring it to be like 
+```
+1 2 3 4 5
+```
+And no compaction is triggered, so we hold the compaction. Only when another flush comes, all files are qualified to compact together:
 
 ```
-1 1 2  =>  4
+1 1 2 3 4 5 => 16
 ```
-
-This is because 1/1 <=1 and 2 / (1+1) <= 1.
-
-The compaction will keep working like this:
-
-```
-1 1  =>  2
-1 2  (no compaction triggered)
-1 1 2  =>  4
-1 4  (no compaction triggered)
-1 1 4  =>  2 4
-1 2 4  (no compaction triggered)
-1 1 2 4 => 8
-1 8  (no compaction triggered)
-1 1 8  =>  2 8
-1 2 8  (no compaction triggered)
-1 1 2 8  =>  4 8
-1 4 8  (no compaction triggered)
-1 1 4 8  =>  2 4 8
-1 2 4 8  (no compaction triggered)
-1 1 2 4 8  =>  16
-1 16  (no compaction triggered)
-......
-```
+Because 1/1 <=1, 2/(1+1) <= 1, 3/(1+1+2) <= 1, 4/(1+1+2+3) <= 1 and 5/(1+1+2+3+4) <= 1.
 
 Compaction is only triggered when number of input sorted runs would be at least options.compaction_options_universal.min_merge_width and number of sorted runs as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
 
