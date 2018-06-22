@@ -196,7 +196,9 @@ They go on like that for several rounds:
 1 3 4 5  (no compaction triggered)
 1 1 3 4 5 => 2 3 4 5
 ```
+
 Another flush bring it to be like 
+
 ```
 1 2 3 4 5
 ```
