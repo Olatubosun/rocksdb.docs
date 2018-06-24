@@ -124,6 +124,9 @@ set(ZLIB_LIB_RELEASE ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatRelease/zlibw
 ```
 
 And then finally to compile RocksDB:
+
+* **NOTE**: The default CMake build will generate MSBuild project files which include the `/arch:AVX2` flag. If you have this CPU extension instruction set, then the generated binaries will also only work on other CPU's with AVX2. If you want to create a build which has no specific CPU extensions, then you should also pass the `-DPORTABLE=1` flag in the `cmake` arguments below.
+
 ```
 mkdir build
 cd build
