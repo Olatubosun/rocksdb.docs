@@ -43,15 +43,16 @@ In this example we have a DB of size 300G on SSD and emulate the small memory th
   * This is to enable partitioned filters
 - `metadata_block_size` = 4096
   * This is the block size for index partitions.
-- `cache_index_and_filter_blocks` = `false`
+- `cache_index_and_filter_blocks` = `false` [if you are on <= 5.14]
   * The partitions are stored in the cache anyway. This to control the location of top-level indexes, which easily fit into memory. Having them stored in block cache is less experimented with.
+- `cache_index_and_filter_blocks` = `true` and `pin_top_level_index_and_filter` = `true` [if you are on >= 5.15]
+  * This would put everything in block cache but also pins the top-level indexes, which are quite small.
 - `cache_index_and_filter_blocks_with_high_priority` = `true`
   * Recommended setting
 - `pin_l0_filter_and_index_blocks_in_cache` = `true`
   * Recommended setting as this property is extended to the index/filter partitions as well.
   * Use it only if the compaction style is level-based
   * **Note**: with pinning blocks into the block cache, it could potentially go beyond the capacity if strict_capacity_limit is not set (which is the default case).
-  * **Note**: there was a performance issue fixed in this [commit](https://github.com/facebook/rocksdb/commit/1dfcdb15f93018c67f1d3528b60738dc0d3b5d05). If you do not have this commit in your release, to work around the issue you need to set `pin_l0_filter_and_index_blocks_in_cache` to `false`.
 - block cache size: if you used to store the filter/index into heap, do not forget to increase the block cache size with the amount of memory that you are saving from the heap.
 
 ## Current limitations
