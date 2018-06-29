@@ -63,7 +63,7 @@ You can only choose compression types which are supported on your host system. U
 2. `cf_options.bottonmost_compression` controls the compression type used for the `nth` level.
     We recommend to use ZStandard (`kZSTD`), or if not available, to use Zlib (`kZlibCompression`).
 
-To learn more about compression, [[Compression]].
+To learn more about compression, See [[Compression]].
 
 ## Bloom Filters
 You should only enable this if it suits your Query patterns; If you have many point lookup operations (i.e. `Get()`), then a Bloom Filter can help speed up those operations, conversely if most of your operations are range scans (e.g. `Iterator()`) then the Bloom Filter will not help.
