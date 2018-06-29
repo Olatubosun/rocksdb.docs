@@ -1,40 +1,97 @@
-Besides writing code to operate on RocksDB to achieve your functionality, using [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations), you may also be interested in how to tune RocksDB to achieve desired performance. In this page, we introduce how to get an initial set-up, which should work good enough for many use cases.
+Besides writing code using [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations) on RocksDB, you may also be interested in how to tune RocksDB to achieve desired performance. In this page, we introduce how to get an initial set-up, which should work well enough for many use cases.
 
-RocksDB have tons of options, but most users should ignore most of them, because they are for very specific workloads. Try to leave most RocksDB options as defaults, except what is mentioned below.
+RocksDB has many configuration options, but most of them can be safely ignored by many users, as the majority of them are for influencing the performance of very specific workloads. For general use, most RocksDB options can be left at their defaults, however, we suggest some options below that every user might like to experiment with for general workloads.
 
-First, you need to think about options related resource limitation (which are also mentioned in [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations)):
+First, you need to think about the options relating to resource limits (see also: [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations)):
 
-**cf_options.write_buffer_size**: this is the maximum write buffer size used for this column family. You need to budget the worst case double that amount of memory usage. If you don't have enough memory for this, you need to reduce this value. Otherwise, it is not recommended to change.
+## Write Buffer Size
 
-**Set block cache size**. Create a block cache with the size you want for caching the uncompressed data. This is recommended to be about 1/3 of your memory budget. The rest of free memory can be left for OS page cache. Leaving large chunk of memory to OS page cache has the benefit of avoiding tight memory budgeting (If you are interested, you can see [Memory Usage in RocksDB](https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB)). Setting block cache size requires we set table related options. Here is the way to set it:
+This can be set either per Database and/or per Column Family.
+
+### Column Family Write Buffer Size
+
+This is the maximum write buffer size used for the Column Family.
+
+It represents the amount of data to build up in memory (backed by an unsorted log on disk) before converting to a sorted on-disk file. The default is 64 MB.
+
+You need to budget for 2 x your worst case memory use. If you don't have enough memory for this, you should reduce this value. Otherwise, it is not recommended to change this option. For example:
+
+```c++
+cf_options.write_buffer_size = 64 << 20
 ```
+
+See below for sharing memory across Column Families.
+
+### Database Write Buffer Size
+
+This is the maximum size of all Write Buffers across all Column Families in the database.
+It represents the amount of data to build up in memtables across all column families before writing to disk.
+
+By default this feature is disabled (by being set to `0`). You should not need to change it. However, for reference, if you do need to change it to 64 GB for example:
+
+```c++
+db_options.db_write_buffer_size = 64 << 30;
+```
+
+## Block Cache Size
+
+You can create a Block cache of your chosen the size for caching uncompressed data.
+
+We recommend that this should be about 1/3 of your total memory budget. The remaining free memory can be left for the OS (Operating System) page cache. Leaving a large chunk of memory for OS page cache has the benefit of avoiding tight memory budgeting (see also: [Memory Usage in RocksDB](https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB)).
+
+Setting the block cache size requires that we also set table related options, for example if you wanted an LRU Cache of `128 MB`:
+
+```c++
+auto cache = NewLRUCache(128 << 20);
+
 BlockBasedTableOptions table_options;
-... \\ set options in table_options
-options.table_factory.reset(new BlockBasedTableFactory(table_options));
-```
-Here is the way to set the block size.
-```
-std::shared_ptr<Cache> cache = NewLRUCache(<your_cache_size>);
 table_options.block_cache = cache;
+
+auto table_factory = new BlockBasedTableFactory(table_options);
+options.table_factory.reset(table_factory);
 ```
-Remember to pass the same cache object to all the table_options for all the column families of all DBs managed by the process. If you want, you can achieve the same effect by passing the same table_factory or table_options to all the column families of all DBs. To know more about block cache, see [Block Cache](https://github.com/facebook/rocksdb/wiki/Block-Cache).
 
+*NOTE*: You should set the same Cache object on all the `table_options` for all the Column Families of all DB's managed by the process. An alternative to achieve this, is to pass the same `table_factory` or `table_options` to all Column Families of all DB's. To learn more about the Block Cache, see: [Block Cache](https://github.com/facebook/rocksdb/wiki/Block-Cache).
 
-**cf_options.compression, cf_options.bottonmost_compression**.  These are the options you need to pick based on the availability of the compression types in your production host, CPU budget and space constraints. Our recommendation is to use kLZ4Compression for **cf_options.compression** and kZSTD for **cf_options.bottonmost_compression**. Please make sure you check whether the compression you picked is available in your environment. The second choices of the two options are Snappy and Zlib, respectively.
+## Compression
 
+You can only choose compression types which are supported on your host system. Using compression is a trade-off between CPU, I/O, and storage space.
 
-**Maybe enable bloom filter**. This is the only option I suggest you start to tune initially based on your query pattern. If most of your queries are executed using iterators, you shouldn't set bloom filter. If Get() is your common operations, then set bloom filter:
-```
+1. `cf_options.compression` controls the compression type used for the first `n-1` levels.
+    We recommend to use LZ4 (`kLZ4Compression`), or if not available, to use Snappy (`kSnappyCompression`).
+
+2. `cf_options.bottonmost_compression` controls the compression type used for the `nth` level.
+    We recommend to use ZStandard (`kZSTD`), or if not available, to use Zlib (`kZlibCompression`).
+
+## Bloom Filters
+You should only enable this if it suits your Query patterns; If you have many point lookup operations (i.e. `Get()`), then a Bloom Filter can help speed up those operations, conversely if most of your operations are range scans (e.g. `Iterator()`) then the Bloom Filter will not help.
+
+The Bloom Filter uses a number of bits for each key, a good value is `10`, which yields a filter with ~1% false positive rate.
+
+If `Get()` is a common operation for your queries, you can configure the Bloom Filter, for example with 10 bits per key:
+
+```c++
 table_options.filter_policy.reset(NewBloomFilterPolicy(10, false));
 ```
-To learn more about bloom filters, see [Bloom Filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter).
 
-**Set rate_limiter**. It's always a good idea to limit the compaction and flush speed to smooth I/O, in order to avoid the read latency outliers. Make sure pass the same rate_limiter object to all the DB in your process. See [[Rate Limiter]]
+To learn more about Bloom Filters, see: [Bloom Filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter).
 
-**Enable SST File Manager** if you are running on flash and mounted the file system with discard. We recommend users to mount the file system with discard, in order to improve write amplification. However, it calls trimming, with can cause bad I/O latency temporarily if the trim size is too large. SST File Manager can cap the file deletion speed, so that each trim's size is controlled. See [code](https://github.com/facebook/rocksdb/blob/5.14.fb/include/rocksdb/options.h#L372-L386).
+## Rate Limits
+It can be a good idea to limit the rate of compactions and flushes to smooth I/O operations, one reason for doing this is to avoid the read latency outliers. This can be done by means of the `db_options.rate_limiter` option. Rate limiting is a complex topic, and is covered in [[Rate Limiter]].
 
-Then set some options to be the values specified below. We've set defaults for most options to achieve reasonable out-of-box performance. We didn't change these options because of the concern of incompatibility or regression when users upgrade their existing RocksDB instance to a newer version. But we suggest users to start their new DB with those setting:
-```
+**NOTE**: Make sure to pass the same `rate_limiter` object to all the DB's in your process.
+
+## SST File Manager
+If you are using flash storage, we recommend users to mount the file system with the [`discard`](http://man7.org/linux/man-pages/man8/mount.8.html) flag in order to improve write amplification.
+
+If you are using flash storage and the `discard` flag, trimming will be employed. Trimming can cause long I/O latencies temporarily if the trim size is very large. The SST File Manager can cap the file deletion speed, so that each trim's size is controlled.
+
+The SST File Manager can be enabled, by setting the `db_options.sst_file_manager` option. Details of the SST File Manager can be seen here: [sst_file_manager_impl.h](https://github.com/facebook/rocksdb/blob/5.14.fb/util/sst_file_manager_impl.h#L28).
+
+## Other General Options
+Below are a number of options, where we feel the values set achieve reasonable out-of-box performance for general workloads. We didn't change these options because of the concern of incompatibility or regression when users upgrade their existing RocksDB instance to a newer version. We suggest that users tart their new DB projects with these settings:
+
+```c++
 cf_options.level_compaction_dynamic_level_bytes = true;
 options.max_background_compactions = 4;
 options.max_background_flushes = 2;
@@ -43,8 +100,11 @@ table_options.block_size = 16 * 1024;
 table_options.cache_index_and_filter_blocks = true;
 table_options.pin_l0_filter_and_index_blocks_in_cache = true;
 ```
-Don't feel sad if you have existing services running default of these options. Although we think these are better than default options, none of them is likely bring significant improvements.
 
-Now you are ready to see the initial RocksDB performance. Hope it is good enough!
+Don't feel sad if you have existing services running with the defaults instead of these options. Whilst we believe that these are better than the default options, none of them is likely to bring significant improvements.
 
-If the performance of RocksDB after the basic set-up above is good for you, we don't recommend you to further tune it. It is common that workload changes through time. If you budget for the performance achieved using a highly customized setting for current workload, some modest workload change may push the performance off the cliff. On the other hand, if the performance is not good enough to you, you can further tune RocksDB following more detailed [Tuning Guide](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide). 
+## Conclusion and Further Reading
+
+Now you are ready to test your application to see how your initial RocksDB performance looks. Hopefully it will be good enough!
+
+If the performance of RocksDB within your application after the basic set-up above is good enough for you, we don't recommend that you tune it further. It is common for a workload to change over time. If you budget for the performance achieved using a highly customised setting for current workload, some modest change to the workload may push the performance off a cliff. On the other hand, if the performance is not good enough for you, you can further tune RocksDB by following the more detailed [Tuning Guide](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide). 
