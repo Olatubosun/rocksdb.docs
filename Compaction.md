@@ -20,7 +20,7 @@ Other options impacting performance of compactions and when they get triggered a
 
 <li> <code>Options::level0_file_num_compaction_trigger</code> - Number of files to trigger level-0 compaction. A negative value means that level-0 compaction will not be triggered by number of files at all.
 
-<li> <code>Options::target_file_size_base</code> and <code>Options::target_file_size_multiplier</code> - Target file size for compaction. target_file_size_base is per-file size for level-1. Target file size for level L can be calculated by target_file_size_base * (target_file_size_multiplier ^ (L-1)) For example, if target_file_size_base is 2MB and target_file_size_multiplier is 10, then each file on level-1 will be 2MB, and each file on level 2 will be 20MB, and each file on level-3 will be 200MB. Default target_file_size_base is 2MB and default target_file_size_multiplier is 1.
+<li> <code>Options::target_file_size_base</code> and <code>Options::target_file_size_multiplier</code> - Target file size for compaction. target_file_size_base is per-file size for level-1. Target file size for level L can be calculated by target_file_size_base * (target_file_size_multiplier ^ (L-1)) For example, if target_file_size_base is 2MB and target_file_size_multiplier is 10, then each file on level-1 will be 2MB, and each file on level 2 will be 20MB, and each file on level-3 will be 200MB. Default `target_file_size_base` is 64MB and default target_file_size_multiplier is 1.
 
 <li> <code>Options::max_compaction_bytes</code> - Maximum number of bytes in all compacted files. We avoid expanding the lower level file set of a compaction if it would make the total compaction cover more than this amount.
 
