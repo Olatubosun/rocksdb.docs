@@ -8,6 +8,8 @@ In RocksDB, each block in a block-based table (SST file) is compressed individua
 
 Set `rocksdb::CompressionOptions::max_dict_bytes` (in `include/rocksdb/options.h`) to a nonzero value indicating the maximum per-file dictionary size.
 
+Also `rocksdb::CompressionOptions::zstd_max_train_bytes` may be used to generate a training dictionary of max bytes for ZStd compression. Using ZStd's dictionary trainer can achieve even better compression ratio improvements than using `max_dict_bytes` alone. The training data will be used to generate a dictionary of `max_dict_bytes`.
+
 ## Implementation
 
 The dictionary will be constructed by sampling the first output file in a subcompaction when the target level is bottommost. Samples are 64 bytes each and taken uniformly/randomly over the file. When picking sample intervals, we assume the output file will reach its maximum possible size. If not, some of the sample intervals will lie outside the file's data, thus they will not be included in the dictionary and its size will be less than `max_dict_bytes`.
