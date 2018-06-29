@@ -48,7 +48,7 @@ BlockBasedTableOptions table_options;
 table_options.block_cache = cache;
 
 auto table_factory = new BlockBasedTableFactory(table_options);
-options.table_factory.reset(table_factory);
+cf_options.table_factory.reset(table_factory);
 ```
 
 *NOTE*: You should set the same Cache object on all the `table_options` for all the Column Families of all DB's managed by the process. An alternative to achieve this, is to pass the same `table_factory` or `table_options` to all Column Families of all DB's. To learn more about the Block Cache, see: [Block Cache](https://github.com/facebook/rocksdb/wiki/Block-Cache).
