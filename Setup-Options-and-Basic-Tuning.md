@@ -1,3 +1,5 @@
+# Setup Options and Basic Tuning
+
 Besides writing code using [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations) on RocksDB, you may also be interested in how to tune RocksDB to achieve desired performance. In this page, we introduce how to get an initial set-up, which should work well enough for many use cases.
 
 RocksDB has many configuration options, but most of them can be safely ignored by many users, as the majority of them are for influencing the performance of very specific workloads. For general use, most RocksDB options can be left at their defaults, however, we suggest some options below that every user might like to experiment with for general workloads.
