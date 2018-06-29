@@ -105,6 +105,9 @@ Don't feel sad if you have existing services running with the defaults instead o
 
 ## Conclusion and Further Reading
 
-Now you are ready to test your application to see how your initial RocksDB performance looks. Hopefully it will be good enough!
+Now you are ready to test your application and see how your initial RocksDB performance looks. Hopefully it will be good enough!
 
-If the performance of RocksDB within your application after the basic set-up above is good enough for you, we don't recommend that you tune it further. It is common for a workload to change over time. If you budget for the performance achieved using a highly customised setting for current workload, some modest change to the workload may push the performance off a cliff. On the other hand, if the performance is not good enough for you, you can further tune RocksDB by following the more detailed [Tuning Guide](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide). 
+If the performance of RocksDB within your application after the basic set-up described above, is good enough for you, we don't recommend that you tune it further.
+As it is common for a workload to change over time, if you expend unnecessary resources upfront to tune RocksDB to be highly performant for your current workload, some modest change in future to that workload may push the performance off a cliff.
+
+On the other hand, if the performance is not good enough for you, you can further tune RocksDB by following the more detailed [Tuning Guide](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide). 
