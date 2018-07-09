@@ -84,10 +84,13 @@ sst_dump --file=<data_dir_OR_sst_file> [--command=check|scan|raw]
     --file=<data_dir_OR_sst_file>
       Path to SST file or directory containing SST files
 
-    --command=check|scan|raw
+    --command=check|scan|raw|verify
         check: Iterate over entries in files but dont print anything except if an error is encounterd (default command)
         scan: Iterate over entries in files and print them to screen
         raw: Dump all the table contents to <file_name>_dump.txt
+        verify: Iterate all the blocks in files verifying checksum to detect possible coruption but dont print anything except if a corruption is encountered
+        recompress: reports the SST file size if recompressed with different
+                    compression types
 
     --output_hex
       Can be combined with scan command to print the keys and values in Hex
@@ -112,15 +115,17 @@ sst_dump --file=<data_dir_OR_sst_file> [--command=check|scan|raw]
       Can be combined with --from and --to to indicate that these values are encoded in Hex
 
     --show_properties
-      Print table properties after iterating over the file
-
-    --show_compression_sizes
-      Independent command that will recreate the SST file using 16K block size with different
-      compressions and report the size of the file using such compression
+      Print table properties after iterating over the file when executing
+      check|scan|raw
 
     --set_block_size=<block_size>
-      Can be combined with --show_compression_sizes to set the block size that will be used
-      when trying different compression algorithms
+      Can be combined with --command=recompress to set the block size that will
+      be used when trying different compression algorithms
+
+    --compression_types=<comma-separated list of CompressionType members, e.g.,
+      kSnappyCompression>
+      Can be combined with --command=recompress to run recompression for this
+      list of compression types
 
     --parse_internal_key=<0xKEY>
       Convenience option to parse an internal key on the command line. Dumps the
