@@ -57,7 +57,7 @@ Rocksdb was configured with 20 compaction threads. These threads can simultaneou
 
 # Test 4. Random Read
 
-Measure random read performance of a database with 8 Billion keys, each key is 10 bytes and value is 800 bytes. Rocksdb and leveldb were both configured with a block size of 4 KB. Data compression is not enabled. There was a single thread in the benchmark application issuing random reads (1 Billion keys read) to the database. rocksdb is configured to verify checksums on every read while leveldb has checksum verification switched off.
+Measure random read performance of a database with 1 Billion keys, each key is 10 bytes and value is 800 bytes. Rocksdb and leveldb were both configured with a block size of 4 KB. Data compression is not enabled. There was a single thread in the benchmark application issuing random reads (1 Billion keys read) to the database. rocksdb is configured to verify checksums on every read while leveldb has checksum verification switched off.
 
     rocksdb:  18 hours,  64.7 micros/op, 15.4K ops/sec (checksum verification)
 
