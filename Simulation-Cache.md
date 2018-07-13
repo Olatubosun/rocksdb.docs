@@ -17,7 +17,7 @@ rocksdb::Options options;
 rocksdb::BlockBasedTableOptions bbt_opts;
 std::shared_ptr<rocksdb::Cache> sim_cache = 
 NewSimCache(normal_block_cache, 
-  1024 * 1024 * 1024 * 1024 /* sim_capacity 10GB */);
+  10 * 1024 * 1024 * 1024 /* sim_capacity 10GB */);
 bbt_opts.block_cache = sim_cache;
 options.table_factory.reset(new BlockBasedTableFactory(bbt_opts));
 ```
