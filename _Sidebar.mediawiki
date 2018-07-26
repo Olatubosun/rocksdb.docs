@@ -20,7 +20,7 @@
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** Options
-*** [[Set-Up-Options | Set-Up Options]]
+*** [[Setup Options and Basic Tuning | Setup Options and Basic Tuning]]
 *** [[Option-String-and-Option-Map | Option String and Option Map]]
 *** [[RocksDB-Options-File | RocksDB Options File]]
 ** [[Compression]]
