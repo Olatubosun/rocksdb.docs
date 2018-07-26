@@ -18,7 +18,7 @@ On the other hand, if `Iterator::Valid()` is false, there are two possibilities:
 
 `Seek()` and `SeekForPrev()` discard previous status.
 
-Note that in release 5.13 or earlier (before https://github.com/facebook/rocksdb/pull/3810 which was merged on May 17, 2018) the behavior of `status()` and `Valid()` used to be different:
+Note that in release 5.13.x or earlier (before https://github.com/facebook/rocksdb/pull/3810 which was merged on May 17, 2018) the behavior of `status()` and `Valid()` used to be different:
  * `Valid()` could return true even if `status()` is not ok. This could sometimes be used to skip over corrupted data. This is not supported anymore. The intended way of dealing with corrupted data is `RepairDB()` (see `db.h`).
  * `Seek()` and `SeekForPrev()` didn't always discard previous status. `Next()` and `Prev()` didn't always preserve non-ok status.
 
