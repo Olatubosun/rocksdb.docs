@@ -44,7 +44,7 @@ In this example we have a DB of size 300G on SSD and emulate the small memory th
 - `metadata_block_size` = 4096
   * This is the block size for index partitions.
 - `cache_index_and_filter_blocks` = `false` [if you are on <= 5.14]
-  * The partitions are stored in the cache anyway. This to control the location of top-level indexes, which easily fit into memory. Having them stored in block cache is less experimented with.
+  * The partitions are stored in the block cache anyway. This is to control the location of top-level indexes (which easily fit into memory): pinned in heap or cached in the block cache. Having them stored in block cache is less experimented with.
 - `cache_index_and_filter_blocks` = `true` and `pin_top_level_index_and_filter` = `true` [if you are on >= 5.15]
   * This would put everything in block cache but also pins the top-level indexes, which are quite small.
 - `cache_index_and_filter_blocks_with_high_priority` = `true`
