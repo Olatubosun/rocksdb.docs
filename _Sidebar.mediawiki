@@ -45,6 +45,7 @@
 *** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 *** [[PlainTable-Format | PlainTable Format]]
 *** [[Rocksdb-Bloom-Filter | Bloom Filter]]
+*** [[Data-Block-Hash-Index | Data Block Hash Index]]
 ** Logging and Monitoring
 *** [[Logger | Logger]]
 *** [[Statistics | Statistics]]
