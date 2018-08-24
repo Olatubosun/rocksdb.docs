@@ -146,9 +146,11 @@ The trace analyer options
 ```
 
 **Query Type Options**
+
 User can specify which type queries that should be analyzed and use “-analyze_<type>”.
 
 **Output Human Readable Traces**
+
 The original binary trace stores the encoded data structures and content, to interpret the trace, the tool should use the RocksDB library. Thus, to simplify the further analyzing of the trace, user can specify
 
 ```
@@ -158,6 +160,7 @@ The original binary trace stores the encoded data structures and content, to int
 The original trace will be converted to a txt file, the content is “[type_id cf_id value_size time_in_micorsec <key>]”. If the key is not needed, user can specify “-no_key” to reduce the file size. This option is independent to all other option, once it is specified, the converted trace will be generated. If the original key is included, the txt file size might be similar or even larger than the original trace file size.
 
 **Input and Output Options**
+
 To analyze a trace file, user need to indicate the path to the trace file by
 
 ```
@@ -190,6 +193,7 @@ If user does not want to print out the general statistics to the screen, user ca
 
 
 **The Analyzing Options**
+
 Currently, the trace_analyzer tool provides several different analyzing options to characterize the workload. Some of the results are directly printed out (options with prefix “-print”) others will output to the files (options with prefix “-output”). User can specify the combination of the options to analyze the trace. Note that, some of the analyzing options are very memory intensive (e.g., -output_time_series, -print_correlation, and -key_space_dir). If the memory is not enough, try to run them in different time.
 
 The general information of the workloads like the total number of keys, the number of analyzed queries of each column family, the key and value size statistics (average and medium), the number of keys being accessed are printed to screen when this option is specified
