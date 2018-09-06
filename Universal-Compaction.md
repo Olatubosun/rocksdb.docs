@@ -283,13 +283,52 @@ Following options **DO NOT** affect universal compactions:
 ## Estimate Write Amplification
 Estimating write amplification will be very helpful to users to tune universal compaction. This, however, is hard. Since universal compaction always makes locally optimized decision, the shape of the LSM-tree is hard to predict. You can see it from the [example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction-Example) mentioned above. We still don't have a good Math model to predict the write amplification.
 
-Here is a not-so-good estimation: 
+Here is a not-so-good estimation.
+
+The estimation based on the simplicity that every time an update is compacted, the size of output sorted run is doubled of the original one, with the exception of the first or last compaction it experienced, where sorted runs of similar sizes are compacted together.
+
+Take an example, if _options.compaction_options_universal.max_size_amplification_percent = 25_, last sorted run's size is 32GB, and SST file size is 256MB after flushed from memtable, and _options.level0_file_num_compaction_trigger = 11_. Then in a stable stage, the file sizes are like this this:
+```
+256MB
+256MB
+256MB
+256MB
+2GB
+4GB
+8GB
+16GB
+16GB
+16GB
+256GB
+```
+Compaction stages are like following with its write amp:
+```
+256MB
+256MB
+256MB  (write amp 1)
+256MB
+--------
+2GB    (write amp 1)
+--------
+4GB    (write amp 1)
+--------
+8GB    (write amp 1)
+--------
+16GB
+16GB    (write amp 1)
+16GB
+--------
+256GB   (write amp 4)
+```
+So the total write amp is estimated to be 9.
+
+Here is how the write amplification is estimated:
 
 _options.compaction_options_universal.max_size_amplification_percent_ always introduces write amplification by itself it is much lower than 100. This write amplification is estimated to be
 
 _WA1 = 100 / options.compaction_options_universal.max_size_amplification_percent_.
 
-If this is not lower than 100, estiamte
+If this is not lower than 100, estimate
 
 _WA1 = 0_
 
