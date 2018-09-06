@@ -9,7 +9,9 @@ The key difference between the two strategies is that leveled compaction tends t
 
 It is generally regarded that the second strategy provides far better write amplification with worse read amplification [2][3]. An intuitive way to think about it: in tiered storage, every time an update is compacted, it tends to be moved from a smaller sorted run to a much larger one. Every compaction is likely to make the update exponentially closer to the final sorted run, which is the largest. In leveled compaction, however, while an update is compacted more as a part of the larger sorted run where a smaller sorted run is merged into, than as a part of the smaller sorted run. As a result, in most of the times an update is compacted, it is not moved to a larger sorted run, so it doesn't make much progress towards the final largest run.
 
-Continuing...
+The benefit of "tiered" compaction is not without downside. The worse case number of sorted runs is far higher than leveled compaction. It may cause higher I/O costs and/or higher CPU costs during reads. The lazy nature of the compaction scheduling also makes the compaction traffic much more spiky, the number of sorted runs greatly vary over time, hence large variation of performance.
+
+Nevertheless, RocksDB provides a Universal compaction in the "tiered" family. Users may try this compaction style if leveled compaction is not able to handle the required write rate.
 
 [1] The term is used by Cassandra. See their [doc](https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsConfigureCompaction.html).
 
