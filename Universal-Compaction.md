@@ -20,9 +20,11 @@ Nevertheless, RocksDB provides a Universal compaction in the "tiered" family. Us
 [3] [https://smalldatum.blogspot.com/2018/08/name-that-compaction-algorithm.html](https://smalldatum.blogspot.com/2018/08/name-that-compaction-algorithm.html)
 
 
-## Overview
+## Overview And the Basic Idea
 
 When using this compaction style, all the SST files are organized as sorted runs covering the whole key ranges. One sorted run covers data generated during a time range. Different sorted runs never overlap on their time ranges. Compaction can only happen among two or more sorted runs of adjacent time ranges. The output is a single sorted run whose time range is the combination of input sorted runs. After any compaction, the condition that sorted runs never overlap on their time ranges still holds. A sorted run can be implemented as an L0 file, or a "level" in which data is stored as key range partitioned files.
+
+The basic idea of the compaction style: with a threshold of number of sorted runs N, we only start compaction when number of sorted runs reach N. When it happens, we try to pick files to compact so that number of sorted runs is reduced in the most economic way: 1. it starts from the smallest file; 2. one more file is included if the size is no larger than existing compaction size. The strategy assumes and itself tries to maintain that the sorted run contains more recent data is smaller than ones contain older data.
 
 ## Limitations
 
