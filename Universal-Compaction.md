@@ -285,7 +285,7 @@ Estimating write amplification will be very helpful to users to tune universal c
 
 Here is a not-so-good estimation.
 
-The estimation based on the simplicity that every time an update is compacted, the size of output sorted run is doubled of the original one, with the exception of the first or last compaction it experienced, where sorted runs of similar sizes are compacted together.
+The estimation based on the simplicity that every time an update is compacted, the size of output sorted run is doubled of the original one (this is a wild unproven estimation), with the exception of the first or last compaction it experienced, where sorted runs of similar sizes are compacted together.
 
 Take an example, if _options.compaction_options_universal.max_size_amplification_percent = 25_, last sorted run's size is 32GB, and SST file size is 256MB after flushed from memtable, and _options.level0_file_num_compaction_trigger = 11_. Then in a stable stage, the file sizes are like this this:
 ```
