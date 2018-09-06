@@ -279,3 +279,34 @@ Following options **DO NOT** affect universal compactions:
 * options.soft_rate_limit and options.hard_rate_limit: deprecated
 * options.hard_pending_compaction_bytes_limit: only used for level-based compaction
 * options.compaction_pri: only supported in level-based compaction
+
+## Estimate Write Amplification
+Estimating write amplification will be very helpful to users to tune universal compaction. This, however, is hard. Since universal compaction always makes locally optimized decision, the shape of the LSM-tree is hard to predict. You can see it from the [example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction-Example) mentioned above. We still don't have a good Math model to predict the write amplification.
+
+Here is a not-so-good estimation: 
+
+_options.compaction_options_universal.max_size_amplification_percent_ always introduces write amplification by itself it is much lower than 100. This write amplification is estimated to be
+
+_WA1 = 100 / options.compaction_options_universal.max_size_amplification_percent_.
+
+If this is not lower than 100, estiamte
+
+_WA1 = 0_
+
+Estimate total data size other than the last sorted run, S. If _options.compaction_options_universal.max_size_amplification_percent < 100_, estimate it using
+
+_S = total_size * (options.compaction_options_universal.max_size_amplification_percent/100)_
+
+Otherwise
+
+_S = total_size_
+
+Estimate SST file size flushed from memtable _M_. And we estimate maximum number of compactions for a update to reach maximum as:
+
+_p = log(2, S/M)_
+
+It is recommended that _options.level0_file_num_compaction_trigger > p_. And then we estimate the write amplification because of individual size ratio using:
+
+_WA2 = p - log(2, options.level0_file_num_compaction_trigger - p)_
+
+And then the total estimated write amplification would be _WA1 + WA2_.
