@@ -3,7 +3,7 @@ Universal Compaction Style is a compaction style, targeting the use cases requir
 ## Conceptual Basis
 As introduced by multiple authors and systems, there are two main types of LSM-tree compaction strategies:
 * leveled compaction, as the default compaction style in RocksDB
-* a compaction strategy sometimes called "size tiered" [1] or "tiered" [2].
+* an alternative compaction strategy, sometimes called "size tiered" [1] or "tiered" [2].
 
 The key difference between the two strategies is that leveled compaction tends to aggressively merge a smaller sorted run into a larger one, while "tiered" waits for several sorted runs with similar size and merge them together.
 
