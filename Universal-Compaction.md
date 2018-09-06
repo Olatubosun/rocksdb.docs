@@ -1,5 +1,24 @@
-## Overview
 Universal Compaction Style is a compaction style, targeting the use cases requiring lower write amplification, trading off read amplification and space amplification.
+
+## Conceptual Basis
+As introduced by multiple authors and systems, there are two main types of LSM-tree compaction strategies:
+* leveled compaction, as the default compaction style in RocksDB
+* a compaction strategy sometimes called "size tiered" [1] or "tiered" [2].
+
+The key difference between the two strategies is that leveled compaction tends to aggressively merge a smaller sorted run into a larger one, while "tiered" waits for several sorted runs with similar size and merge them together.
+
+It is generally regarded that the second strategy provides far better write amplification with worse read amplification [2][3]. An intuitive way to think about it: in tiered storage, every time an update is compacted, it tends to be moved from a smaller sorted run to a much larger one. Every compaction is likely to make the update exponentially closer to the final sorted run, which is the largest. In leveled compaction, however, while an update is compacted more as a part of the larger sorted run where a smaller sorted run is merged into, than as a part of the smaller sorted run. As a result, in most of the times an update is compacted, it is not moved to a larger sorted run, so it doesn't make much progress towards the final largest run.
+
+Continuing...
+
+[1] The term is used by Cassandra. See their [doc](https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsConfigureCompaction.html).
+
+[2] N. Dayan, M. Athanassoulis, and S. Idreos, “[Monkey: Optimal Navigable Key-Value Store](https://stratos.seas.harvard.edu/publications/monkey-optimal-navigable-key-value-store),” in ACM SIGMOD International Conference on Management of Data, 2017.
+
+[3] [https://smalldatum.blogspot.com/2018/08/name-that-compaction-algorithm.html](https://smalldatum.blogspot.com/2018/08/name-that-compaction-algorithm.html)
+
+
+## Overview
 
 When using this compaction style, all the SST files are organized as sorted runs covering the whole key ranges. One sorted run covers data generated during a time range. Different sorted runs never overlap on their time ranges. Compaction can only happen among two or more sorted runs of adjacent time ranges. The output is a single sorted run whose time range is the combination of input sorted runs. After any compaction, the condition that sorted runs never overlap on their time ranges still holds. A sorted run can be implemented as an L0 file, or a "level" in which data is stored as key range partitioned files.
 
