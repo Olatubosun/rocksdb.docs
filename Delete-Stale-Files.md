@@ -26,6 +26,7 @@ In this full garbage collection mode, we list all the files in the DB directory,
 A Log file is qualified to be deleted if all the data in it has been flushed to SST files. Determining an log file can qualify to be deleted is very straight-forward for single column family DBs, slightly more complicated for multi-column family DBs, and even more complicated when two-phase-commit (2PC) is enabled.
 
 ## DB With Single column family
-A log file has a 1:1 mapping with a memtable. Once a memtable is flushed, the respective log file will be deleted.
+A log file has a 1:1 mapping with a memtable. Once a memtable is flushed, the respective log file will be deleted. This is done in the end of the flush job.
 
-
+## DB With Multiple Column Families
+When there are multiple column families, A new log file is created when memtable for any column family is flushed. One log file can only be deleted when the data in it for all column families has been flushed to SST files. The way RocksDB implements it is for each column family to keep track of the earliest log file that still contains unflushed data for this column family. A log file can only be deleted if it is earlier than the earliest of the earliest log for all the column families.
