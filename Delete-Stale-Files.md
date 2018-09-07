@@ -30,3 +30,26 @@ A log file has a 1:1 mapping with a memtable. Once a memtable is flushed, the re
 
 ## DB With Multiple Column Families
 When there are multiple column families, A new log file is created when memtable for any column family is flushed. One log file can only be deleted when the data in it for all column families has been flushed to SST files. The way RocksDB implements it is for each column family to keep track of the earliest log file that still contains unflushed data for this column family. A log file can only be deleted if it is earlier than the earliest of the earliest log for all the column families.
+
+## Two-Phase-Commit
+In Two-Phase-Commit (2PC) case, there are two log entries for one write: one prepare and one commit. Only when committed data is flushed to memory, we can release logs containing prepare or commit to be deleted. There isn't a clear mapping between memtable and log files any more. For example, considering this sequence for one single column family DB:
+```
+--------------
+001.log
+   Prepare Tx1 Write (K1, V1)
+   Prepare Tx2 Write (K2, V2)
+   Commit Tx1
+   Prepare Tx3 Write (K3, V3)
+-------------- <= Memtable Flush   <<<< Point A
+002.log
+   Commit Tx2
+   Prepare Tx4 Write (K4, V4)
+-------------- <= Memtable Flush   <<<< Point B
+003.log
+   Commit Tx3
+   Prepare Tx5 Write (K5, V5)
+-------------- <= Memtable Flush   <<<< Point C
+```
+In _Point A_, although the memtable is flushed, 001.log is not qualified to be deleted, because Tx2 and Tx3 are not commited yet. Similarly, in _Point B_, 0001.log still isn't qualified to be deleted, because Tx3 is not yet commited. Only in _Point C_, 001.log can be deleted. But 002.log still can't be deleted because of Tx4.
+
+RocksDB use an intricate low-lock data structure to determine a log file is qualified to be deleted or not.
