@@ -63,6 +63,7 @@
 ** [[Third-party-language-bindings | Third-party language bindings]]
 ** [[RocksDB-Trace,-Replay,-and-Analyzer | RocksDB Trace, Replay, and Analyzer]]
 * '''Implementation Details'''
+** [[Delete Stale Files]]
 ** [[Partitioned-Index-Filters | Partitioned Index/Filters]]
 ** [[WritePrepared Transactions | WritePrepared-Transactions]]
 ** [[WriteUnprepared Transactions | WriteUnprepared-Transactions]]
