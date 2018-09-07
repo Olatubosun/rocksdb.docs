@@ -2,13 +2,14 @@ Currently in RocksDB, any error during a write operation (write to WAL, Memtable
 
 | Error Reason | When bg_error_ is set |
 -----------------|-----------------------
-| Sync WAL | Always |
-| Memtable flush | DBOptions::paranoid_checks is true |
-| Max allowed space reached during memtable flush (```SstFileManager::IsMaxAllowedSpaceReached()```) |	Always |
-| Max allowed space reached during compaction (```SstFileManager::IsMaxAllowedSpaceReached()```) | Always |
-| ```DB::CompactFiles``` | DBOptions::paranoid_checks is true |
-| Background compaction | DBOptions::paranoid_checks is true |
-| Write | DBOptions::paranoid_checks is true |
+| Sync WAL (```BackgroundErrorReason::kWriteCallback```) | Always |
+| Memtable insert failure (```BackgroundErrorReason::kMemTable```) | Always |
+| Memtable flush (```BackgroundErrorReason::kFlush```) | DBOptions::paranoid_checks is true |
+| ```SstFileManager::IsMaxAllowedSpaceReached()``` reports max allowed space reached during memtable flush (```BackgroundErrorReason::kFlush```) |	Always |
+| ```SstFileManager::IsMaxAllowedSpaceReached()``` reports max allowed space reached during compaction (```BackgroundErrorReason::kCompaction```) | Always |
+| ```DB::CompactFiles``` (```BackgroundErrorReason::kCompaction```) | DBOptions::paranoid_checks is true |
+| Background compaction (```BackgroundErrorReason:::kCompaction```) | DBOptions::paranoid_checks is true |
+| Write (```BackgroundErrorReason::kWriteCallback```) | DBOptions::paranoid_checks is true |
 
 # Detection
 Once the database instance goes into read-only mode, the following foreground operations will return the error status on all subsequent calls -
