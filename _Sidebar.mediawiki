@@ -28,6 +28,7 @@
 ** [[IO]]
 *** [[Rate-Limiter | Rate Limiter]]
 *** [[Direct-IO | Direct I/O]]
+** [[Background Error Handling]]
 ** [[MANIFEST | MANIFEST]]
 ** [[Block-Cache | Block Cache]]
 ** [[MemTable | MemTable]]
