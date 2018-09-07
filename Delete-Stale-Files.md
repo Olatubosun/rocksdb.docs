@@ -22,3 +22,10 @@ Reference counting mechanism works for most of the case. However, reference coun
 
 In this full garbage collection mode, we list all the files in the DB directory, and check whether each file against all the live versions of LSM-trees and see the file is in use. For files not needed, we delete them. However, not all the SST files in the DB directory not in live LSM-tree is stale. Files being created for an ongoing compaction or flush should not be removed. To prevent it from happening, we take use of a good feature that new files are created using the file name of an incremental number. Before each flush or compaction job runs, we remember the number of latest SST file created at that time. If a full garbage collection runs before the job finishes, all SST files with number larger than that will be kept. The condition is released after the job is finished. Since multiple flush and compaction jobs can run in parallel, all SST files with number larger than number the earliest ongoing job remembers will be kept. It possible that we have some false positive, but they will be cleared up eventually.
 
+# Log Files
+A Log file is qualified to be deleted if all the data in it has been flushed to SST files. Determining an log file can qualify to be deleted is very straight-forward for single column family DBs, slightly more complicated for multi-column family DBs, and even more complicated when two-phase-commit (2PC) is enabled.
+
+## DB With Single column family
+A log file has a 1:1 mapping with a memtable. Once a memtable is flushed, the respective log file will be deleted.
+
+
