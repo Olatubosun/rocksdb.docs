@@ -7,6 +7,7 @@ The goal of sub-compaction is to speed up a compaction job by partitioning it am
 It is employed when one of the following conditions hold:
 * L0 -> Lo where o > 0
   * Why: L0->Lo cannot be run in parallel with another L0->Lo, hence partitioning is the only way to speed it up.
+* Universal Compaction, except L0 -> L0.
 * Manual Leveled Compaction: Li -> Lo where o > 0
   * Why: Manual compaction invoked by the user is usually not parallelized hence benefits from partitioning.
 
