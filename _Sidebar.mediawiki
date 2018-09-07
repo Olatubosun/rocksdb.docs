@@ -43,6 +43,7 @@
 *** [[FIFO-compaction-style | FIFO compaction style]]
 *** [[Manual Compaction]]
 *** [[Sub-Compaction]]
+** [[Managing Disk Space Utilization]]
 ** SST File Formats
 *** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 *** [[PlainTable-Format | PlainTable Format]]
