@@ -142,7 +142,7 @@ The trace analyer options
 ```
 **One Example**
 ```
-./trace_analyzer -analyze_get -output_access_count_stats -output_dir=/data/trace/result -output_key_stats -output_qps_stats -output_trace_sequence -output_value_distribution -print_key_distribution -print_overall_stats -print_top_k_access=3 -output_prefix=test -trace_path=/data/trace/trace
+./trace_analyzer -analyze_get -output_access_count_stats -output_dir=/data/trace/result -output_key_stats -output_qps_stats -convert_to_human_readable_trace -output_value_distribution -print_key_distribution -print_overall_stats -print_top_k_access=3 -output_prefix=test -trace_path=/data/trace/trace
 ```
 
 **Query Type Options**
