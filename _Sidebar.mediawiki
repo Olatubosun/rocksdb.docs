@@ -17,6 +17,7 @@
 *** [[Low Priority Write]]
 *** [[Time-to-Live | Time to Live (TTL) Support]]
 *** [[Transactions | Transactions]]
+*** [[Snapshot | Snapshot]]
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** Options
