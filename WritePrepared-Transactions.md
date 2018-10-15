@@ -104,6 +104,8 @@ Here are a summary of improvements on some sysbench benchmarks as well as linkbe
 * read-only...........-%1.2.....-%1.8
 * linkbench.............%1.9......+overall........%0.6
 
+Here are also the detailed results for [In-Memory Sysbench](https://gist.github.com/maysamyabandeh/bdb868091b2929a6d938615fdcf58424) and [SSD Sysbench](https://gist.github.com/maysamyabandeh/ff94f378ab48925025c34c47eff99306) curtesy of [@mdcallag](https://github.com/mdcallag).
+
 # Current Limitations
 
 There is ~1% overhead for read workloads. This is due to the extra work that needs to be done to tell apart uncommitted data from committed ones.
