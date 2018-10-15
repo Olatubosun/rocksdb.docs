@@ -93,15 +93,16 @@ We keep track of smallest uncommitted data and store it in the snapshot. When re
 
 To make `two_write_queues` optimization effective, the commit should only write to the WAL so that it could be directed to the 2nd queue. When the commit is accompanied with `CommitTimeWriteBatch` however, then it would write to memtable too, which essentially disables the `two_write_queues` optimization. To mitigate that the users can set `rocksdb_commit_time_batch_for_recovery` configuration variable to true which tells RocksDB that such data will only be required during recovery. RocksDB benefits from that by writing the `CommitTimeWriteBatch` only to the WAL. It still keeps the last copy around in memory to write it to the SST file after each flush. When using this option `CommitTimeWriteBatch` cannot have duplicate entries since we do not want to pay the cost of counting sub-batches upon each commit request.
 
-# Experimantal Results
+# Experimental Results
 
 Here are a summary of improvements on some sysbench benchmarks as well as linkbench (done via MyRocks). Read more about them here.
-* benchmark........tps......p95 latency....cpu/query
+* benchmark...........tps.........p95 latency....cpu/query
+* insert...................%68
 * update-noindex...%30......%38
-* update-index.....%61......%28
-* read-write.......%6.......%3.5
-* read-only........-%1.2....-%1.8
-* linkbench........%1.9.....+overall........%0.6
+* update-index.......%61.......%28
+* read-write............%6........%3.5
+* read-only...........-%1.2.....-%1.8
+* linkbench.............%1.9......+overall........%0.6
 
 # Current Limitations
 
