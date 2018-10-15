@@ -95,7 +95,7 @@ To make `two_write_queues` optimization effective, the commit should only write 
 
 # Experimental Results
 
-Here are a summary of improvements on some sysbench benchmarks as well as linkbench (done via MyRocks). Read more about them here.
+Here are a summary of improvements on some sysbench benchmarks as well as linkbench (done via MyRocks).
 * benchmark...........tps.........p95 latency....cpu/query
 * insert...................%68
 * update-noindex...%30......%38
