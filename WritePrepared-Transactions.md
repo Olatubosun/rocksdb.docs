@@ -97,12 +97,12 @@ To make `two_write_queues` optimization effective, the commit should only write 
 
 Here are a summary of improvements on some sysbench benchmarks as well as linkbench (done via MyRocks).
 * benchmark...........tps.........p95 latency....cpu/query
-* insert...................%68
-* update-noindex...%30......%38
-* update-index.......%61.......%28
-* read-write............%6........%3.5
-* read-only...........-%1.2.....-%1.8
-* linkbench.............%1.9......+overall........%0.6
+* insert...................68%
+* update-noindex...30%......38%
+* update-index.......61%.......28%
+* read-write............6%........3.5%
+* read-only...........-1.2%.....-1.8%
+* linkbench.............1.9%......+overall........0.6%
 
 Here are also the detailed results for [In-Memory Sysbench](https://gist.github.com/maysamyabandeh/bdb868091b2929a6d938615fdcf58424) and [SSD Sysbench](https://gist.github.com/maysamyabandeh/ff94f378ab48925025c34c47eff99306) curtesy of [@mdcallag](https://github.com/mdcallag).
 
