@@ -1,0 +1,1 @@
+Snapshots are created with the `GetSnapshot()` API. Users must make a matching call to `ReleaseSnapshot()` in order to release resources associated with the snapshot.
