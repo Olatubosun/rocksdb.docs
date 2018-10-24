@@ -88,7 +88,7 @@ Example: consider a sequence of user records:
 
 `A` will be stored as a `FULL` record in the first block.
 
-`B` will be split into three fragments: first fragment occupies the restof the first block, second fragment occupies the entirety of the second block, and the third fragment occupies a prefix of the third block.  This will leave six bytes free in the third block, which will be left empty as the trailer.
+`B` will be split into three fragments: first fragment occupies the rest of the first block, second fragment occupies the entirety of the second block, and the third fragment occupies a prefix of the third block.  This will leave six bytes free in the third block, which will be left empty as the trailer.
 
 `C` will be stored as a `FULL` record in the fourth block.
 
