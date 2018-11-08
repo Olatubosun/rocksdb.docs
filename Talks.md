@@ -1,3 +1,8 @@
+### 2017.12 10th RocksDB Meetup
+* [State Management in Kafka Streams using RocksDB](https://www.facebook.com/rocksdb/videos/1081843111957556/)  (by Guozhang Wang)
+* [Cassandra on RocksDB](https://www.facebook.com/rocksdb/videos/1081842498624284/) (by Pengchao Wang)
+* [Are you a Tortoise or a Hare](https://www.facebook.com/rocksdb/videos/1081851875290013/) (by Matthew Von-Maszewski)
+
 ### 2017.10 HPTS
 * [Workload Diversity with RocksDB](http://www.hpts.ws/papers/2017/hpts2017_rocksdb.pdf) (Siying Dong)
 
