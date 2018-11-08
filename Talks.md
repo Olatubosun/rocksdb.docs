@@ -1,6 +1,9 @@
 ### 2017.12 10th RocksDB Meetup
-* [State Management in Kafka Streams using RocksDB](https://www.facebook.com/rocksdb/videos/1081843111957556/)  (by Guozhang Wang)
+* [Kickoff: A quick overview of RocksDB new features](https://www.facebook.com/rocksdb/videos/1081829988625535/) (by Sagar Vemuri)
 * [Cassandra on RocksDB](https://www.facebook.com/rocksdb/videos/1081842498624284/) (by Pengchao Wang)
+* [MySQL and RocksDB](https://www.facebook.com/rocksdb/videos/1081837791958088/) (by Herman Lee)
+* [MyRocks In Production](https://www.facebook.com/rocksdb/videos/1081840515291149/) (by Domas Mituzas)
+* [State Management in Kafka Streams using RocksDB](https://www.facebook.com/rocksdb/videos/1081843111957556/)  (by Guozhang Wang)
 * [Are you a Tortoise or a Hare](https://www.facebook.com/rocksdb/videos/1081851875290013/) (by Matthew Von-Maszewski)
 
 ### 2017.10 HPTS
