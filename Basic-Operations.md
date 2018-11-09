@@ -119,7 +119,7 @@ same batch.
 
 ## Synchronous Writes
  
-By default, each write to <code>leveldb</code> is asynchronous: it returns after pushing the write from the process into the operating system. The transfer from operating system memory to the underlying persistent storage happens asynchronously. The <code>sync</code> flag can be turned on for a particular write to make the write operation not return until the data being written has been pushed all the way to persistent storage. (On Posix systems, this is implemented by calling either <code>fsync(...)</code> or <code>fdatasync(...)</code> or <code>msync(..., MS_SYNC)</code> before the write operation returns.) 
+By default, each write to <code>rocksdb</code> is asynchronous: it returns after pushing the write from the process into the operating system. The transfer from operating system memory to the underlying persistent storage happens asynchronously. The <code>sync</code> flag can be turned on for a particular write to make the write operation not return until the data being written has been pushed all the way to persistent storage. (On Posix systems, this is implemented by calling either <code>fsync(...)</code> or <code>fdatasync(...)</code> or <code>msync(..., MS_SYNC)</code> before the write operation returns.) 
 
 ```cpp
   rocksdb::WriteOptions write_options;
@@ -146,7 +146,7 @@ RocksDB by default uses faster <code>fdatasync()</code> to sync files. If you wa
 
 ## Concurrency
 
-A database may only be opened by one process at a time. The <code>rocksdb</code> implementation acquires a lock from the operating system to prevent misuse. Within a single process, the same <code>rocksdb::DB</code> object may be safely shared by multiple concurrent threads. I.e., different threads may write into or fetch iterators or call <code>Get</code> on the same database without any external synchronization (the leveldb implementation will automatically do the required synchronization). However other objects (like Iterator and WriteBatch) may require external synchronization. If two threads share such an object, they must protect access to it using their own locking protocol. More details are available in the public header files.
+A database may only be opened by one process at a time. The <code>rocksdb</code> implementation acquires a lock from the operating system to prevent misuse. Within a single process, the same <code>rocksdb::DB</code> object may be safely shared by multiple concurrent threads. I.e., different threads may write into or fetch iterators or call <code>Get</code> on the same database without any external synchronization (the rocksdb implementation will automatically do the required synchronization). However other objects (like Iterator and WriteBatch) may require external synchronization. If two threads share such an object, they must protect access to it using their own locking protocol. More details are available in the public header files.
 
 
 ## Merge operators
