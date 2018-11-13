@@ -81,6 +81,8 @@ The trace analyer options
    default: ""
  -output_ignore_count (<threshold>, ignores the access count <= this value,
    it will shorter the output.) type: int32 default: 0
+ -output_key_distribution (Output the key size distribution.) type: bool
+   default: false
  -output_key_stats (Output the key access count statistics to file
    for accessed keys:
    file name: <prefix>-<query type>-<cf_id>-accessed_key_stats.txt
@@ -129,8 +131,6 @@ The trace analyer options
    the pairs separated by commar. Example: =[get,get]... It will print out
    the number of pairs of 'A after B' and the average time interval between
    the two query) type: string default: ""
- -output_key_distribution (Output the key size distribution.) type: bool
-   default: false
  -print_overall_stats ( Print the stats of the whole trace, like total
    requests, keys, and etc.) type: bool default: true
  -print_top_k_access (<top K of the variables to be printed> Print the top k
