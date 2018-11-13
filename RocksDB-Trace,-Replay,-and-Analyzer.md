@@ -129,7 +129,7 @@ The trace analyer options
    the pairs separated by commar. Example: =[get,get]... It will print out
    the number of pairs of 'A after B' and the average time interval between
    the two query) type: string default: ""
- -print_key_distribution (Print the key size distribution.) type: bool
+ -output_key_distribution (Output the key size distribution.) type: bool
    default: false
  -print_overall_stats ( Print the stats of the whole trace, like total
    requests, keys, and etc.) type: bool default: true
@@ -142,7 +142,7 @@ The trace analyer options
 ```
 **One Example**
 ```
-./trace_analyzer -analyze_get -output_access_count_stats -output_dir=/data/trace/result -output_key_stats -output_qps_stats -convert_to_human_readable_trace -output_value_distribution -print_key_distribution -print_overall_stats -print_top_k_access=3 -output_prefix=test -trace_path=/data/trace/trace
+./trace_analyzer -analyze_get -output_access_count_stats -output_dir=/data/trace/result -output_key_stats -output_qps_stats -convert_to_human_readable_trace -output_value_distribution -output_key_distribution -print_overall_stats -print_top_k_access=3 -output_prefix=test -trace_path=/data/trace/trace
 ```
 
 **Query Type Options**
@@ -252,10 +252,10 @@ If the user is interested to know about the value size distribution (only applic
 
 Since the value size varies a lot, User might just want to know how many values are in each value size range. User can specify the value_interval=x to generate the number of values between [0,x), [x,2x)......
 
-The key size distribution is printed out if user specify
+The key size distribution is output to the file if user specify
 
 ```
--print_key_distribution
+-output_key_distribution
 ```
 
 ## Visualize the workload
