@@ -334,7 +334,7 @@ You can however still gradually evolve your key format over time with a little b
 
 By default, we keep the data in memory in skiplist memtable and the data on disk in a table format described here: <a href="https://github.com/facebook/rocksdb/wiki/Rocksdb-Table-Format">RocksDB Table Format</a>.
 
-Since one of the goals of RocksDB is to have different parts of the system easily pluggable, we support different implementations of both memtable and table format. You can supply your own memtable factory by setting <code>Options::memtable_factory</code> and your own table factory by setting <code>Options::table_factory</code>. For available memtable factories, please refer to <code>rocksdb/memtablerep.h</code> and for table factores to <code>rocksdb/table.h</code>. These features are both in active development and please be wary of any API changes that might break your application going forward.
+Since one of the goals of RocksDB is to have different parts of the system easily pluggable, we support different implementations of both memtable and table format. You can supply your own memtable factory by setting <code>Options::memtable_factory</code> and your own table factory by setting <code>Options::table_factory</code>. For available memtable factories, please refer to <code>rocksdb/memtablerep.h</code> and for table factories to <code>rocksdb/table.h</code>. These features are both in active development and please be wary of any API changes that might break your application going forward.
 
 You can also read more about memtables [here](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics#memtables) and [[here|MemTable]].
 
