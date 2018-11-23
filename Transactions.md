@@ -102,7 +102,7 @@ Note that Setting a snapshot in the ReadOptions only affects the version of the 
 
 If you have called SetSnapshot(), you can read using the same snapshot that was set in the transaction:
 
-	read_options.snapshot = txn->SetSnapshot();
+	read_options.snapshot = txn->GetSnapshot();
 	Status s = txn->GetForUpdate(read_options, “key1”, &value);
 	
 
