@@ -12,7 +12,7 @@ RocksDB Iterator implementation class is named `DBIter`, In this wiki page we wi
 
 > Interface: [Iterator](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/iterator.h)
 
-`DBIter` is a wrapper around an `InternalItertor` (In this case a `MergingIterator`).
+`DBIter` is a wrapper around an `InternalIterator` (In this case a `MergingIterator`).
 `DBIter`'s job is to parse InternalKeys exposed by the underlying `InternalIterator` and expose them as user keys.
 
 ##### Example:
@@ -120,11 +120,8 @@ KEY9  | 0x0250
 KEY15 | 0x0500
 ```
 
-To read this file we will create a `TwoLevelIterator` with 
+To read this file we will create a `TwoLevelIterator` with
 * `first_level_iter_`  => `BlockIter` over Index block
 * `second_level_iter_` => `BlockIter` over Data block that will be determined by `first_level_iter_`
 
 When we ask our `TwoLevelIterator` to Seek to `KEY8` for example, It will first use `first_level_iter_` (BlockIter over Index block) to figure out which block may contain this key. this will lead us to set the `second_level_iter_` to be (BlockIter over data block with offset `0x0250`). We will then use the `second_level_iter_` to find our key & value in the data block.
-
-
-
