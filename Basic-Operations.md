@@ -420,7 +420,7 @@ Because of the way <code>rocksdb</code> data is organized on disk, a single <cod
 ```cpp
    rocksdb::Options options;
    rocksdb::BlockBasedTableOptions bbto;
-   bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10));
+   bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10 /* bits_per_key */, false /* use_block_based_builder*/));
    options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
    rocksdb::DB* db;
    rocksdb::DB::Open(options, "/tmp/testdb", &db);
