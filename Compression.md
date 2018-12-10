@@ -14,6 +14,8 @@ With an countermanded legacy setting `options.compression_per_level`, you can ha
 
 Be aware that when you set different compression to different levels, compaction "trivial moves" that violate the compression styles will not be executed, and the file will be rewrite using the expected compression.
 
+The specified compression type always applies to both of index and data blocks. You can disable compression for index blocks by setting `BlockBasedTableOptions.enable_index_compression = false`.
+
 ## Compression level and window size setting
 Some compression types support different compression level and window setting. You can set them through `options.compression_opts`. If the compression type doesn't support these setting, it will be a no-op.
 
