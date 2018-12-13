@@ -81,6 +81,7 @@ cd zlib-1.2.11\contrib\vstudio\vc14
 ```
 
 Edit the file ` zlibvc.vcxproj`, changing `<command>cd ..\..\contrib\masmx64 bld_ml64.bat</command>` to `<command>cd ..\..\masmx64 bld_ml64.bat</command>`.
+Add a new line after masmx64.
 
 ```
 "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64_x86\vcvarsamd64_x86.bat"
