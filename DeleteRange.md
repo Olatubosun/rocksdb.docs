@@ -21,6 +21,6 @@ Slice start, end;
 db->DeleteRange(start, end);
 ```
 
-Under the hood, this creates a range tombstone, which is represented as a single kv, which significantly speeds up write performance.
+Under the hood, this creates a range tombstone represented as a single kv, which significantly speeds up write performance.
 
 [TODO: talk about read performance]
