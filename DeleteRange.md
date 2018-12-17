@@ -6,10 +6,10 @@ DeleteRange is an operation designed to replace the following pattern where a us
 ...
 Slice start, end;
 // set start and end
-auto it = db->NewIterator();
+auto it = db->NewIterator(ReadOptions());
 
 for (it->Seek(start); cmp->Compare(it->key(), end) < 0; it->Next()) {
-  db->Delete(it->key());
+  db->Delete(WriteOptions(), it->key());
 }
 ...
 ```
@@ -18,7 +18,7 @@ This pattern requires performing a range scan, which prevents it from being usab
 ```c++
 Slice start, end;
 // set start and end
-db->DeleteRange(start, end);
+db->DeleteRange(WriteOptions(), start, end);
 ```
 
 Under the hood, this creates a range tombstone represented as a single kv, which significantly speeds up write performance.
