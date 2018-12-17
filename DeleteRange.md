@@ -16,9 +16,11 @@ for (it->Seek(start); cmp->Compare(it->key(), end) < 0; it->Next()) {
  
 This pattern requires performing a range scan, which prevents it from being usable on any performance-sensitive write path. To mitigate this, RocksDB provides a native operation to perform this task:
 ```c++
+...
 Slice start, end;
 // set start and end
 db->DeleteRange(WriteOptions(), start, end);
+...
 ```
 
 Under the hood, this creates a range tombstone represented as a single kv, which significantly speeds up write performance. Read performance with range tombstones is competitive to the scan-and-delete pattern. (For a more detailed performance analysis, see [the DeleteRange blog post](https://rocksdb.org/blog/2018/11/21/delete-range.html).
