@@ -1,4 +1,4 @@
-[This page is a WIP]
+# Overview
 
 DeleteRange is an operation designed to replace the following pattern where a user wants to delete a range of keys in the range `[start, end)`:
 
@@ -24,3 +24,18 @@ db->DeleteRange(WriteOptions(), start, end);
 ```
 
 Under the hood, this creates a range tombstone represented as a single kv, which significantly speeds up write performance. Read performance with range tombstones is competitive to the scan-and-delete pattern. (For a more detailed performance analysis, see [the DeleteRange blog post](https://rocksdb.org/blog/2018/11/21/delete-range.html).
+
+# Internals [WIP]
+
+- "tombstone fragments"
+- fragmentation algorithm
+- point lookups
+- range scans
+- compactions
+
+# Future Work [WIP]
+
+- tombstone iterator lifetime management
+- memtable caching
+- snapshot-release compactions
+- new format version proposal
