@@ -40,17 +40,38 @@ Now that the tombstone fragments do not overlap, we can safely perform a binary 
 See [db/range_tombstone_fragmenter.cc](https://github.com/facebook/rocksdb/blob/master/db/range_tombstone_fragmenter.cc).
 
 ## Write Path
+
 ### Memtable
+
+When `DeleteRange` is called, a kv is written to a dedicated memtable for range tombstones. The format is `start : end` (i.e., `start` is the key, `end` is the value). Range tombstones are not fragmented in the memtable directly, but are instead fragmented each time a read occurs.
+
+See [Compaction](#compaction) for details on how range tombstones are flushed to SSTs.
+
 ### SST Files
 
+Just like in memtables, range tombstones in SSTs are not stored inline with point keys. Instead, they are stored in a dedicated meta-block for range tombstones. Unlike in memtables, however, range tombstones are fragmented and cached along with the table reader when the table reader is first created. Each SST file contains all range tombstones at that level that cover user keys overlapping with the file's key range; this greatly simplifies iterator seeking and point lookups.
+
+See [Compaction](#compaction) for details on how range tombstones are compacted down the LSM tree.
+
 ## Read Path
-### point lookups
-### range scans (talk about tombstone truncation)
-### Reads during compaction
+
+Due to the simplicity of the write path, the read path requires more work.
+
+### Point Lookups
+
+When a user calls `Get` and the point lookup progresses down the LSM tree, the range tombstones in the table being searched are first fragmented (if not fragmented already) and binary searched before checking the file's contents. This is done through `FragmentedRangeTombstoneIterator::MaxCoveringTombstoneSeqnum` (see [db/range_tombstone_fragmenter.cc](https://github.com/facebook/rocksdb/blob/master/db/range_tombstone_fragmenter.cc)); if a tombstone is found (i.e., the return value is non-zero), then we know that there is no need to search lower levels since their merge operands / point values are deleted. We check the current level for any keys potentially written after the tombstone fragment, process the results, and return. This is similar to how finding a point tombstone stops the progression of a point lookup.
+
+### Range Scans
+
+
+
+## Compaction
 
 # Future Work [WIP]
 
 - tombstone iterator lifetime management
 - memtable caching
 - snapshot-release compactions
+- range tombstone-aware compaction scheduling
+- range tombstone-aware file boundaries (based on grandparent SSTs)
 - new format version proposal
