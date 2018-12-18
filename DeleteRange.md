@@ -78,7 +78,7 @@ The active heap contains all iterators pointing at tombstone fragments that cove
 
 Suppose the internal merging iterator in `DBIter` points to the internal key `a@4`. The active iterators would be the tombstone iterator for `1.sst` pointing at `[a, c)@15` and the tombstone iterator for the memtable pointing at `[a, b)@40`, and the only inactive iterator would be the tombstone iterator for `2.sst` pointing at `[b, e)@5`. The active seqnum set would contain `{40, 15}`. From these data structures, we know that the largest covering tombstone has a seqnum of 40, which is larger than 4; hence, `a@4` is deleted and we need to check another key.
 
-Next, suppose we then check `b@50`. [to be continued]
+Next, suppose we then check `b@50`. In response, the active heap now contains the iterators for `1.sst` pointing at `[a, c)@15` and `2.sst` pointing at `[b, e)@5`, the inactive heap contains nothing, and the active seqnum set contains `{15, 5}`. Note that the memtable iterator is now out of scope and is not tracked by these data structures. Since the largest seqnum is 15, `b@50` is not covered.
 
 For implementation details, see [db/range_del_aggregator.cc](https://github.com/facebook/rocksdb/blob/master/db/range_del_aggregator.cc).
 
