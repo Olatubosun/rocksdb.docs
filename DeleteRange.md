@@ -14,7 +14,7 @@ for (it->Seek(start); cmp->Compare(it->key(), end) < 0; it->Next()) {
 ...
 ```
  
-This pattern requires performing a range scan, which prevents it from being usable on any performance-sensitive write path. To mitigate this, RocksDB provides a native operation to perform this task:
+This pattern requires performing a range scan, which prevents it from being an atomic operation, and makes it unsuitable for any performance-sensitive write path. To mitigate this, RocksDB provides a native operation to perform this task:
 ```c++
 ...
 Slice start, end;
@@ -61,15 +61,31 @@ Due to the simplicity of the write path, the read path requires more work.
 
 ### Point Lookups
 
-When a user calls `Get` and the point lookup progresses down the LSM tree, the range tombstones in the table being searched are first fragmented (if not fragmented already) and binary searched before checking the file's contents. This is done through `FragmentedRangeTombstoneIterator::MaxCoveringTombstoneSeqnum` (see [db/range_tombstone_fragmenter.cc](https://github.com/facebook/rocksdb/blob/master/db/range_tombstone_fragmenter.cc)); if a tombstone is found (i.e., the return value is non-zero), then we know that there is no need to search lower levels since their merge operands / point values are deleted. We check the current level for any keys potentially written after the tombstone fragment, process the results, and return. This is similar to how finding a point tombstone stops the progression of a point lookup.
+When a user calls `Get` and the point lookup progresses down the LSM tree, the range tombstones in the table being searched are first fragmented (if not fragmented already) and binary searched before checking the file's contents. This is done through `FragmentedRangeTombstoneIterator::MaxCoveringTombstoneSeqnum` (see [db/range_tombstone_fragmenter.cc](https://github.com/facebook/rocksdb/blob/master/db/range_tombstone_fragmenter.cc)); if a tombstone is found (i.e., the return value is non-zero), then we know that there is no need to search lower levels since their merge operands / point values are deleted. We check the current level for any keys potentially written after the tombstone fragment, process the merge operands (if any), and return. This is similar to how finding a point tombstone stops the progression of a point lookup.
 
 ### Range Scans
 
+The key idea for reading range deletions during point scans is to create a structure resembling the merging iterator used by `DBIter` for point keys, but for the range tombstones in the set of tables being examined.
 
+Here is an example to illustrate how this works for forward scans (reverse scans are similar):
+
+Consider a DB with a memtable containing the tombstone fragment `[a, b)@40`, and 2 L0 files `1.sst` and `2.sst`. `1.sst` contains the tombstone fragments `[a, c)@15, [d, f)@20`, and `2.sst` contains the tombstone fragments `[b, e)@5, [e, x)@10`. Aside from the merging iterator of point keys in the memtable and SST files, we also keep track of the following 3 data structures:
+1. a min-heap of fragmented tombstone iterators (one iterator per table) ordered by end key (*active heap*)
+2. an ordered set of tombstones ordered by sequence number (*active seqnum set*)
+3. a min-heap of tombstones ordered by start key (*inactive heap*)
+
+The active heap contains all iterators pointing at tombstone fragments that cover the most recent (internal) lookup key, the active seqnum set contains the same iterators that are in the active heap, and the inactive heap contains iterators pointing at tombstone fragments that start after the most recent lookup key. Note that an iterator is not allowed to be in both the active and inactive set.
+
+Suppose the internal merging iterator in `DBIter` points to the internal key `a@4`. The active iterators would be the tombstone iterator for `1.sst` pointing at `[a, c)@15` and the tombstone iterator for the memtable pointing at `[a, b)@40`, and the only inactive iterator would be the tombstone iterator for `2.sst` pointing at `[b, e)@5`. The active seqnum set would contain `{40, 15}`. From these data structures, we know that the largest covering tombstone has a seqnum of 40, which is larger than 4; hence, `a@4` is deleted and we need to check another key.
+
+Next, suppose we then check `b@50`. [to be continued]
+
+For implementation details, see [db/range_del_aggregator.cc](https://github.com/facebook/rocksdb/blob/master/db/range_del_aggregator.cc).
 
 ## Compaction
 
 # Future Work [WIP]
+[TODO: This section should really be moved to an issue]
 
 - tombstone iterator lifetime management
 - memtable caching
@@ -77,3 +93,4 @@ When a user calls `Get` and the point lookup progresses down the LSM tree, the r
 - range tombstone-aware compaction scheduling
 - range tombstone-aware file boundaries (based on grandparent SSTs)
 - new format version proposal
+- transaction support
