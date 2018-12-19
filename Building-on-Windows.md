@@ -45,8 +45,8 @@ cd snappy-1.1.7
 mkdir build
 cd build
 cmake ..
-msbuild Snappy.sln /p:Configuration=Debug /p:Platform=x64
-msbuild Snappy.sln /p:Configuration=Release /p:Platform=x64
+msbuild Snappy.sln /p:Configuration=Debug
+msbuild Snappy.sln /p:Configuration=Release
 ```
 
 The resultant static library can be found in `%CODE_HOME%\snappy-1.1.7\build\Debug\snappy.lib` or `%CODE_HOME%\snappy-1.1.7\build\Release\snappy.lib`.
