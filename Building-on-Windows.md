@@ -88,14 +88,15 @@ copy x64\ZlibDllRelease\zlibwapi.lib x64\ZlibStatRelease\
 
 The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatDebug\zlibstat.lib` or `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatRelease\zlibstat.lib`.
 
-### Build ZLib
-
+### Build ZStd
+```
 wget https://github.com/facebook/zstd/archive/v1.3.7.zip
 unzip v1.3.7.zip
 cd zstd-1.3.7/build/VS2010
 devenv zstd.sln /upgrade
 msbuild zstd.sln /p:Configuration=Debug /p:Platform=x64
 msbuild zstd.sln /p:Configuration=Release /p:Platform=x64
+```
 
 The resultant static library can be found in `%CODE_HOME%\zstd-1.3.7\/build/VS2010/bin/x64_Debug/libzstd_static.lib` or `%CODE_HOME%\zstd-1.3.7\/build/VS2010/bin/x64_Release/libzstd_static.lib`.
 
