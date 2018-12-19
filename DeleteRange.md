@@ -92,7 +92,17 @@ For (1), we use a similar data structure to what was described for range scans, 
 
 For (2), we create a merging iterator out of all the fragmented tombstone iterators within the output file's range, create a new iterator by passing this to the fragmenter, and writing out each of the tombstone fragments in this iterator to the table builder.
 
-For implementation details, see db/range_del_aggregator.cc.
+For implementation details, see [db/range_del_aggregator.cc](https://github.com/facebook/rocksdb/blob/master/db/range_del_aggregator.cc).
+
+### File Boundaries
+
+In a database with only point keys, determining SST file boundaries is straightforward: simply find the smallest and largest user key in the file. However, with range tombstones, the story gets more complicated. A simple policy would be to allow the start and end keys of a range tombstone to act as file boundaries (where the start key's sequence number would be the tombstone's sequence number, and the end key's sequence number would be `kMaxSequenceNumber`). This works fine for L0 files, but for lower levels, we need to ensure that files cover disjoint ranges of internal keys. If we encounter particularly large range tombstones that cover many keys, we would be forced to create excessively large SST files. To prevent this, we instead restrict the largest (user) key of a file to be no greater than the smallest user key of the next file; if a range tombstone straddles the two files, this largest key's sequence number and type are set to `kMaxSequenceNumber` and `kTypeRangeDeletion`. In effect, we pretend that the tombstone ends at the beginning of the next file.
+
+A noteworthy edge case is when two adjacent files have a user key that "straddles" the two files; that is, the largest user key of one file is the smallest user key of the next file. (This case is uncommon, but can happen if a snapshot is preventing an old version of a key from being deleted.) In this case, even if there are range tombstones covering this gap in the level, we do not change the file boundary using the range tombstone convention described above, since this would make the largest (internal) key smaller than it should be.
+
+## Range Tombstone Truncation
+
+In the past, if a compaction input file contained a range tombstone, we would also add all other files containing the same range tombstone to the compaction. However, for particularly large range tombstones (commonly created from operations like dropping a large table in SQL), this created unexpectedly large compactions.
 
 # Future Work [WIP]
 [TODO: This section should really be moved to an issue]
