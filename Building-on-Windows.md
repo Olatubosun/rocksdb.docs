@@ -33,28 +33,23 @@ msbuild gflags.sln /p:Configuration=Debug /p:Platform=x64
 msbuild gflags.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-The resultant static library can be found in `%CODE_HOME%\gflags-2.2.0\target\lib\Debug\gflags_static.lib` or `%CODE_HOME%\gflags-2.2.0\target\lib\Debug\gflags_static.lib`.
+The resultant static library can be found in `%CODE_HOME%\gflags-2.2.0\target\lib\Debug\gflags_static.lib` or `%CODE_HOME%\gflags-2.2.0\target\lib\Release\gflags_static.lib`.
 
 
 ### Build Snappy
 ```
 cd %CODE_HOME%
-hg clone https://bitbucket.org/robertvazan/snappy-visual-cpp
-cd snappy-visual-cpp
-hg diff --reverse -r 44:45 > exports.patch
-hg import exports.patch
-devenv snappy.sln /upgrade
-msbuild snappy.sln /p:Configuration=Debug /p:Platform=x64
-msbuild snappy.sln /p:Configuration=Release /p:Platform=x64
+wget https://github.com/google/snappy/archive/1.1.7.zip
+unzip 1.1.7.zip
+cd snappy-1.1.7
+mkdir build
+cd build
+cmake ..
+msbuild Snappy.sln /p:Configuration=Debug /p:Platform=x64
+msbuild Snappy.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-When running the msbuild step, if you get an error like:
-```
-error : This project references NuGet package(s) that are mis sing on this computer. Enable NuGet Package Restore to download them.
-```
-You will need to open the project in Visual Studio and build it from there. You can then exit Visual Studio and re-run the msbuild steps; Unfortunately I have been unable to resolve how to fix the NuGet enablement from the command line.
-
-The resultant static library can be found in `%CODE_HOME%\snappy-visual-cpp\x64\Debug\snappy64.lib` or `%CODE_HOME%\snappy-visual-cpp\x64\Release\snappy64.lib`.
+The resultant static library can be found in `%CODE_HOME%\snappy-1.1.7\build\Debug\snappy.lib` or `%CODE_HOME%\snappy-1.1.7\build\Release\snappy.lib`.
 
 
 ### Build LZ4
@@ -93,6 +88,18 @@ copy x64\ZlibDllRelease\zlibwapi.lib x64\ZlibStatRelease\
 
 The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatDebug\zlibstat.lib` or `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatRelease\zlibstat.lib`.
 
+### Build ZLib
+
+wget https://github.com/facebook/zstd/archive/v1.3.7.zip
+unzip v1.3.7.zip
+cd zstd-1.3.7/build/VS2010
+devenv zstd.sln /upgrade
+msbuild zstd.sln /p:Configuration=Debug /p:Platform=x64
+msbuild zstd.sln /p:Configuration=Release /p:Platform=x64
+
+The resultant static library can be found in `%CODE_HOME%\zstd-1.3.7\/build/VS2010/bin/x64_Debug/libzstd_static.lib` or `%CODE_HOME%\zstd-1.3.7\/build/VS2010/bin/x64_Release/libzstd_static.lib`.
+
+
 ### Build RocksDB
 ```
 cd %CODE_HOME%
@@ -108,10 +115,10 @@ set(GFLAGS_INCLUDE ${GFLAGS_HOME}/target/include)
 set(GFLAGS_LIB_DEBUG ${GFLAGS_HOME}/target/lib/Debug/gflags_static.lib)
 set(GFLAGS_LIB_RELEASE ${GFLAGS_HOME}/target/lib/Release/gflags_static.lib)
 
-set(SNAPPY_HOME $ENV{THIRDPARTY_HOME}/snappy-visual-cpp)
-set(SNAPPY_INCLUDE ${SNAPPY_HOME})
-set(SNAPPY_LIB_DEBUG ${SNAPPY_HOME}/x64/Debug/snappy64.lib)
-set(SNAPPY_LIB_RELEASE ${SNAPPY_HOME}/x64/Release/snappy64.lib)
+set(SNAPPY_HOME $ENV{THIRDPARTY_HOME}/snappy-1.1.7)
+set(SNAPPY_INCLUDE ${SNAPPY_HOME}/build)
+set(SNAPPY_LIB_DEBUG ${SNAPPY_HOME}/build/Debug/snappy.lib)
+set(SNAPPY_LIB_RELEASE ${SNAPPY_HOME}/build/Release/snappy.lib)
 
 set(LZ4_HOME $ENV{THIRDPARTY_HOME}/lz4-1.7.5)
 set(LZ4_INCLUDE ${LZ4_HOME}/lib)
@@ -120,8 +127,13 @@ set(LZ4_LIB_RELEASE ${LZ4_HOME}/visual/VS2010/bin/x64_Release/liblz4_static.lib)
 
 set(ZLIB_HOME $ENV{THIRDPARTY_HOME}/zlib-1.2.11)
 set(ZLIB_INCLUDE ${ZLIB_HOME})
-set(ZLIB_LIB_DEBUG ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatDebug/zlibwapi.lib)
-set(ZLIB_LIB_RELEASE ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatRelease/zlibwapi.lib)
+set(ZLIB_LIB_DEBUG ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatDebug/zlibstat.lib)
+set(ZLIB_LIB_RELEASE ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatRelease/zlibstat.lib)
+
+set(ZSTD_HOME $ENV{THIRDPARTY_HOME}/zstd-1.3.7)
+set(ZSTD_INCLUDE ${ZSTD_HOME}/lib)
+set(ZSTD_LIB_DEBUG ${ZSTD_HOME}/build/VS2010/bin/x64_Debug/libzstd_static.lib)
+set(ZSTD_LIB_RELEASE ${ZSTD_HOME}/build/VS2010/bin/x64_Release/libzstd_static.lib)
 ```
 
 And then finally to compile RocksDB:
