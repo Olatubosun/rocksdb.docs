@@ -116,7 +116,7 @@ set(GFLAGS_LIB_DEBUG ${GFLAGS_HOME}/target/lib/Debug/gflags_static.lib)
 set(GFLAGS_LIB_RELEASE ${GFLAGS_HOME}/target/lib/Release/gflags_static.lib)
 
 set(SNAPPY_HOME $ENV{THIRDPARTY_HOME}/snappy-1.1.7)
-set(SNAPPY_INCLUDE ${SNAPPY_HOME}/build)
+set(SNAPPY_INCLUDE ${SNAPPY_HOME} ${SNAPPY_HOME}/build)
 set(SNAPPY_LIB_DEBUG ${SNAPPY_HOME}/build/Debug/snappy.lib)
 set(SNAPPY_LIB_RELEASE ${SNAPPY_HOME}/build/Release/snappy.lib)
 
