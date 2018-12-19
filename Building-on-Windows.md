@@ -98,7 +98,7 @@ msbuild zstd.sln /p:Configuration=Debug /p:Platform=x64
 msbuild zstd.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-The resultant static library can be found in `%CODE_HOME%\zstd-1.3.7\/build/VS2010/bin/x64_Debug/libzstd_static.lib` or `%CODE_HOME%\zstd-1.3.7\/build/VS2010/bin/x64_Release/libzstd_static.lib`.
+The resultant static library can be found in `%CODE_HOME%\zstd-1.3.7\build\VS2010\bin\x64_Debug\libzstd_static.lib` or `%CODE_HOME%\zstd-1.3.7\build\VS2010\bin\x64_Release\libzstd_static.lib`.
 
 
 ### Build RocksDB
