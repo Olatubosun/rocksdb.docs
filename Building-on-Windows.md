@@ -144,6 +144,6 @@ And then finally to compile RocksDB:
 mkdir build
 cd build
 set THIRDPARTY_HOME=%CODE_HOME%
-cmake -G "Visual Studio 14 Win64" -DJNI=1 -DGFLAGS=1 -DSNAPPY=1 -DLZ4=1 -DZLIB=1 -DXPRESS=1 ..
+cmake -G "Visual Studio 14 Win64" -DJNI=1 -DGFLAGS=1 -DSNAPPY=1 -DLZ4=1 -DZLIB=1 -DZSTD=1 -DXPRESS=1 ..
 msbuild rocksdb.sln /p:Configuration=Release
 ```
