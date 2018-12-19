@@ -92,6 +92,8 @@ For (1), we use a similar data structure to what was described for range scans, 
 
 For (2), we create a merging iterator out of all the fragmented tombstone iterators within the output file's range, create a new iterator by passing this to the fragmenter, and writing out each of the tombstone fragments in this iterator to the table builder.
 
+For implementation details, see db/range_del_aggregator.cc.
+
 # Future Work [WIP]
 [TODO: This section should really be moved to an issue]
 
