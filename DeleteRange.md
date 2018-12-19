@@ -84,6 +84,14 @@ For implementation details, see [db/range_del_aggregator.cc](https://github.com/
 
 ## Compaction
 
+During flushes and compactions, there are two primary operations that range tombstones need to support:
+1. Identifying point keys in a "snapshot stripe" (the range of seqnums between two adjacent snapshots) that can be deleted.
+2. Writing range tombstones to an output file.
+
+For (1), we use a similar data structure to what was described for range scans, but create one for each snapshot stripe. Furthermore, during iteration we skip tombstones whose seqnums are out of the snapshot stripe's range.
+
+For (2), we create a merging iterator out of all the fragmented tombstone iterators within the output file's range, create a new iterator by passing this to the fragmenter, and writing out each of the tombstone fragments in this iterator to the table builder.
+
 # Future Work [WIP]
 [TODO: This section should really be moved to an issue]
 
