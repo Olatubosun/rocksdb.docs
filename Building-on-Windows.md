@@ -91,7 +91,7 @@ copy x64\ZlibDllDebug\zlibwapi.lib x64\ZlibStatDebug\
 copy x64\ZlibDllRelease\zlibwapi.lib x64\ZlibStatRelease\
 ```
 
-The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatDebug\zlibwapi.lib` or `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatRelease\zlibwapi.lib`.
+The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatDebug\zlibstat.lib` or `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatRelease\zlibstat.lib`.
 
 ### Build RocksDB
 ```
