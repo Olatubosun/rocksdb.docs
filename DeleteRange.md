@@ -128,6 +128,8 @@ Broadly speaking, a solution to this problem would involve truncating the tombst
 
 The root of this problem is that a tombstone duplicated across files can be in different compactions with overlapping boundaries. To solve this, we must pick boundaries that are disjoint for _all_ compactions involving those files, which we call _atomic compaction unit boundaries_.  These boundaries exactly span one or more files which have overlapping boundaries (a file with a range tombstone end key as its largest key is not considered to overlap with the next file), and are computed at compaction time. Using atomic compaction unit boundaries, we allow the end key of a file to be included in a truncated range tombstone's boundaries, while also preventing those boundaries from including keys from previous compactions.
 
+For implementation details, see [db/compaction.cc](https://github.com/facebook/rocksdb/blob/master/db/compaction.cc)
+
 # Future Work [WIP]
 [TODO: This section should really be moved to an issue]
 
