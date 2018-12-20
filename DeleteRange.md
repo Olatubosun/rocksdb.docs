@@ -117,6 +117,17 @@ With the goal of preventing range tombstones from covering keys outside of their
 
 A less intuitive idea is to use internal keys as tombstone boundaries. Under this extension, a key is covered if it's included in the internal key range and has a seqnum less than the tombstone's seqnum (not the boundary seqnums). To provide expected behaviour, untruncated tombstones will have seqnums of `kMaxSequenceNumber` on the start and end keys. In the aforementioned edge case where the largest key straddles two SST files, we simply use the internal key with seqnum one less than the actual largest key as the tombstone boundary. (If the seqnum is 0 or it's an artificially extended boundary (from range tombstones), then we ignore this step: see the comments on `TruncatedRangeDelIterator` in [db/range_del_aggregator.cc](https://github.com/facebook/rocksdb/blob/master/db/range_del_aggregator.cc) for an explanation.)
 
+### Atomic Compaction Units
+
+Even though we use internal keys in-memory as range tombstone boundaries, we still have to use user keys on disk, since that's what the original format requires. This means that we have to convert an internal key-truncated tombstone to a user key-truncated tombstone during compaction. However, with just user keys, we run the risk of a similar problem to the one described earlier, where a tombstone that actually covers the largest key in the file is truncated to not cover it in a compaction output file.
+
+Broadly speaking, a solution to this problem would involve truncating the tombstone past the largest key of its file during compaction. One simple idea would be to use the compaction boundaries at the input level. However, because we can stop a compaction before the end of a tombstone (the primary motivation for these changes), we can run into a situation like the following:
+1. A DB has three levels (Lmax == L2) with no snapshots, and a tombstone `[a, g)@10` is split between two L1 files: `1.sst` (point key range `[a@4-c@6]`) and `2.sst` (point key range `[e@12-k@7]`).
+2. A L1-L2 compaction is issued to compact `2.sst` down to L2. The key `e@12` is retained in output file `3.sst` and has its seqnum set to 0.
+3. Another L1-L2 compaction is issued later to compact `1.sst` down to L2, with key range `[a-f)`, which also pulls in `3.sst`. The range tombstone is truncated to `[a, f)@10`, so the `e@0` key (formerly `e@12`) is considered covered by the tombstone, which is incorrect.
+
+The root of this problem is that a tombstone duplicated across files can be in different compactions with overlapping boundaries. To solve this, we must pick boundaries that are disjoint for _all_ compactions involving those files, which we call _atomic compaction unit boundaries_.  These boundaries exactly span one or more files which have overlapping boundaries (a file with a range tombstone end key as its largest key is not considered to overlap with any file), and are computed at compaction time. Using atomic compaction unit boundaries, we allow the end key of a file to be included in a truncated range tombstone's boundaries, while also preventing those boundaries from including keys from previous compactions.
+
 # Future Work [WIP]
 [TODO: This section should really be moved to an issue]
 
