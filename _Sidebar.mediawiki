@@ -79,6 +79,7 @@
 ** [[Iterator-Implementation | Iterator's Implementation]]
 ** [[Simulation-Cache | Simulation Cache]]
 ** [[Persistent Read Cache | Persistent Read Cache]]
+** [[DeleteRange-Implementation | DeleteRange Implementation]]
 * '''RocksJava'''
 ** [[RocksJava-Basics | RocksJava Basics]]
 ** [[RocksJava-Performance-on-Flash-Storage | RocksJava Performance on Flash Storage]]
