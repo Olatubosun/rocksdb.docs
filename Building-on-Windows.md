@@ -144,8 +144,8 @@ And then finally to compile RocksDB:
 ```
 mkdir build
 cd build
-set THIRDPARTY_HOME=%CODE_HOME%
 set JAVA_HOME="C:\Program Files\Java\jdk1.7.0_80"
+set THIRDPARTY_HOME=C:/Users/aretter/code
 cmake -G "Visual Studio 14 Win64" -DJNI=1 -DGFLAGS=1 -DSNAPPY=1 -DLZ4=1 -DZLIB=1 -DZSTD=1 -DXPRESS=1 ..
 msbuild rocksdb.sln /p:Configuration=Release
 ```
