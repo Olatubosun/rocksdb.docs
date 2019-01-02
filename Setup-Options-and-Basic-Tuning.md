@@ -60,7 +60,7 @@ You can only choose compression types which are supported on your host system. U
 1. `cf_options.compression` controls the compression type used for the first `n-1` levels.
     We recommend to use LZ4 (`kLZ4Compression`), or if not available, to use Snappy (`kSnappyCompression`).
 
-2. `cf_options.bottonmost_compression` controls the compression type used for the `nth` level.
+2. `cf_options.bottommost_compression` controls the compression type used for the `nth` level.
     We recommend to use ZStandard (`kZSTD`), or if not available, to use Zlib (`kZlibCompression`).
 
 To learn more about compression, See [[Compression]].
