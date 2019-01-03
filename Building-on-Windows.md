@@ -141,6 +141,8 @@ And then finally to compile RocksDB:
 
 * **NOTE**: The default CMake build will generate MSBuild project files which include the `/arch:AVX2` flag. If you have this CPU extension instruction set, then the generated binaries will also only work on other CPU's with AVX2. If you want to create a build which has no specific CPU extensions, then you should also pass the `-DPORTABLE=1` flag in the `cmake` arguments below.
 
+* **NOTE**: The build options below include `-DXPRESS=1` which enables Microsoft XPRESS compression. This requires Windows 10 or newer to work reliably and is not backwards compatible with older versions of Windows. At present we build RocksJava releases without XPRESS.
+
 ```
 mkdir build
 cd build
