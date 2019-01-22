@@ -1,3 +1,5 @@
+**Note: the techniques described in this page are obsolete. For users of RocksDB 5.18+, the native [[DeleteRange|DeleteRange]] function is a better alternative for all known use cases.**
+
 In many cases, people want to drop a range of keys. For example, in MyRocks, we encoded rows from one table by prefixing with table ID, so that when we need to drop a table, all keys with the prefix needs to be dropped. For another example, if we store different attributes of a user with key with the format `[user_id][attribute_id]`, then if a user deletes the account, we need to delete all the keys prefixing `[user_id]`.
 
 The standard way of deleting those keys is to iterate through all of them and issue `Delete()` to them one by one. This approach works when the number of keys to delete is not large. However, there are two potential drawbacks of this solution:
