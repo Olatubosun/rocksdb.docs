@@ -41,7 +41,7 @@ See [this document](https://developers.google.com/protocol-buffers/docs/encoding
     [index block - 1st level]
     [index block - 2nd level]
 
-(6) At the very end of the file is a fixed length footer that contains the `BlockHandle` of the `metaindex` and index blocks as well as a magic number.
+(5) At the very end of the file is a fixed length footer that contains the `BlockHandle` of the `metaindex` and index blocks as well as a magic number.
 
        metaindex_handle: char[p];      // Block handle for metaindex
        index_handle:     char[q];      // Block handle for index
