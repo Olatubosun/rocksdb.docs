@@ -61,7 +61,7 @@ Two properties in property block are used to read data:
 ```cpp
     data_size: the end of data part of the file
 
-    fixed_ken_len: length of the key if all keys have the same length, 0 otherwise.
+    fixed_key_len: length of the key if all keys have the same length, 0 otherwise.
 ```
 
 #### Row Format
