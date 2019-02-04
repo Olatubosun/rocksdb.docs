@@ -46,7 +46,7 @@
 
 **Super Version**: An internal concept of RocksDB. A super version consists the list of SST files (a “version”) and the list of live mem tables in one point of the time. Either a compaction or flush, or a mem table switch will cause a new “super version” to be created. An old “super version” can continue being used by on-going read requests. Old super versions will eventually be garbage collected after it is not needed anymore.
 
-**block cache**: in-memory data structure that cache the hot data blocks from the SST files. See See https://github.com/facebook/rocksdb/wiki/Block-Cache
+**block cache**: in-memory data structure that cache the hot data blocks from the SST files. See https://github.com/facebook/rocksdb/wiki/Block-Cache
 
 **Statistics**: an in-memory data structure that contains cumulative stats of live databases. https://github.com/facebook/rocksdb/wiki/Statistics
 
