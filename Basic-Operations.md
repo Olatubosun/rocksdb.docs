@@ -128,20 +128,17 @@ By default, each write to <code>rocksdb</code> is asynchronous: it returns after
 ```
 
 
-## Asynchronous Writes 
+## Non-sync Writes 
 
-Asynchronous writes are often more than a thousand times as fast as synchronous writes. The downside of asynchronous writes is that a crash of the machine may cause the last few updates to be lost. Note that a crash of just the writing process (i.e., not a reboot) will not cause any loss since even when <code>sync</code> is false, an update is pushed from the process memory into the operating system before it is considered done.
+With non-sync writes, RocksDB only buffers WAL write in OS buffer or internal buffer (when options.manual_wal_flush = true). They are often much faster than synchronous writes. The downside of non-sync writes is that a crash of the machine may cause the last few updates to be lost. Note that a crash of just the writing process (i.e., not a reboot) will not cause any loss since even when <code>sync</code> is false, an update is pushed from the process memory into the operating system before it is considered done.
 
-Asynchronous writes can often be used safely. For example, when loading a large amount of data into the database you can handle lost updates by restarting the bulk load after a crash. A hybrid scheme is also possible where every Nth write is synchronous, and in the event of a crash, the bulk load is restarted just after the last synchronous write finished by the previous run. (The synchronous write can update a marker that describes where to restart on a crash.)
-
-
-<code>WriteBatch</code> provides an alternative to asynchronous writes. Multiple updates may be placed in the same <code>WriteBatch</code> and applied together using a synchronous write (i.e., <code>write_options.sync</code> is set to true). The extra cost of the synchronous write will be amortized across all of the writes in the batch.
+Non-sync writes can often be used safely. For example, when loading a large amount of data into the database you can handle lost updates by restarting the bulk load after a crash. A hybrid scheme is also possible where `DB::SyncWAL()` is called by a separate thread.
 
 
 We also provide a way to completely disable Write Ahead Log for a particular write. If you set <code>write_option.disableWAL</code> to true, the write will not go to the log at all and may be lost in an event of process crash.
 
 
-RocksDB by default uses faster <code>fdatasync()</code> to sync files. If you want to use fsync(), you can set <code>Options::use_fsync</code> to true. You should set this to true on filesystems like ext3 that can lose files after a reboot.
+RocksDB by default uses <code>fdatasync()</code> to sync files, which might be faster than fsync() in certain cases. If you want to use fsync(), you can set <code>Options::use_fsync</code> to true. You should set this to true on filesystems like ext3 that can lose files after a reboot.
 
 
 ## Concurrency
