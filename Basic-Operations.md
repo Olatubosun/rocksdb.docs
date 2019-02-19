@@ -492,7 +492,7 @@ The <code>GetApproximateSizes</code> method can used to get the approximate numb
    ranges[0] = rocksdb::Range("a", "c");
    ranges[1] = rocksdb::Range("x", "z");
    uint64_t sizes[2];
-   rocksdb::Status s = db->GetApproximateSizes(ranges, 2, sizes);
+   db->GetApproximateSizes(ranges, 2, sizes);
 ```
 
 The preceding call will set <code>sizes[0]</code> to the approximate number of bytes of file system space used by the key range <code>[a..c)</code> and <code>sizes[1]</code> to the approximate number of bytes used by the key range <code>[x..z)</code>.
