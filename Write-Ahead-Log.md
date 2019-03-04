@@ -80,7 +80,7 @@ _Note: Not supported in ROCKSDB_LITE mode_
 
 ## WAL Filter
 
-## Transcation Log Iterator
+## Transaction Log Iterator
 Transaction log iterator provides a way to replicate the data between RocksDB instances. Once a WAL is archived due to column family flush, the WAL is archived instead of immediately deleted. The goal is to allow txn log iterator to keep reading the WAL and send to slave for replay. 
 
 ## Related Pages
