@@ -35,6 +35,8 @@ As always, there are trade-offs between statistics quantity and overhead, so we 
 
 * kEnableCount will only enable counters. 
 
+* kEnableTimeAndCPUTimeExceptForMutex is introduced since CPU Time counters are introduced. With this level, non-mutex-timing related counters will be enabled, as well as CPU counters.
+
 * kEnableTimeExceptForMutex enables counter stats and most stats of time duration, except when the timing function needs to be called inside a shared mutex.
 
 * kEnableTime further adds stats for mutex acquisition and waiting time.
