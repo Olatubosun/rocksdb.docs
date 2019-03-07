@@ -37,7 +37,7 @@ The histogram type measures distribution of a stat across all operations. Most o
 We can get a human readable string of all the counters by calling `ToString()`.
 
 ### Dump Statistics Periodically in information logs
-Statistics are automatically dumped to information logs, for periodic interval of `options.stats_dump_period_sec`. Note that currently it is only dumped after a compaction. So if the database doesn't serve any write for a long time, statistics may not be dumped, despite of `options.stats_dump_period_sec`.
+Statistics are automatically dumped to information logs, for periodic interval of `options.stats_dump_period_sec`. Before 5.18 release, it is only dumped after a compaction, so if the database doesn't serve any write for a long time, statistics may not be dumped, despite of `options.stats_dump_period_sec`.
 
 #### Access Stats Programmatically
 We can also access specific stat directly from the statistics object. The list of ticker types can be found in enum Tickers. By calling statistics.getTickerCount() for a ticker type, we can retrieve the value. Similarly, single histogram stat can be queried by calling statistics.histogramData() with enum Histograms, or statistics.getHistogramString().
