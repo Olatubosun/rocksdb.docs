@@ -85,8 +85,8 @@ Transaction log iterator provides a way to replicate the data between RocksDB in
 
 ## Related Pages
 
-#### WAL Recovery Modes
-https://github.com/facebook/rocksdb/wiki/WAL-Recovery-Modes
+[[WAL Recovery Modes]]
 
-#### WAL Log Format
-https://github.com/facebook/rocksdb/wiki/Write-Ahead-Log-File-Format
+[[Write Ahead Log File Format]]
+
+[[WAL Performance]]
