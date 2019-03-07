@@ -215,11 +215,12 @@ Drop all column family
 <-- Var32         --->|
 ```
 
-### Version Edit Customized record types
-We reserved a special bit in record type. If the bit is set, it can be safely ignored. And the safely ignorable record has a standard general format:
+### Version Edit ignoreable record types
+We reserved a special bit in record type. If the bit is set, it can be safely ignored. And the safely ignoreable record has a standard general format:
 ```
 +---------+----------------+----------------+
 |   kTag  | field length n |  fields ...    |
 +--------------------------+----------------+
 <- Var32->|<--  var32   -->|<---   n       >|
 ```
+This is introduced in 6.0 and no customized ignoreable record created yet.
