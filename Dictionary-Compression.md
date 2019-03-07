@@ -12,11 +12,13 @@ Also `rocksdb::CompressionOptions::zstd_max_train_bytes` may be used to generate
 
 ## Implementation
 
-The dictionary will be constructed by sampling the first output file in a subcompaction when the target level is bottommost. Samples are 64 bytes each and taken uniformly/randomly over the file. When picking sample intervals, we assume the output file will reach its maximum possible size. If not, some of the sample intervals will lie outside the file's data, thus they will not be included in the dictionary and its size will be less than `max_dict_bytes`.
+Dictionary compression is only implemented for the bottom-most level. The dictionary will be constructed for each SST file in a subcompaction by sampling entire data blocks in the file. When dictionary compression is enabled, the uncompressed data blocks in the file being generated will be buffered in memory, upto ```target_file_size``` bytes. Once the limit is reached, or the file is finished, data blocks are taken uniformly/randomly from the buffered data blocks and used to train the ZStd dictionary trainer.
 
-Once generated, this dictionary will be loaded into the compression library before compressing/uncompressing each data block of subsequent files in the subcompaction. The dictionary is stored in the file's meta-block in order for it to be known when uncompressing.
+The dictionary is stored in the file's meta-block in order for it to be known when uncompressing. During reads, if ```BlockBasedTableOptions::cache_index_and_filter_blocks``` is ```true```, the dictionary meta-block is cached in the block cache, though it is not prefetched unlike index and filter blocks. If it is ```false```, the dictionary meta-block is read and pinned in memory , but not charged to the block cache.
+
+The in-memory uncompression dictionary is a digested form of the raw dictionary stored on disk, and is larger in size. The digested form makes uncompression faster, but does consume more memory.
 
 ## Limitations
 
-* Uniform random sampling is not optimal (see https://github.com/facebook/rocksdb/pull/1835)
-* Requires repetitions across files since we generate dictionary from subcompaction's first file and only apply it to later files
+* Applies only to bottommost level
+* Dictionary meta-block is not prefetched into the block cache
