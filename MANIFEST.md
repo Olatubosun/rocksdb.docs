@@ -157,6 +157,13 @@ Mark a file as newly added to the database and provide RocksDB meta information.
 <-- var32   -->|<-- var32      -->|<- n1  ->|      |<-- var32   - ->|<--    var32     -->|<- n(m)->|<- var32 -->|
 
 ```
+Several Optional customized fields can be written there.
+The field has a special bit indicating that whether it can be safely ignored. This is for compatibility reason. A RocksDB older release may see a field it can't identify. Checking the bit, RocksDB knows whether it should stop opening the DB, or ignore the field.
+
+Several optional customized fields are supported:
+`kNeedCompaction`: Whether the file should be compacted to the next level.
+`kMinLogNumberToKeepHack`: WAL file number that is still in need for recovery after this entry.
+`kPathId`: The Path ID in which the file lives. This can't be ignored by an old release. 
 
 * File edit record backward compatible
 ```
