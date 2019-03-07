@@ -13,4 +13,5 @@ When `WriteOptions.sync = true`, the WAL file is fsync'ed before returning to th
 ## Group Commit
 As most other systems relying on logs, RocksDB supports **group commit** to improve WAL writing throughput, as well as write amplification. RocksDB's group commit is implemented in a naive way: when different threads are writing to the same DB at the same time, all outstanding writes that qualify to be combined will be combined together and write to WAL once, with one fsync. In this way, more writes can be completed by the same number of I/Os.
 
-Writes with different write options might disqualify themselves to be combined. The maximum group size is 1MB.
+Writes with different write options might disqualify themselves to be combined. The maximum group size is 1MB. RocksDB won't try to increase batch size by proactive delaying the writes.
+
