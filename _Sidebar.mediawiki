@@ -86,8 +86,6 @@
 ** [[RocksJava-Performance-on-Flash-Storage | RocksJava Performance on Flash Storage]]
 ** [[JNI-Debugging | JNI Debugging]]
 ** [[RocksJava-API-TODO | RocksJava API TODO]]
-* '''Lua'''
-** [[Lua CompactionFilter | Lua CompactionFilter]]
 * '''Performance'''
 ** [[Performance-Benchmarks | Performance on Flash Storage]]
 ** [[RocksDB-In-Memory-Workload-Performance-Benchmarks | In Memory Workload Performance]]
