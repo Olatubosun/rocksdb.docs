@@ -24,4 +24,4 @@ FlushOptions flush_opts;
 Status s = db->Flush(flush_opts, {cf_handle1, cf_handle2});
 ```
 
-In the case automatic flushes triggered internally by RocksDB, we currently just flush all column families in the database for simplicity.
+In the case automatic flushes triggered internally by RocksDB, we currently flush all column families in the database for simplicity.
