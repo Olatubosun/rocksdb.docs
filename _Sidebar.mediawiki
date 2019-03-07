@@ -39,6 +39,7 @@
 ** [[Write Ahead Log]]
 *** [[Write Ahead Log File Format | Write Ahead Log File Format]]
 *** [[WAL Recovery Modes | WAL Recovery Modes]]
+*** [[WAL Performance]]
 ** [[Write-Buffer-Manager | Write Buffer Manager]]
 ** [[Compaction | Compaction]]
 *** [[Leveled Compaction]]
