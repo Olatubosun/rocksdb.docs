@@ -19,9 +19,18 @@ For Windows, there is a flag called `FILE_FLAG_NO_BUFFERING` as the counterpart 
 RocksDB implements all the alignment logic inside `FileReader/FileWriter`, one layer higher abstraction on top of File classes to make the alignment ignorant to the OS. Thus, different OSs could have their own implementations of File Classes.
 
 ## API
-It is easy to use Direct I/O as two new options are provided in [options.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h#L1124-L1128):
+It is easy to use Direct I/O as two new options are provided in [options.h](https://github.com/facebook/rocksdb/blob/79b6ab43ce495cb6cd922fff80462597916dcda6/include/rocksdb/options.h#L645-L662):
 ```cpp
-  // Use O_DIRECT for user reads
+  // Enable direct I/O mode for read/write
+  // they may or may not improve performance depending on the use case
+  //
+  // Files will be opened in "direct I/O" mode
+  // which means that data r/w from the disk will not be cached or
+  // buffered. The hardware buffer of the devices may however still
+  // be used. Memory mapped files are not impacted by these parameters.
+
+  // Use O_DIRECT for user and compaction reads.
+  // When true, we also force new_table_reader_for_compaction_inputs to true.
   // Default: false
   // Not supported in ROCKSDB_LITE mode!
   bool use_direct_reads = false;
