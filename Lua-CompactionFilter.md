@@ -1,4 +1,5 @@
-***Deprecated and removed since RocksDB 6.0***
+**Deprecated and removed since RocksDB 6.0**
+
 RocksDB CompactionFilter offers a way to remove / filter expired key / value pairs based on custom logic in background.  Now we have implemented an extension on top of it which allows users to implement their custom CompactionFilter in Lua!  This feature is available in RocksDB 5.0.
 
 # Benefits
