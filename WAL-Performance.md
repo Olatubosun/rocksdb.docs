@@ -15,3 +15,7 @@ As most other systems relying on logs, RocksDB supports **group commit** to impr
 
 Writes with different write options might disqualify themselves to be combined. The maximum group size is 1MB. RocksDB won't try to increase batch size by proactive delaying the writes.
 
+## Number of I/Os per write
+If `Options.recycle_log_file_num = false` (the default). RocksDB always create new files for new WAL segments. Each WAL write will change both of data and size of the file, so every fsync will generate at least two I/Os, one for data and one for metadata. Note that RocksDB calls fallocate() to reserve enough space for the file, but it doesn't prevent the metadata I/O in fsync.
+
+`Options.recycle_log_file_num = true` will keep a pool of WAL files and try to reuse them. When writing to an existing log file, random writes are used from size 0. Before writes hit the end of the file, the file size doesn't change, so the I/O for metadata might be avoided (also depends on file system mount options). Assuming most WAL files will have similar sizes, I/O needed for metadata will be minimal.
