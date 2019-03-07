@@ -23,7 +23,7 @@ We have five levels of statistics, `kExceptHistogramOrTimers`, `kExceptTimers`, 
 * `kExceptTimeForMutex`: Collects all stats except the counters requiring to get time inside the mutex lock. `rocksdb.db.mutex.wait.micros` counter is not measured. By measuring the counter, we call the timing function inside DB mutex. If the timing function is slow, it can reduce write throughput significantly.
 * `kExceptDetailedTimers`: Collects all stats except time inside mutex lock AND time spent on compression.
 * `kExceptTimers`: Excluding all timing stats.
-* `kExceptHistogramOrTimers`: Excluding all timing stats, as well as histograms. Histograms are more expensive than pure counter stats. This is the most lightweight level.
+* `kExceptHistogramOrTimers`: Excluding all timing stats, as well as histograms. Histograms are more expensive than pure counter stats, because it needs to seek to specific bucket and maintain min/max/count/std, etc. This is the most lightweight level.
 
 ## Access The Stats
 #### Stats Types
