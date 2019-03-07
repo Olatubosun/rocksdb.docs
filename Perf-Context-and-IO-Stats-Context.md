@@ -17,7 +17,7 @@ Here is a typical example of using using Perf Context and IO Stats Context:
 
 rocksdb::SetPerfLevel(rocksdb::PerfLevel::kEnableTimeExceptForMutex);
 
-rocksdb:: get_perf_context()->Reset();
+rocksdb::get_perf_context()->Reset();
 rocksdb::get_iostats_context()->Reset();
 
 ... // run your query
@@ -74,6 +74,15 @@ We can use "get_*" stats to break down time inside one Get() query. The most imp
 
 #### Iterator Operations Break-Down
 "seek_*" and "find_next_user_entry_time" break down iterator operations. The most interesting one is `seek_child_seek_count`. It tells us how many sub-iterators we have, which mostly means number of sorted runs in the LSM tree.
+
+#### Per-level PerfContext
+In order to provide deeper insights into the performance implication of LSM tree structures, per-level PerfContext (`PerfContextByLevel`) was introduced to break down counters by levels. `PerfContext::level_to_perf_context` was added to maintain the mapping from level number to `PerfContextByLevel` object. User can access it directly by calling `*(rocksdb::get_perf_context()->level_to_perf_context))[level_number]`.
+
+By default per-level PerfContext is disabled, `EnablePerLevelPerfContext()`, `DisablePerLevelPerfContext()`, and, `ClearPerLevelPerfContext` can be called to enable/disable/clear it. When per-level PerfContext is enabled, `rocksdb::get_perf_context->ToString()` will also include non-zero per-level perf context counters, in the form of 
+```
+bloom_filter_useful = 1@level5, 2@level7
+```
+which means `bloom_filter_useful` was incremented once at level 5 and twice at level 7.
 
 ### IO Stats Context
 We have counters for time spent on major file system calls. Write related counters are more interesting to look if you see stalls in write paths. It tells us we are slow because of which file system operations, or it's not caused by file system calls.
