@@ -19,6 +19,7 @@
 *** [[Transactions | Transactions]]
 *** [[Snapshot | Snapshot]]
 *** [[DeleteRange | DeleteRange]]
+*** [[Atomic flush | Atomic flush]]
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** Options
