@@ -1,8 +1,8 @@
 ## 1. Introduction
   
-The RocksDB project started at [Facebook](https://www.facebook.com/Engineering) as an experiment to develop an efficient database software that can realize the full potential of storing data on fast storage ( especially Flash storage) for server workloads. It is a C++ library and may be used to store keys and values, which are arbitrarily-sized byte streams. It supports atomic reads and writes. 
+RocksDB started at [Facebook](https://www.facebook.com/Engineering) is a storage engine for various storage media and solutions for server workloads, with fast storage (especially Flash storage) as initial focus. It is a C++ library and may be used to store keys and values, which are arbitrarily-sized byte streams. It supports both of point lookups range scans, and support different level of ACID guarantees.
 
-RocksDB features highly flexible configuration settings that may be tuned to run on a variety of production environments, including pure memory, Flash, hard disks or HDFS. It supports various compression algorithms and good tools for production support and debugging. 
+A balance is strike between customize-ability and self-adapting. RocksDB features highly flexible configuration settings that may be tuned to run on a variety of production environments, including pure memory, Flash, hard disks or remote storage. It supports various compression algorithms and good tools for production support and debugging. On the other hand, efforts are also made to limit number of knobs, provide good enough out-of-box performance, and use some adaptive algorithms.
   
 RocksDB borrows significant code from the open source [leveldb](https://code.google.com/p/leveldb/) project as well as significant ideas from [Apache HBase](http://hbase.apache.org/). The initial code was forked from open source leveldb 1.5. It also builds upon code and ideas that were developed at Facebook before RocksDB.
 
