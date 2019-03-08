@@ -93,7 +93,7 @@ Some applications may want to process keys at compaction time. For example, a da
 A database may be opened in ReadOnly mode, in which the database guarantees that the application may not modify anything in the database. This results in much higher read performance because oft-traversed code paths avoid locks completely.
 
 #### Database Debug Logs
-RocksDB writes detailed logs to a file named LOG*. These are mostly used for debugging and analyzing a running system. This LOG may be configured to roll at a specified periodicity.
+By default, RocksDB writes detailed logs to a file named LOG*. These are mostly used for debugging and analyzing a running system. Users can choose different log levels. This LOG may be configured to roll at a specified periodicity. The logging interface is pluggable. Users can plug in a different logger.
 
 #### Data Compression
 RocksDB supports snappy, zlib, bzip2, lz4, lz4_hc, and zstd compression. RocksDB may be configured to support different compression algorithms at different levels of data. Typically, `90%` of data in the Lmax level. A typical installation might configure ZSTD (or Zlib if not available) for the bottom-most level and LZ4 (or Snappy if it is not available) for other levels. See [[Compression]].
