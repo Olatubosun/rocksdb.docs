@@ -30,6 +30,7 @@
 *** [[Dictionary-Compression | Dictionary Compression]]
 ** [[IO]]
 *** [[Rate-Limiter | Rate Limiter]]
+*** [[Delete-Scheduler | Delete Scheduler]]
 *** [[Direct-IO | Direct I/O]]
 ** [[Background Error Handling]]
 ** [[MANIFEST | MANIFEST]]
