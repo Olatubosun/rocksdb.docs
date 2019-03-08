@@ -62,7 +62,7 @@ if (!s.ok()) {
 }
 ```
 
-You can learn more by checking DB::IngestExternalFile() and DB::IngestExternalFiles() in [include/rocksdb/db.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h). DB::IngestExternalFiles() ingests a collection of external SST files following the 'all-or-nothing' property. If the function returns Status::OK, then all files are ingested successfully. If the function returns non-OK status, then none of the files are ingested.
+You can learn more by checking DB::IngestExternalFile() and DB::IngestExternalFiles() in [include/rocksdb/db.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h). DB::IngestExternalFiles() ingests a collection of external SST files for **multiple** column families following the 'all-or-nothing' property. If the function returns Status::OK, then all files are ingested successfully for **all** column families of interest. If the function returns non-OK status, then none of the files are ingested into none of the column families.
 
 ## What happens when you ingest a file
 
