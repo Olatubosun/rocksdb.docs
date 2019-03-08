@@ -4,11 +4,11 @@ BlobDB is a RocksDB wrapper that provides key-value separation. Large values (bl
 The API is defined in "rocksdb/utilities/blob_db/blob_db.h" header file. (Note that this file is not part of the "include" directory i.e not exposed in the public API yet).
 
 ### Implementation
-BlobDB is implemented as a wrapper on top of RocksDB, using the StackableDB interface. On a write, BlobDB first appends the blob to blob file and obtains the blob offset, then construct the blob index and writes to base RocksDB. BlobDB uses a compaction filter to remove expired blob indexes on compaction. Blob indexes of overwritten keys will be compacted out as normal values.
+BlobDB is implemented as a wrapper on top of RocksDB, using the StackableDB interface. On a write, BlobDB first appends the blob to blob file and obtains the blob offset, then construct the blob index and writes to base RocksDB. A compaction filter is used to remove expired blobs on compaction. Blob indexes of overwritten keys will be compacted out as normal values.
 
 ### Where could this be useful?
 BlobDB currently doesn't support some RocksDB features, like merge operator and column families.
-In its current state, BlobDB is good for use cases that don't require generic GC and can tolerate some data loss (not using WAL). They use TTL or FIFO eviction instead of GC. 
+In its current state, BlobDB is good for use cases that don't require generic GC and can tolerate some data loss (not using WAL), and which use TTL or FIFO eviction instead of GC. 
 
 **FIFO use cases**
 
@@ -18,10 +18,11 @@ FIFO compaction is usually selected to reduce the flash burn rate for data that 
 * They want per-key TTL instead of per-table TTL.
 
 ### Limitations
-There are some RocksDB features which are not supported yet in BlobDB (note that this is not an exhaustive list):
+There are some RocksDB features which are not supported yet in BlobDB, but we are working on them. Some missing features (not an exhaustive list though):
 - Merge, SingleDelete, RangeDelete APIs
 - User Compaction filters
 - Transactions
+- A good garbage collector
 
 ### Tooling
 `blob_dump` tool can be used to dump the contents of the blob files. It can be built using `make blob_dump`.
