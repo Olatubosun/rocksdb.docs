@@ -1,5 +1,5 @@
 # Welcome to RocksDB
-RocksDB is a storage engine C++ library with a key/value interface, where keys and values are arbitrary byte streams. It was developed at Facebook based on LevelDB and provides backwards-compatible support for LevelDB APIs.
+RocksDB is a storage engine with key/value interface, where keys and values are arbitrary byte streams. It is a C++ library. It was developed at Facebook based on LevelDB and provides backwards-compatible support for LevelDB APIs.
 
 RocksDB supports various storage hardware, with fast flash as the initially focus. It uses a Log Structured Database Engine for storage, is written entirely in C++, and has a Java wrapper called RocksJava. See [[RocksJava Basics]].
 
