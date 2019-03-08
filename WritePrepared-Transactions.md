@@ -53,6 +53,40 @@ Since the last sequence number could advance by either queue while the other is 
 
 `IsInSnapshot(prepare_seq, snapshot_seq)` implements the core algorithm of _WritePrepared_, which puts all teh data structures together to determines if a value tagged with `prepare_seq` is in the reading snapshot `snapshot_seq`.
 
+Here is the simplified version of `IsInSnapshot` algorithm:
+
+    inline bool IsInSnapshot(uint64_t prep_seq, uint64_t snapshot_seq,
+                             uint64_t min_uncommitted = 0,
+                             bool *snap_released = nullptr) const {
+      if (snapshot_seq < prep_seq) return false;
+      if (prep_seq < min_uncommitted) return true;
+      max_evicted_seq_ub = max_evicted_seq_.load();
+      some_are_delayed = delayed_prepared_ not empty
+      if (prep_seq in CommitCache) return CommitCache[prep_seq] <= snapshot_seq;
+      if (max_evicted_seq_ub < prep_seq) return false; // still prepared
+      if (some_are_delayed) {
+         ...
+      }
+      if (max_evicted_seq_ub < snapshot_seq) return true; // old commit with no overlap with snapshot_seq
+      // commit is old so is the snapshot, check if there was an overlap
+      if (snaoshot_seq not in old_commit_map_) {
+        *snap_released = true;
+        return true;
+      }
+      bool overlapped = prepare_seq in old_commit_map_[snaoshot_seq];
+      return !overlapped;
+    }
+It returns true if it can determine that `commit_seq` <= `snapshot_seq` and false otherwise.
+- `snapshot_seq` < `prep_seq` => `commit_seq` > `snapshot_seq` because `prep_seq` <= `commit_seq`
+- `prep_seq` < `min_uncommitted` => `commit_seq` <= `snapshot_seq`
+- Checking emptiness of `delayed_prepared_` in `some_are_delayed` before _CommitCache_ lookup is an optimization to skip acquiring lock on it if there is no delayed transaction in the system, as it is the norm.
+- If not in _CommitCache_ and none of the delayed prepared cases apply, then this is an old commit that is evicted from _CommitCache_.
+   * `max_evicted_seq_` < `snapshot_seq` => `commit_seq` < `snapshot_seq` since `commit_seq` <= `max_evicted_seq_`
+   * Otherwise, `old_commit_map_` includes all such old snapshots as well as any commit that overlaps with them.
+
+In the below we see the full implementation of `IsInSnapshot` that also covers the corner cases.
+`IsInSnapshot(prepare_seq, snapshot_seq)` implements the core algorithm of _WritePrepared_, which puts all teh data structures together to determines if a value tagged with `prepare_seq` is in the reading snapshot `snapshot_seq`.
+
     inline bool IsInSnapshot(uint64_t prep_seq, uint64_t snapshot_seq,
                              uint64_t min_uncommitted = 0,
                              bool *snap_released = nullptr) const {
@@ -86,16 +120,11 @@ Since the last sequence number could advance by either queue while the other is 
       bool overlapped = prepare_seq in old_commit_map_[snaoshot_seq];
       return !overlapped;
     }
-It returns true if it can determine that `commit_seq` <= `snapshot_seq` and false otherwise.
-- `snapshot_seq` < `prep_seq` => `commit_seq` > `snapshot_seq` because `prep_seq` <= `commit_seq`
-- `prep_seq` < `min_uncommitted` => `commit_seq` <= `snapshot_seq`
 - Since `max_evicted_seq_` and _CommitCache_ are updated separately, the while loop simplifies the algorithm by ensuring that `max_evicted_seq_` is not changed during _CommitCache_ lookup.
 - The commit of a delayed prepared involves four non-atomic steps: i) update _CommitCache_ ii) add to `delayed_prepared_commits_`, iii) publish sequence, and iv) remove from `delayed_prepared_`.
    - If the reader simply follows _CommitCache_ lookup + `delayed_prepared_` lookup order, it might found a delayed prepared in neither and miss checking against its `commit_seq`. So address that if the sequence was not found in `delayed_prepared_`, it still does a 2nd lookup in _CommitCache_. The reverse order ensures that it will see the commit if there was any.
    * There are odd scenarios where the commit of a delayed prepared could be evicted from commit cache before the entry is removed from `delayed_prepared_` list. `delayed_prepared_commits_` which is updated every time a delayed prepared is evicted from commit cache helps not to miss such commits.
-- If not in _CommitCache_ and none of the delayed prepared cases apply, then this is an old commit that is evicted from _CommitCache_.
-   * `max_evicted_seq_` < `snapshot_seq` => `commit_seq` < `snapshot_seq` since `commit_seq` <= `max_evicted_seq_`
-   * Otherwise, `old_commit_map_` includes all such old snapshots as well as any commit that overlaps with them.
+
 
 ## Flush/Compaction
 
