@@ -1,14 +1,14 @@
 # Welcome to RocksDB
-RocksDB is a C++ library providing an embedded key-value store, where keys and values are arbitrary byte streams. It was developed at Facebook based on LevelDB and provides backwards-compatible support for LevelDB APIs.
+RocksDB is a storage engine C++ library with a key/value interface, where keys and values are arbitrary byte streams. It was developed at Facebook based on LevelDB and provides backwards-compatible support for LevelDB APIs.
 
-RocksDB is optimized for Flash with extremely low latencies. RocksDB uses a Log Structured Database Engine for storage, written entirely in C++. A Java version called RocksJava is currently in development. See [[RocksJava Basics]].
+RocksDB supports various storage hardware, with fast flash as the initially focus. It uses a Log Structured Database Engine for storage, is written entirely in C++, and has a Java wrapper called RocksJava. See [[RocksJava Basics]].
 
-RocksDB features highly flexible configuration settings that may be tuned to run on a variety of production environments, including pure memory, Flash, hard disks or HDFS. It supports various compression algorithms and good tools for production support and debugging.
+RocksDB can adapt a variety of production environments, including pure memory, Flash, hard disks or remote storage. Where RocksDB cannot automatically adapt, highly flexible configuration settings are provided to allow users to tune it for them. It supports various compression algorithms and good tools for production support and debugging.
 
 ## Features
-* Designed for application servers wanting to store up to a few terabytes of data on locally attached Flash drives or in RAM
+* Designed for application servers wanting to store up to a few terabytes of data on local or remote storage systems.
 * Optimized for storing small to medium size key-values on fast storage -- flash devices or in-memory
-* Scales linearly with number of CPUs so that it works well on processors with many cores
+* It works well on processors with many cores
 
 ## Features Not in LevelDB
 RocksDB introduces dozens of new major features. See [the list of features not in LevelDB](https://github.com/facebook/rocksdb/wiki/Features-Not-in-LevelDB).
