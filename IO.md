@@ -10,6 +10,9 @@ You can control the total rate RocksDB writes to data files through `options.rat
 ### Write Max Buffer
 When appending a file, RocksDB has internal buffering of files before writing to the file system, unless an explicit fsync is needed. The max size of this buffer can be controlled by `options.writable_file_max_buffer_size`. Tuning this parameter is more critical in [[Direct IO] mode or to a file system without page cache. With non-direct I/O mode, enlarging this buffer only reduces number of write() system calls and is unlikely to change the I/O behavior, so unless this is what you want, it may be desirable to keep the default value 0 to save the memory.
 
+### File Deletion
+Deletion of obsolete DB files can be rate limited by configuring the delete scheduler. This is especially useful on flash devices to limit read latency spikes due to a burst of deletions. See [[Delete Scheduler]] for details.
+
 ## Control Read I/O
 ### fadvise
 While opening an SST file for reads, users can decide whether RocksDB will call fadvise with FADV_RANDOM, by setting `options.advise_random_on_open = true` (default). If the value is `false`, no fadvise will be called while opening a file. Setting the option to be true usually works well if the dominating queries are either Get() or iterating a very short range, because read-ahead is not helpful in these cases anyway. Otherwise, `options.advise_random_on_open = false` can usually improve performance to hint the file system to do underlying read-ahead.
