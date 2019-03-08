@@ -215,8 +215,17 @@ Drop all column family
 <-- Var32         --->|
 ```
 
-### Version Edit ignoreable record types
-We reserved a special bit in record type. If the bit is set, it can be safely ignored. And the safely ignoreable record has a standard general format:
+Record as part of an atomic group (since RocksDB 5.16):
+There are cases in which 'all-or-nothing', multi-column-family version change is desirable. For example, [atomic flush](https://github.com/facebook/rocksdb/wiki/Atomic-flush) ensures either all or none of the column families get flushed successfully, [multiple external SST ingestion](https://github.com/facebook/rocksdb/wiki/Creating-and-Ingesting-SST-files) guarantees that either all or none of the column families ingest SSTs successfully. Since writing multiple version edits is not atomic, we need to take extra measure to achieve atomicity (not necessarily ***instantaneity*** from the user's perspective). Therefore we introduce a new record field `kInAtomicGroup` to indicate that this record is part of a group of version edits that follow the `all-or-none` property. The format is as follows.
+```
++-----------------+--------------------------------------------+
+| kInAtomicGroup  | #remaining version edits in the same group |
++-----------------+--------------------------------------------+
+|<--- Var32 ----->|<----------------- Var32 ------------------>|
+```
+
+### Version Edit ignorable record types
+We reserved a special bit in record type. If the bit is set, it can be safely ignored. And the safely ignorable record has a standard general format:
 ```
 +---------+----------------+----------------+
 |   kTag  | field length n |  fields ...    |
