@@ -5,7 +5,7 @@ A common reason for doing this is to prevent latency spikes on flash devices. A 
 
 **Implementation**
 
-Deletion rate limit is configured through the ```SstFileManager```. The API is as follows -
+Deletion rate limit is configured through the ```SstFileManager``` (See [[Managing Disk Space Utilization]]). The API is as follows -
 ```
 extern SstFileManager* NewSstFileManager(
     Env* env, std::shared_ptr<Logger> info_log = nullptr,
