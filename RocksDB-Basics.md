@@ -112,7 +112,7 @@ Similarly, multiple database instances may share the same block cache.
 RocksDB uses a LRU cache for blocks to serve reads. The block cache is partitioned into two individual caches: the first caches uncompressed blocks and the second caches compressed blocks in RAM. If a compressed block cache is configured, users may wish to enable direct I/O to prevent the OS page cache from doubly-caching the same compressed data.
 
 #### Table Cache
-The Table Cache is a construct that caches open file descriptors. These file descriptors are for __sstfiles__. An application can specify the maximum size of the Table Cache.
+The Table Cache is a construct that caches open file descriptors. These file descriptors are for __sstfiles__. An application can specify the maximum size of the Table Cache, or configure RocksDB to always keep all files open, to achieve better performance.
 
 #### I/O Control
 
