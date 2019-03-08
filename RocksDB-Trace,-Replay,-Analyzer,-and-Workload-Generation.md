@@ -623,28 +623,28 @@ We developed an benchmark called “mixgraph” in db_bench, which can use the f
 To enable the “mixgraph” benchmark, user needs to specify:
 
 ```
-`./db_bench —benchmarks="mixgraph"`
+./db_bench —benchmarks="mixgraph"
 ```
 
 
 To set the parameters of the value size distribution (Generalized Pareto Distribution only), user needs to specify:
 
 ```
-`-value_k=<> -value_sigma=<> -value_theta=<>`
+-value_k=<> -value_sigma=<> -value_theta=<>
 ```
 
 
 To set the parameters of the KV-pair access distribution (power distribution only and C==0), user needs to specify:
 
 ```
-`-key_dist_a=<> -key_dist_b=<>`
+-key_dist_a=<> -key_dist_b=<>
 ```
 
 
 To set the parameters of the QPS (Sine),  user needs to specify:
 
 ```
-`-sine_a=<> -sine_b=<> -sine_c=<> -sine_d=<> -sine_mix_rate_interval_milliseconds=<>`
+-sine_a=<> -sine_b=<> -sine_c=<> -sine_d=<> -sine_mix_rate_interval_milliseconds=<>
 ```
 
 The mix rate is used to set the time interval that how lone we should correct the rate according to the distribution, the smaller it is, the better it will fit.
@@ -652,27 +652,27 @@ The mix rate is used to set the time interval that how lone we should correct th
 To set the parameters of the iterator scan length distribution (Generalized Pareto Distribution only), user needs to specify:
 
 ```
-`-iter_k=<> -iter_sigma=<> -iter_theta=<>`
+-iter_k=<> -iter_sigma=<> -iter_theta=<>
 ```
 
 
 User need to specify the query ratio between the Get, Put, and Seek. Such that we can generate the mixed workload that can be similar to the social graph workload (so called mix graph)
 
 ```
-`-mix_get_ratio=<> -mix_put_ratio=<> -mix_seek_ratio=<>`
+-mix_get_ratio=<> -mix_put_ratio=<> -mix_seek_ratio=<>
 ```
 
 
 Finally, user need to specify how many queries they want to execute:
 
 ```
-`-reads=<>`
+-reads=<>
 ```
 
 and what's the total KV-pairs are in the current testing DB
 
 ```
-`-num=<>`
+-num=<>
 ```
 
 The num together with the aforementioned distributions decided the queries.
