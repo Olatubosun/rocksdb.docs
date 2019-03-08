@@ -1,10 +1,10 @@
 ## 1. Introduction
   
-RocksDB started at [Facebook](https://www.facebook.com/Engineering) is a storage engine for various storage media and solutions for server workloads, with fast storage (especially Flash storage) as initial focus. It is a C++ library and may be used to store keys and values, which are arbitrarily-sized byte streams. It supports both of point lookups and range scans, and support different level of ACID guarantees.
+RocksDB started at [Facebook](https://www.facebook.com/Engineering) as a storage engine for server workloads on various storage media, with the initial focus on fast storage (especially Flash storage). It is a C++ library to store keys and values, which are arbitrarily-sized byte streams. It supports both point lookups and range scans, and provides different types of ACID guarantees.
 
-A balance is struck between customize-ability and self-adapting. RocksDB features highly flexible configuration settings that may be tuned to run on a variety of production environments, including pure memory, Flash, hard disks or remote storage. It supports various compression algorithms and good tools for production support and debugging. On the other hand, efforts are also made to limit number of knobs, provide good enough out-of-box performance, and use some adaptive algorithms.
+A balance is struck between customize-ability and self-adaptability. RocksDB features highly flexible configuration settings that may be tuned to run on a variety of production environments, including pure memory, Flash, hard disks or remote storage. It supports various compression algorithms and good tools for production support and debugging. On the other hand, efforts are also made to limit the number of knobs, to provide good enough out-of-box performance, and to use some adaptive algorithms wherever applicable.
   
-RocksDB borrows significant code from the open source [leveldb](https://code.google.com/p/leveldb/) project as well as significant ideas from [Apache HBase](http://hbase.apache.org/). The initial code was forked from open source leveldb 1.5. It also builds upon code and ideas that were developed at Facebook before RocksDB.
+RocksDB borrows significant code from the open source [leveldb](https://code.google.com/p/leveldb/) project as well as ideas from [Apache HBase](http://hbase.apache.org/). The initial code was forked from open source leveldb 1.5. It also builds upon code and ideas that were developed at Facebook before RocksDB.
 
 ## 2. Assumptions and Goals
 
