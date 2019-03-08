@@ -56,41 +56,28 @@ Since the last sequence number could advance by either queue while the other is 
     inline bool IsInSnapshot(uint64_t prep_seq, uint64_t snapshot_seq,
                              uint64_t min_uncommitted = 0,
                              bool *snap_released = nullptr) const {
-      if (snapshot_seq < prep_seq)
-        return false;
-      if (prep_seq < min_uncommitted)
-        return true;
+      if (snapshot_seq < prep_seq) return false;
+      if (prep_seq < min_uncommitted) return true;
       do {
         max_evicted_seq_lb = max_evicted_seq_.load();
-        some_are_delayed = not delayed_prepared_empty_.load();
-        if (prep_seq in CommitCache) {
-          return CommitCache[prep_seq] <= snapshot_seq;
-        }
+        some_are_delayed = delayed_prepared_ not empty
+        if (prep_seq in CommitCache) return CommitCache[prep_seq] <= snapshot_seq;
         max_evicted_seq_ub = max_evicted_seq_.load();
-        if (max_evicted_seq_lb != max_evicted_seq_ub)
-          continue;
-        if (max_evicted_seq_ub < prep_seq) {
-          return false; // still prepared
-        }
+        if (max_evicted_seq_lb != max_evicted_seq_ub) continue;
+        if (max_evicted_seq_ub < prep_seq) return false; // still prepared
         if (some_are_delayed) {
           if (prep_seq in delayed_prepared_) {
             // might be committed but not added to commit cache yet
-            if (prep_seq not in delayed_prepared_commits_)
-              return false;
+            if (prep_seq not in delayed_prepared_commits_) return false;
             return delayed_prepared_commits_[prep_seq] < snapshot_seq;
           } else {
             // 2nd probe due to non-atomic commit cache and delayed_prepared_
-            if (prep_seq in CommitCache) {
-              return CommitCache[prep_seq] <= snapshot_seq;
-            }
+            if (prep_seq in CommitCache) return CommitCache[prep_seq] <= snapshot_seq;
             max_evicted_seq_ub = max_evicted_seq_.load();
           }
         }
       } while (UNLIKELY(max_evicted_seq_lb != max_evicted_seq_ub));
-      if (max_evicted_seq_ub < snapshot_seq) {
-        // old commit with no overlap with snapshot_seq
-        return true;
-      }
+      if (max_evicted_seq_ub < snapshot_seq) return true; // old commit with no overlap with snapshot_seq
       // commit is old so is the snapshot, check if there was an overlap
       if (snaoshot_seq not in old_commit_map_) {
         *snap_released = true;
@@ -99,6 +86,11 @@ Since the last sequence number could advance by either queue while the other is 
       bool overlapped = prepare_seq in old_commit_map_[snaoshot_seq];
       return !overlapped;
     }
+It returns true if it can determine that `commit_seq` <= `snapshot_seq` and false otherwise.
+- `snapshot_seq` < `prep_seq` => `commit_seq` > `snapshot_seq` because `prep_seq` <= `commit_seq`
+- `prep_seq` < `min_uncommitted` => `commit_seq` <= `snapshot_seq`
+- Since `max_evicted_seq_` and _CommitCache_ are updated separately, the while loop simplifies the algorithm by ensuring that `max_evicted_seq_` is not changed during _CommitCache_ lookup.
+- The commit of a delayed prepared involves two non-atomic steps: i) update _CommitCache_ ii) remove from `delayed_prepared_`. To ensure that we do not miss such update we do a 2nd lookup to _CommitCache_ if the sequence was found in `delayed_prepared_`.
 
 ## Flush/Compaction
 
