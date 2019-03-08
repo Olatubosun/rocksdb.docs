@@ -98,7 +98,7 @@ By default, RocksDB writes detailed logs to a file named LOG*. These are mostly 
 #### Data Compression
 RocksDB supports lz4, zstd, snappy, zlib, and lz4_hc compression, as well as xpress under Windows. RocksDB may be configured to support different compression algorithms for data at the bottommost level, where `90%` of data lives. A typical installation might configure ZSTD (or Zlib if not available) for the bottom-most level and LZ4 (or Snappy if it is not available) for other levels. See [[Compression]].
 
-#### Full Backups, Incremental Backups and Replication
+#### Full Backups and Replication
 RocksDB has provides a backup engine, `BackupableDB`. You can read more about it here: [How to backup RocksDB?](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F)
 
 RocksDB itself is not a replicated, but it provides some helper functions to enable users to implement their replication system on top or RocksDB, see [[Replication Helpers]]
