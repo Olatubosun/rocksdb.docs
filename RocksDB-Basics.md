@@ -116,7 +116,7 @@ The Table Cache is a construct that caches open file descriptors. These file des
 
 #### I/O Control
 
-RocksDB has some options to allow users to hint about how I/O should be executed. They can suggest RocksDB to call fadvise in files to read, call periodic range sync in files being appended, or enable direct I/O. See [[IO]]
+RocksDB allows users to configure I/O from and to SST files in different ways. Users can enable direct I/O so that RocksDB takes full control to the I/O and caching. An alternative is to leverage some options to allow users to hint about how I/O should be executed. They can suggest RocksDB to call fadvise in files to read, call periodic range sync in files being appended, or enable direct I/O. See [[IO]]
 
 #### Stackable DB
 RocksDB has a built-in wrapper mechanism to add functionality as a layer above the code database kernel. This functionality is encapsulated by the `StackableDB` API. For example, the time-to-live functionality is implemented by a `StackableDB` and is not part of the core RocksDB API. This approach keeps the code modularized and clean.
