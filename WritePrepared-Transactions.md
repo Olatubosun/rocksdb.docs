@@ -90,7 +90,12 @@ It returns true if it can determine that `commit_seq` <= `snapshot_seq` and fals
 - `snapshot_seq` < `prep_seq` => `commit_seq` > `snapshot_seq` because `prep_seq` <= `commit_seq`
 - `prep_seq` < `min_uncommitted` => `commit_seq` <= `snapshot_seq`
 - Since `max_evicted_seq_` and _CommitCache_ are updated separately, the while loop simplifies the algorithm by ensuring that `max_evicted_seq_` is not changed during _CommitCache_ lookup.
-- The commit of a delayed prepared involves two non-atomic steps: i) update _CommitCache_ ii) remove from `delayed_prepared_`. To ensure that we do not miss such update we do a 2nd lookup to _CommitCache_ if the sequence was found in `delayed_prepared_`.
+- The commit of a delayed prepared involves four non-atomic steps: i) update _CommitCache_ ii) add to `delayed_prepared_commits_`, iii) publish sequence, and iv) remove from `delayed_prepared_`.
+   - If the reader simply follows _CommitCache_ lookup + `delayed_prepared_` lookup order, it might found a delayed prepared in neither and miss checking against its `commit_seq`. So address that if the sequence was not found in `delayed_prepared_`, it still does a 2nd lookup in _CommitCache_. The reverse order ensures that it will see the commit if there was any.
+   * There are odd scenarios where the commit of a delayed prepared could be evicted from commit cache before the entry is removed from `delayed_prepared_` list. `delayed_prepared_commits_` which is updated every time a delayed prepared is evicted from commit cache helps not to miss such commits.
+- If not in _CommitCache_ and none of the delayed prepared cases apply, then this is an old commit that is evicted from _CommitCache_.
+   * `max_evicted_seq_` < `snapshot_seq` => `commit_seq` < `snapshot_seq` since `commit_seq` <= `max_evicted_seq_`
+   * Otherwise, `old_commit_map_` includes all such old snapshots as well as any commit that overlaps with them.
 
 ## Flush/Compaction
 
