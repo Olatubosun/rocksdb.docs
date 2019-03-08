@@ -81,7 +81,7 @@ We also enable developers to develop and experiment with custom compaction polic
 
 #### Metadata storage
 
-A `MANIFEST` file in the database records the database state. The compaction process adds new files and deletes existing files from the database, and it makes these operations persistent by recording them in the `MANIFEST` file. Transactions to be recorded in the `MANIFEST` file use a batch-commit algorithm to amortize the cost of repeated syncs to the `MANIFEST` file.
+A `MANIFEST` file in the database records the database state. The compaction process adds new files and deletes existing files from the database, and it makes these operations persistent by recording them in the `MANIFEST` file.
 
 #### Avoiding Stalls
 Background compaction threads are also used to flush _memtable_ contents to a file on storage. If all background compaction threads are busy doing long-running compactions, then a sudden burst of writes can fill up the _memtable_(s) quickly, thus stalling new writes. This situation can be avoided by configuring RocksDB to keep a small set of threads explicitly reserved for the sole purpose of flushing _memtable_ to storage. 
