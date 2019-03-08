@@ -19,4 +19,4 @@ The option ```rate_bytes_per_sec``` sets the rate of deletion. If an individual 
 **Limitations**
 
 * WAL files are not subject to the rate limit
-* Blob files are not subject to the rate limit
+* Blob files are always subject to rate limit, irrespective of trash to DB ratio
