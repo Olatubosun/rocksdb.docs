@@ -8,7 +8,7 @@ In RocksDB 4.3, we add a set of features that makes managing RocksDB options eas
 
 With the above options file support, developers no longer need to maintain the full set of options of a previously-created RocksDB instance.  In addition, when changing options is needed, CheckOptionsCompatibility() can further make sure the resulting set of Options can successfully open the same RocksDB database without corrupting the underlying data.
 
-# Example
+## Example
 Here's a running example showing how the new features can make managing RocksDB options easier.  A more complete example can be found in [examples/options_file_example.cc](https://github.com/facebook/rocksdb/blob/master/examples/options_file_example.cc).
 
 Suppose we open a RocksDB database, create a new column family on-the-fly while the database is running, and then close the database:
@@ -64,6 +64,9 @@ Now we perform sanity check to make sure the set of options is safe to open the 
 If the return value indicates OK status, we can proceed and use the loaded set of options to open the target RocksDB database:
 
     s = DB::Open(loaded_db_opt, kDBPath, loaded_cf_descs, &handles, &db);
+
+## Ignoring unknown options
+In cases where an options file of a newer version is used with an older RocksDB version (say, when downgrading due to a bug), the older RocksDB version might not know about some newer options. `ignore_unknown_options` flag can be used to handle such cases. `ignore_unknown_options` has been added as an argument to `LoadLatestOptions`, `LoadOptionsFromFile`, `CheckOptionsCompatibility`, `GetDBOptionsFromMap`, `GetColumnFamilyOptionsFromMap`, `GetBlockBasedTableOptionsFromMap` and `GetPlainTableOptionsFromMap`. By default it is set to `false`.
 
 # RocksDB Options File Format
 RocksDB options file is a text file that follows the [INI file format](https://en.wikipedia.org/wiki/INI_file).  Each RocksDB options file has one version section, one DBOptions section, and one CFOptions and TableOptions section for each column family.  Below is an example RocksDB options file.  A complete example can be found in [examples/rocksdb_option_file_example.ini](https://github.com/facebook/rocksdb/blob/master/examples/rocksdb_option_file_example.ini):
