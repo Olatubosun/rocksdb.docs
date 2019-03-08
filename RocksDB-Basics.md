@@ -9,13 +9,13 @@ RocksDB borrows significant code from the open source [leveldb](https://code.goo
 ## 2. Assumptions and Goals
 
 ### Performance:
-The primary design point for RocksDB is that it should be performant for fast storage and for server workloads. It should exploit the full potential of high read/write rates offered by Flash or RAM subsystems. It should support efficient point lookups as well as range scans. It should be configurable to support high random-read workloads, high update workloads or a combination of both. Its architecture should support easy tuning of Read Amplification, Write Amplification and Space Amplification.
+The primary design point for RocksDB is that it should be performant for fast storage and for server workloads. It should support efficient point lookups as well as range scans. It should be configurable to support high random-read workloads, high update workloads or a combination of both. Its architecture should support easy tuning of trade-offs for different workloads and hardware.
 
 ### Production Support:
-RocksDB should be designed in such a way that it has built-in support for tools and utilities that help deployment and debugging in production environments. Most major parameters should be fully tunable so that it can be used by different applications on different hardware.
+RocksDB should be designed in such a way that it has built-in support for tools and utilities that help deployment and debugging in production environments. If the storage engine cannot yet be able to automatically adapt the application and hardware, we will provide some parameters to allow users to tune performance.
 
 ### Compatibility:
-Newer versions of this software should be backward compatible, so that existing applications do not need to change when upgrading to newer releases of RocksDB. See [[RocksDB Compatibility Between Different Releases]].
+Newer versions of this software should be backward compatible, so that existing applications do not need to change when upgrading to newer releases of RocksDB. Unless using newly provided features, existing applications also should be able to revert to a recent old release. See [[RocksDB Compatibility Between Different Releases]].
 
 ## 3. High Level Architecture
 
