@@ -96,7 +96,7 @@ A database may be opened in ReadOnly mode, in which the database guarantees that
 By default, RocksDB writes detailed logs to a file named LOG*. These are mostly used for debugging and analyzing a running system. Users can choose different log levels. This LOG may be configured to roll at a specified periodicity. The logging interface is pluggable. Users can plug in a different logger.
 
 #### Data Compression
-RocksDB supports snappy, zlib, bzip2, lz4, lz4_hc, and zstd compression. RocksDB may be configured to support different compression algorithms at different levels of data. Typically, `90%` of data in the Lmax level. A typical installation might configure ZSTD (or Zlib if not available) for the bottom-most level and LZ4 (or Snappy if it is not available) for other levels. See [[Compression]].
+RocksDB supports lz4, zstd, snappy, zlib, and lz4_hc compression, as well as xpress under Windows. RocksDB may be configured to support different compression algorithms for data at the bottommost level, where `90%` of data lives. A typical installation might configure ZSTD (or Zlib if not available) for the bottom-most level and LZ4 (or Snappy if it is not available) for other levels. See [[Compression]].
 
 #### Full Backups, Incremental Backups and Replication
 RocksDB has support for incremental backups. `BackupableDB` makes backing up RocksDB simple. You can read more about it here: [How to backup RocksDB?](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F)
