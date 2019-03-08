@@ -41,6 +41,18 @@ See [this document](https://developers.google.com/protocol-buffers/docs/encoding
     [index block - 1st level]
     [index block - 2nd level]
 
+Up to RocksDB version 5.14, `BlockBasedTableOptions::format_version`=2, the format of index and data blocks are the same, where the index blocks use same key format of <`user_key`,`seq`> but special values, <`offset`,`size`>, that point to data blocks. `format_version=`3,4 offer more optimized, yet forward-incompatible format for index blocks.
+- `format_version`=3 (Since RocksDB 5.15): In most of the cases the sequence number `seq` is not necessary for keys in the index blocks. In such cases, this `format_version` skips encoding the sequence number and sets `index_key_is_user_key` in TableProperties, which is used by the reader to know how to decode the index block.
+- `format_version`=4 (Since RocksDB 5.16): Changes the format of index blocks by delta encoding the index values, which are the block handles. This saves the encoding of `BlockHandle::offset` of the non-head index entries in each restart interval. If used, `TableProperties::index_value_is_delta_encoded` is set, which is used by the reader to know how to decode the index block.  The format of each key is (shared_size, non_shared_size, shared, non_shared). The format of each value, i.e., block handle, is (offset, size) whenever the shared_size is 0, which included the first entry in each restart point. Otherwise the format is delta-size = block handle size - size of last block handle.
+
+The index format in `format_version=4` would be as follows:
+
+    restart_point   0: k, v (off, sz), k, v (delta-sz), ..., k, v (delta-sz)
+    restart_point   1: k, v (off, sz), k, v (delta-sz), ..., k, v (delta-sz)
+    ...
+    restart_point n-1: k, v (off, sz), k, v (delta-sz), ..., k, v (delta-sz)
+    where, k is key, v is value, and its encoding is in parenthesis.
+
 (5) At the very end of the file is a fixed length footer that contains the `BlockHandle` of the `metaindex` and index blocks as well as a magic number.
 
        metaindex_handle: char[p];      // Block handle for metaindex
