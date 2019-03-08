@@ -53,7 +53,52 @@ Since the last sequence number could advance by either queue while the other is 
 
 `IsInSnapshot(prepare_seq, snapshot_seq)` implements the core algorithm of _WritePrepared_, which puts all teh data structures together to determines if a value tagged with `prepare_seq` is in the reading snapshot `snapshot_seq`.
 
-TODO: provide a short summary
+    inline bool IsInSnapshot(uint64_t prep_seq, uint64_t snapshot_seq,
+                             uint64_t min_uncommitted = 0,
+                             bool *snap_released = nullptr) const {
+      if (snapshot_seq < prep_seq)
+        return false;
+      if (prep_seq < min_uncommitted)
+        return true;
+      do {
+        max_evicted_seq_lb = max_evicted_seq_.load();
+        some_are_delayed = not delayed_prepared_empty_.load();
+        if (prep_seq in CommitCache) {
+          return CommitCache[prep_seq] <= snapshot_seq;
+        }
+        max_evicted_seq_ub = max_evicted_seq_.load();
+        if (max_evicted_seq_lb != max_evicted_seq_ub)
+          continue;
+        if (max_evicted_seq_ub < prep_seq) {
+          return false; // still prepared
+        }
+        if (some_are_delayed) {
+          if (prep_seq in delayed_prepared_) {
+            // might be committed but not added to commit cache yet
+            if (prep_seq not in delayed_prepared_commits_)
+              return false;
+            return delayed_prepared_commits_[prep_seq] < snapshot_seq;
+          } else {
+            // 2nd probe due to non-atomic commit cache and delayed_prepared_
+            if (prep_seq in CommitCache) {
+              return CommitCache[prep_seq] <= snapshot_seq;
+            }
+            max_evicted_seq_ub = max_evicted_seq_.load();
+          }
+        }
+      } while (UNLIKELY(max_evicted_seq_lb != max_evicted_seq_ub));
+      if (max_evicted_seq_ub < snapshot_seq) {
+        // old commit with no overlap with snapshot_seq
+        return true;
+      }
+      // commit is old so is the snapshot, check if there was an overlap
+      if (snaoshot_seq not in old_commit_map_) {
+        *snap_released = true;
+        return true;
+      }
+      bool overlapped = prepare_seq in old_commit_map_[snaoshot_seq];
+      return !overlapped;
+    }
 
 ## Flush/Compaction
 
