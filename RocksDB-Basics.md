@@ -19,7 +19,7 @@ Newer versions of this software should be backward compatible, so that existing 
 
 ## 3. High Level Architecture
 
-RocksDB is an embedded key-value store where keys and values are arbitrary byte streams. RocksDB organizes all data in sorted order and the common operations are `Get(key)`, `Put(key, val)`, `Delete(key)` and `NewIterator()`.
+RocksDB is a storage engine library of key-value store interface where keys and values are arbitrary byte streams. RocksDB organizes all data in sorted order and the common operations are `Get(key)`, `Put(key, val)`, `Delete(key)` and `NewIterator()`.
 
 The three basic constructs of RocksDB are _memtable_, _sstfile_ and _logfile_. The _memtable_ is an in-memory data structure - new writes are inserted into the _memtable_ and are optionally written to the _logfile_. The _logfile_ is a sequentially-written file on storage. When the _memtable_ fills up, it is flushed to a _sstfile_ on storage and the corresponding _logfile_ can be safely deleted.  The data in an _sstfile_ is sorted to facilitate easy lookup of keys.
 
@@ -30,10 +30,10 @@ The format of a default _sstfile_ is described in more details [here](https://gi
 #### Column Families
 RocksDB supports partitioning a database instance into multiple column families. All databases are created with a column family named "default", which is used for operations where column family is unspecified.
 
-RocksDB guarantees users a consistent view across column families, including after crash recovery when WAL is enabled. It also supports atomic cross-column family operations via the `WriteBatch` API.
+RocksDB guarantees users a consistent view across column families, including after crash recovery when WAL is enabled or atomic flush is enabled. It also supports atomic cross-column family operations via the `WriteBatch` API.
 
 #### Updates
-A `Put` API inserts a single key-value to the database. If the key already exists in the database, the previous value will be overwritten. A `Write` API allows multiple keys-values to be atomically inserted into the database. The database guarantees that either all of the keys-values in a single `Write` call will be inserted into the database or none of them will be inserted into the database. If any of those keys already exist in the database, previous values will be overwritten.
+A `Put` API inserts a single key-value to the database. If the key already exists in the database, the previous value will be overwritten. A `Write` API allows multiple keys-values to be atomically inserted, updated, or deleted in the database. The database guarantees that either all of the keys-values in a single `Write` call will be inserted into the database or none of them will be inserted into the database. If any of those keys already exist in the database, previous values will be overwritten. A special `Range Delete` can be used to delete all keys from a range.
 
 #### Gets, Iterators and Snapshots
 Keys and values are treated as pure byte streams. There is no limit to the size of a key or a value. The `Get` API allows an application to fetch a single key-value from the database. The `MultiGet` API allows an application to retrieve a bunch of keys from the database. All the keys-values returned via a `MultiGet` call are consistent with one-another.
@@ -48,18 +48,18 @@ Snapshots are not persisted across database restarts: a reload of the RocksDB li
 RocksDB supports multi-operational transactions. It supports both of optimistic and pessimistic mode. See [[Transactions]].
 
 #### Prefix Iterators
-Most LSM engines cannot support an efficient `RangeScan` API because it needs to look into every data file. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. RocksDB uses this to its advantage. Applications can configure a `prefix_extractor` to specify a key-prefix. RocksDB uses this to store blooms for every key-prefix. An iterator that specifies a prefix (via ReadOptions) will use these bloom bits to avoid looking into data files that do not contain keys with the specified key-prefix.
+Most LSM-tree engines cannot support an efficient `RangeScan` API because it needs to look into multiple data file. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. RocksDB uses this to its advantage. Applications can configure a `prefix_extractor` to specify a key-prefix. RocksDB uses this to store blooms for every key-prefix. An iterator that specifies a prefix (via ReadOptions) will use these bloom bits to avoid looking into data files that do not contain keys with the specified key-prefix.
 
 #### Persistence
-RocksDB has a transaction log. All Puts are stored in an in-memory buffer called the memtable as well as optionally inserted into the transaction log. On restart, it re-processes all the transactions that were recorded in the transaction log.
+RocksDB has a [[Write Ahead Log]] (WAL). All Puts are stored in an in-memory buffer called the memtable as well as optionally inserted into WAL. On restart, it re-processes all the transactions that were recorded in the log.
 
-The transaction log can be configured to be stored in a directory different from the directory where the SST files are stored. This is necessary for those cases in which you might want to store all data files in non-persistent fast storage. At the same time, you can ensure no data loss by putting all transaction logs on slower but persistent storage.
+WAL can be configured to be stored in a directory different from the directory where the SST files are stored. This is necessary for those cases in which you might want to store all data files in non-persistent fast storage. At the same time, you can ensure no data loss by putting all transaction logs on slower but persistent storage.
 
 Each `Put` has a flag, set via `WriteOptions`, which specifies whether or not the `Put` should be inserted into the transaction log. The `WriteOptions` may also specify whether or not a sync call is issued to the transaction log before a `Put` is declared to be committed.
 
-Internally, RocksDB uses a batch-commit mechanism to batch transactions into the transaction log so that it can potentially commit multiple transactions using a single sync call.
+Internally, RocksDB uses a batch-commit mechanism to batch transactions into the log so that it can potentially commit multiple transactions using a single sync call.
 
-#### Fault Tolerance
+#### Data Checksuming
 RocksDB uses a checksum to detect corruptions in storage. These checksums are for each SST file block (typically between `4K` to `128K` in size). A block, once written to storage, is never modified. RocksDB dynamically detects hardware support for checksum computations and avails itself of that support when available. 
 
 #### Multi-Threaded Compactions
