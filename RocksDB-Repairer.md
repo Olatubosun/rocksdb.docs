@@ -1,6 +1,7 @@
 ## Overview
 
 Repairer does best effort recovery to recover as much data as possible after a disaster without compromising consistency. It does not guarantee bringing the database to a time consistent state.
+Note: Currently there is a limitation that un-flushed column families will be lost after repair. This would happen even if the DB is in healthy state.
 
 ## Usage
 
@@ -79,3 +80,7 @@ We generate descriptor contents:
 3. For each table: if it overlaps earlier table, place in level-0, else place in level-M.
 4. We can provide options for time consistent recovery and unsafe recovery (ignore checksum failure when applicable)
 5. Store per-table metadata (smallest, largest, largest-seq#, ...) in the table's meta section to speed up ScanTable.
+
+## Limitations
+
+If the column family is created recently and not persisted in sst files by a flush, then it will be dropped during the repair process. With this limitation repair would might even damage a healthy db if its column families are not flushed yet.
