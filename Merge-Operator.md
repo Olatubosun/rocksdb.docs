@@ -394,7 +394,7 @@ Typically a merge operator is invoked only if there are at least two merge opera
 
 Using our generic MergeOperator interface, we now have the ability to implement the json example.
 
-```
+```cpp
     // A 'model' pseudo-code merge operator with json update semantics
     // We pretend we have some in-memory data-structure (called JsonDataStructure) for
     // parsing and serializing json strings.
