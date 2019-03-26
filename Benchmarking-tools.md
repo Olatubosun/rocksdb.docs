@@ -204,6 +204,8 @@ USAGE:
       faster when the process is bound to CPU and memory of same node. Use
       "$numactl --hardware" command to see NUMA memory architecture.)
       type: bool default: false
+    -enable_pipelined_write (Allow WAL and memtable writes to be pipelined)
+      type: bool default: true
     -enable_write_thread_adaptive_yield (Use a yielding spin loop for brief
       writer thread waits.) type: bool default: false
     -env_uri (URI for registry Env lookup. Mutually exclusive with --hdfs.)
