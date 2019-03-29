@@ -8,7 +8,7 @@ The example of setting up a bloom filter:
 ```
   rocksdb::BlockBasedTableOptions table_options;
   table_options.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10, false));
-  options.table_factory.reset(
+  my_cf_options.table_factory.reset(
       rocksdb::NewBlockBasedTableFactory(table_options));
 ```
 
