@@ -3,6 +3,15 @@ For any arbitrary set of keys, an algorithm may be applied to create a bit array
 
 In RocksDB, when the filter policy is set every newly created SST file will contain a Bloom filter, which is used to determine if the file may contain the key we're looking for. The filter is essentially a bit array. Multiple hash functions are applied to the given key, each specifying a bit in the array that will be set to 1. At read time also the same hash functions are applied on the search key, the bits are checked, i.e., probe, and the key is definitely does not exists if at least one of the probes return 0.
 
+The example of setting up a bloom filter:
+
+```
+  rocksdb::BlockBasedTableOptions table_options;
+  table_options.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10, false));
+  options.table_factory.reset(
+      rocksdb::NewBlockBasedTableFactory(table_options));
+```
+
 ### Life Cycle
 In RocksDB, each SST file has a corresponding Bloom filter. It is created when the SST file is written to storage, and is stored as part of the associated SST file. Bloom filters are constructed for files in all levels in the same way (Note blooms of the last level could be optionally skipped by setting `optimize_filters_for_hits`).
 
