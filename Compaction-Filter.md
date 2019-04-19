@@ -24,4 +24,4 @@ If there are multiple versions of the same key from the input of the compaction,
 
 When merge is being used, compaction filter is invoked per merge operand. The result of compaction filter is applied to the merge operand before merge operator is invoked.
 
-If there is a snapshot taken later than the key/value pair, the key/value pair cannot be filtered and compaction filter will not be invoked on it.
+Before release 6.0, if there is a snapshot taken later than the key/value pair, RocksDB always try to prevent the key/value pair  from being filtered by compaction filter so that users can preserve the same view from a snapshot, unless the compaction filter returns `IgnoreSnapshots() = true`. However, this feature is deleted since 6.0, after realized that the feature has a bug which can't be easily fixed. Since release 6.0, with compaction filter enabled, RocksDB always invoke filtering for any key, even if it knows it will make a snapshot not repeatable.
