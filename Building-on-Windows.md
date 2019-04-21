@@ -4,7 +4,7 @@ This is a simple step-by-step explanation of how I was able to build RocksDB (or
 
 ## Pre-requisites
 1. Microsoft Visual Studio 2015 (Community) with "Desktop development with C++" installed
-2. [CMake](https://cmake.org/)
+2. [CMake](https://cmake.org/) - I used version 3.14.2 installed from the 64bit MSI installer
 3. [Git](https://git-scm.com/downloads) - I used the Windows Git Bash.
 4. [Mercurial](https://www.mercurial-scm.org/wiki/Download) - I used the 64bit MSI installer
 5. wget
