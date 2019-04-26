@@ -49,7 +49,7 @@ In MongoRocks, just call this API from the mongo shell:
 
     > db.serverStatus()["rocksdb"]["estimate-table-readers-mem"]
 
-In [partitioned index/filters](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters) the partitions are alwasy stored in block cache. The top-level index can be configured to be stored in heap or block cache via `cache_index_and_filter_blocks`.
+In [partitioned index/filters](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters) the partitions are always stored in block cache. The top-level index can be configured to be stored in heap or block cache via `cache_index_and_filter_blocks`.
 
 ## Memtable
 
