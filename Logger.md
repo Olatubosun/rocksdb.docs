@@ -6,7 +6,7 @@ RocksDB supports a generalized message logging infrastructure. RocksDB caters to
 
 The [Logger](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/env.h#L663) class provides the interface definition for logging messages from RocksDB. 
 
-The various implementations of Logger available are :
+The various implementations of Logger available are:
 
 | Implementation        | Use           |
 | ------------- |:-------------:| 
