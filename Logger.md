@@ -17,6 +17,6 @@ The various implementations of Logger available are:
 | AutoRollLogger| Automatically rolls files as they reach a certain size. Typically used for servers|
 | WinLogger| Specialized logger for Windows OS|
 
-# Writing your custom Logger
+# Writing Your Custom Logger
 
 Users are encouraged to write their own logging infrastructure as per the use case by extending any one of the existing logger implementations.
