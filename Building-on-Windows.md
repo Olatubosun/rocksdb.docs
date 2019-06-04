@@ -156,7 +156,7 @@ msbuild rocksdb.sln /p:Configuration=Release
 ```
 
 # Method 2 (Win10 + Visual Studio 2017/2019)
-This is a very simple step-by-step explanation of how I was able to build RocksDB on Microsoft Windows 10. It should be very easy for users who uses vcpkg to install RocksDB but vcpkg build RocksDB as a shared library by default. There are only two things we need to do after we have installed vcpkg already. 
+This is a very simple step-by-step explanation of how I was able to build RocksDB on Microsoft Windows 10. It should be very easy for users who uses vcpkg to install RocksDB. However, vcpkg build RocksDB as a shared library by default. There are two things we need to do since we have installed vcpkg already. 
 
 ## Step 1
 * `cd %home%\vcpkg\ports\rocksdb`, %home% is the path where you installed your vcpkg
