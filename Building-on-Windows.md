@@ -1,5 +1,8 @@
 # Building on Windows
 
+This is a simple explanation of how to build RocksDB in **Win10 + Visual Studio 2015**(Method 1) and **Win10 + Visual Studio 2017/2019(Method)**. You could follow the steps below.
+
+# Method 1 (Win10 + Visual Studio 2015)
 This is a simple step-by-step explanation of how I was able to build RocksDB (or RocksJava) and all of the 3rd-party libraries on Microsoft Windows 10. The Windows build system was already in place, however it took some trial-and-error for me to be able to build the 3rd-party libraries and incorporate them into the build.
 
 ## Pre-requisites
@@ -151,3 +154,15 @@ set THIRDPARTY_HOME=C:/Users/aretter/code
 cmake -G "Visual Studio 14 Win64" -DJNI=1 -DGFLAGS=1 -DSNAPPY=1 -DLZ4=1 -DZLIB=1 -DZSTD=1 -DXPRESS=1 ..
 msbuild rocksdb.sln /p:Configuration=Release
 ```
+
+# Method 2 (Win10 + Visual Studio 2017/2019)
+This is a very simple step-by-step explanation of how I was able to build RocksDB on Microsoft Windows 10. It should be very easy for users who uses vcpkg to install RocksDB but vcpkg build RocksDB as a shared library by default. There are only two things we need to do after we have installed vcpkg already. 
+
+## Step 1
+* `cd %home%\vcpkg\ports\rocksdb`, %home% is the path where you installed your vcpkg
+* `set(VCPKG_LIBRARY_LINKAGE static)` to the top of portfile.cmake and then running `vcpkg install rocksdb:x64-windows`. If you have installed rocksdb as a static library, run `vcpkg remove rocksdb:x64-window` before install command. The resultant static library can be found in `%home%\vcpkg\packages\rocksdb_x64-windows\lib\rocksdb.lib` rather than `%home%\vcpkg\packages\rocksdb_x64-windows\lib\rocksdb-shared.lib`.
+
+## Step 2
+* included Shlwapi.lib and Rpcrt4.lib as the input of your project linker manually.
+
+
