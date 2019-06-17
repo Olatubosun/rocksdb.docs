@@ -8,7 +8,7 @@ Use `options.compression` to specify the compression to use. By default it is Sn
 
 If you want to further reduce the in-memory and have some free CPU to use, you can try to set a heavy-weight compression in the latter by setting `options.bottommost_compression`. The bottommost level will be compressed using this compression style. Usually the bottommost level contains majority of the data, so users get almost optimal space setting, without paying CPU for compress all the data ever flowing to any level. We recommend ZSTD. If it is not available, Zlib is the second choice.
 
-If you want have a lot of free CPU and want to reduce not just space but write amplification too, try to set `options.compression` to heavy weight compression type. We recommend ZSTD. Use Zlib if it is not available.
+If you have a lot of free CPU and want to reduce not just space but write amplification too, try to set `options.compression` to heavy weight compression type. We recommend ZSTD. Use Zlib if it is not available.
 
 With an countermanded legacy setting `options.compression_per_level`, you can have an even finer control of compression style of each level using. When this option is used, `options.compression` will not take effective anymore, while `options.bottommost_compression` still applies. But we believe there are very few use cases where this tuning will help.
 
