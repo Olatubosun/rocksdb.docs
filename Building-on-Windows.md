@@ -58,16 +58,16 @@ The resultant static library can be found in `%CODE_HOME%\snappy-1.1.7\build\Deb
 ### Build LZ4
 ```
 cd %CODE_HOME%
-wget https://github.com/lz4/lz4/archive/v1.8.3.zip
-unzip v1.8.3.zip
-cd lz4-1.8.3
+wget https://github.com/lz4/lz4/archive/v1.9.1.zip
+unzip v1.9.1.zip
+cd lz4-1.9.1
 cd visual\VS2010
 devenv lz4.sln /upgrade
 msbuild lz4.sln /p:Configuration=Debug /p:Platform=x64
 msbuild lz4.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-The resultant static library can be found in `%CODE_HOME%\lz4-1.8.3\visual\VS2010\bin\x64_Debug\liblz4_static.lib` or `%CODE_HOME%\lz4-1.8.3\visual\VS2010\bin\x64_Release\liblz4_static.lib`.
+The resultant static library can be found in `%CODE_HOME%\lz4-1.9.1\visual\VS2010\bin\x64_Debug\liblz4_static.lib` or `%CODE_HOME%\lz4-1.9.1\visual\VS2010\bin\x64_Release\liblz4_static.lib`.
 
 
 ### Build ZLib
@@ -124,7 +124,7 @@ set(SNAPPY_INCLUDE ${SNAPPY_HOME} ${SNAPPY_HOME}/build)
 set(SNAPPY_LIB_DEBUG ${SNAPPY_HOME}/build/Debug/snappy.lib)
 set(SNAPPY_LIB_RELEASE ${SNAPPY_HOME}/build/Release/snappy.lib)
 
-set(LZ4_HOME $ENV{THIRDPARTY_HOME}/lz4-1.8.3)
+set(LZ4_HOME $ENV{THIRDPARTY_HOME}/lz4-1.9.1)
 set(LZ4_INCLUDE ${LZ4_HOME}/lib)
 set(LZ4_LIB_DEBUG ${LZ4_HOME}/visual/VS2010/bin/x64_Debug/liblz4_static.lib)
 set(LZ4_LIB_RELEASE ${LZ4_HOME}/visual/VS2010/bin/x64_Release/liblz4_static.lib)
