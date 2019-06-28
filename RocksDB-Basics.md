@@ -101,7 +101,7 @@ RocksDB supports lz4, zstd, snappy, zlib, and lz4_hc compression, as well as xpr
 #### Full Backups and Replication
 RocksDB has provides a backup engine, `BackupableDB`. You can read more about it here: [How to backup RocksDB?](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F)
 
-RocksDB itself is not a replicated, but it provides some helper functions to enable users to implement their replication system on top or RocksDB, see [[Replication Helpers]]
+RocksDB itself is not a replicated, but it provides some helper functions to enable users to implement their replication system on top of RocksDB, see [[Replication Helpers]]
 
 #### Support for Multiple Embedded Databases in the same process
 A common use-case for RocksDB is that applications inherently partition their data set into logical partitions or shards. This technique benefits application load balancing and fast recovery from faults. This means that a single server process should be able to operate multiple RocksDB databases simultaneously. This is done via an environment object named `Env`. Among other things, a thread pool is associated with an `Env`. If applications want to share a common thread pool (for background compactions) among multiple database instances, then it should use the same `Env` object for opening those databases.
