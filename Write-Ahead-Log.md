@@ -1,6 +1,6 @@
 ## Overview
 
-Every update to RocksDB is written to two places: 1) an in-memory data structure called memtable (to be flushed to SST files later) and 2) write ahead log(WAL) on disk. In the event of a failure, write ahead logs can be used to completely recover the data in the memtable, which is necessary to restore the database to the original state. In the default configuration, RocksDB guarantees process crash consistency by fflush()ing the WAL after every user write.
+Every update to RocksDB is written to two places: 1) an in-memory data structure called memtable (to be flushed to SST files later) and 2) write ahead log(WAL) on disk. In the event of a failure, write ahead logs can be used to completely recover the data in the memtable, which is necessary to restore the database to the original state. In the default configuration, RocksDB guarantees process crash consistency by flushing the WAL after every user write.
 
 ## Life Cycle of a WAL
 
