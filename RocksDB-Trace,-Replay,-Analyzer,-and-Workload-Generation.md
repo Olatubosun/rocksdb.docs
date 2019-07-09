@@ -1,5 +1,3 @@
-# Untitled
-
 # Query Tracing and Replaying
 
 The trace_replay APIs allow the user to track down the query information to a trace file. In the current implementation, Get, WriteBatch (Put, Delete, Merge, SingleDelete, and DeleteRange), Iterator (Seek and SeekForPrev) are the queries that tracked by the trace_replay API. Key, query time stamp, value (if applied), cf_id forms one trace record. Since one lock is used to protect the tracing instance and there will be extra IOs for the trace file, the performance of DB will be influenced. According to the current test on the MyRocks and ZippyDB shadow server, the performance hasn't been a concern in those shadows. The trace records from the same DB instance are written to a binary trace file. User can specify the path of trace file (e.g., store in different storage devices to reduce the IO influence).
