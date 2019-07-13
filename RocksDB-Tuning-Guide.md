@@ -95,7 +95,7 @@ In LSM architecture, there are two background processes: flush and compaction. B
  
 To benefit from more threads you might need to set these options to change the max number of concurrent compactions and flushes:
 
-**max_background_compactions** is the maximum number of concurrent background compactions. The default is 1, but to fully utilize your CPU and storage you might want to increase this to approximately number of cores in the system.
+**max_background_compactions** is the maximum number of concurrent background compactions. The default is 1, but to fully utilize your CPU and storage you might want to increase this to the minimum of (the number of cores in the system, the disk throughput divided by the average throughput of one compaction thread).
 
 **max_background_flushes** is the maximum number of concurrent flush operations. It is usually good enough to set this to 1.
 
