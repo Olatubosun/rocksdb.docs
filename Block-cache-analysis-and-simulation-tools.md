@@ -42,6 +42,7 @@ Must first convert the binary trace file into human readable trace file.
 
 
 # Analyzing block cache traces
+Provides insights into how to improve a caching policy. 
 
 # Trace file format
 
