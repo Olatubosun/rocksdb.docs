@@ -179,8 +179,114 @@ block_cache_pysim.sh combines the outputs of block_cache_pysim.py into following
 `trace` reports the misses observed in the collected trace. 
 
 # Analyzing Block Cache Traces
-Provides insights into how to improve a caching policy. 
+The `block_cache_trace_analyzer` analyzes a trace file and outputs useful statistics of the access pattern. It provides insights into how to tune and improve a caching policy. 
 
+Analyzer options:
+```
+ -access_count_buckets (Group number of blocks by their access count given
+  these buckets. If specified, the analyzer will output a detailed analysis
+  on the number of blocks grouped by their access count break down by block
+  type and column family.) type: string default: ""
+-analyze_blocks_reuse_k_reuse_window (Analyze the percentage of blocks that
+  are accessed in the [k, 2*k] seconds are accessed again in the next [2*k,
+  3*k], [3*k, 4*k],...,[k*(n-1), k*n] seconds. ) type: int32 default: 0
+-analyze_bottom_k_access_count_blocks (Print out detailed access
+  information for blocks with their number of accesses are the bottom k
+  among all blocks.) type: int32 default: 0
+-analyze_callers (The list of callers to perform a detailed analysis on. If
+  speicfied, the analyzer will output a detailed percentage of accesses for
+  each caller break down by column family, level, and block type. A list of
+  available callers are: Get, MultiGet, Iterator, ApproximateSize,
+  VerifyChecksum, SSTDumpTool, ExternalSSTIngestion, Repair, Prefetch,
+  Compaction, CompactionRefill, Flush, SSTFileReader, Uncategorized.)
+  type: string default: ""
+-analyze_correlation_coefficients_labels (Analyze the correlation
+  coefficients of features such as number of past accesses with regard to
+  the number of accesses till the next access.) type: string default: ""
+-analyze_correlation_coefficients_max_number_of_values (The maximum number
+  of values for a feature. If the number of values for a feature is larger
+  than this max, it randomly selects 'max' number of values.) type: int32
+  default: 1000000
+-analyze_get_spatial_locality_buckets (Group data blocks by their
+  statistics using these buckets.) type: string default: ""
+-analyze_get_spatial_locality_labels (Group data blocks using these
+  labels.) type: string default: ""
+-analyze_top_k_access_count_blocks (Print out detailed access information
+  for blocks with their number of accesses are the top k among all blocks.)
+  type: int32 default: 0
+-block_cache_analysis_result_dir (The directory that saves block cache
+  analysis results.) type: string default: ""
+-block_cache_sim_config_path (The config file path. One cache configuration
+  per line. The format of a cache configuration is
+  cache_name,num_shard_bits,ghost_capacity,cache_capacity_1,...,cache_capacity_N. 
+  Supported cache names are lru, lru_priority, lru_hybrid. User may also add 
+  a prefix 'ghost_' to a cache_name to add a ghost cache in front of the real 
+  cache. ghost_capacity and cache_capacity can be xK, xM or xG where 
+  x is a positive number.)
+  type: string default: ""
+-block_cache_trace_downsample_ratio (The trace collected accesses on one in
+  every block_cache_trace_downsample_ratio blocks. We scale down the
+  simulated cache size by this ratio.) type: int32 default: 1
+-block_cache_trace_path (The trace file path.) type: string default: ""
+-cache_sim_warmup_seconds (The number of seconds to warmup simulated
+  caches. The hit/miss counters are reset after the warmup completes.)
+  type: int32 default: 0
+-human_readable_trace_file_path (The filt path that saves human readable
+  access records.) type: string default: ""
+-mrc_only (Evaluate alternative cache policies only. When this flag is
+  true, the analyzer does NOT maintain states of each block in memory for
+  analysis. It only feeds the accesses into the cache simulators.)
+  type: bool default: false
+-print_access_count_stats (Print access count distribution and the
+  distribution break down by block type and column family.) type: bool
+  default: false
+-print_block_size_stats (Print block size distribution and the distribution
+  break down by block type and column family.) type: bool default: false
+-print_data_block_access_count_stats (Print data block accesses by user Get
+  and Multi-Get.) type: bool default: false
+-reuse_distance_buckets (Group blocks by their reuse distances given these
+  buckets. For example, if 'reuse_distance_buckets' is '1K,1M,1G', we will
+  create four buckets. The first three buckets contain the number of blocks
+  with reuse distance less than 1KB, between 1K and 1M, between 1M and 1G,
+  respectively. The last bucket contains the number of blocks with reuse
+  distance larger than 1G. ) type: string default: ""
+-reuse_distance_labels (Group the reuse distance of a block using these
+  labels. Reuse distance is defined as the cumulated size of unique blocks
+  read between two consecutive accesses on the same block.) type: string
+  default: ""
+-reuse_interval_buckets (Group blocks by their reuse interval given these
+  buckets. For example, if 'reuse_distance_buckets' is '1,10,100', we will
+  create four buckets. The first three buckets contain the number of blocks
+  with reuse interval less than 1 second, between 1 second and 10 seconds,
+  between 10 seconds and 100 seconds, respectively. The last bucket
+  contains the number of blocks with reuse interval longer than 100
+  seconds.) type: string default: ""
+-reuse_interval_labels (Group the reuse interval of a block using these
+  labels. Reuse interval is defined as the time between two consecutive
+  accesses on the same block.) type: string default: ""
+-reuse_lifetime_buckets (Group blocks by their reuse lifetime given these
+  buckets. For example, if 'reuse_lifetime_buckets' is '1,10,100', we will
+  create four buckets. The first three buckets contain the number of blocks
+  with reuse lifetime less than 1 second, between 1 second and 10 seconds,
+  between 10 seconds and 100 seconds, respectively. The last bucket
+  contains the number of blocks with reuse lifetime longer than 100
+  seconds.) type: string default: ""
+-reuse_lifetime_labels (Group the reuse lifetime of a block using these
+  labels. Reuse lifetime is defined as the time interval between the first
+  access on a block and the last access on the same block. For blocks that
+  are only accessed once, its lifetime is set to kMaxUint64.) type: string
+  default: ""
+-skew_buckets (Group the skew labels using these buckets.) type: string
+  default: ""
+-skew_labels (Group the access count of a block using these labels.)
+  type: string default: ""
+-timeline_labels (Group the number of accesses per block per second using
+  these labels. Possible labels are a combination of the following: cf
+  (column family), sst, level, bt (block type), caller, block. For example,
+  label "cf_bt" means the number of acccess per second is grouped by unique
+  pairs of "cf_bt". A label "all" contains the aggregated number of
+  accesses per second across all possible labels.) type: string default: ""
+```
 
 
 
