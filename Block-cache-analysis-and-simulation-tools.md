@@ -152,11 +152,19 @@ A block_cache_pysim.sh combines outputs of block_cache_pysim.py into following f
 | pyhb | Hyperbolic Caching.<br> Aaron Blankstein, Siddhartha Sen, and Michael J. Freedman. 2017. Hyperbolic caching: flexible caching for web applications. In Proceedings of the 2017 USENIX Conference on Usenix Annual Technical Conference (USENIX ATC '17). USENIX Association, Berkeley, CA, USA, 499-511. |
 | pyccbt | Cost class: block type  |
 | pycccfbt | Cost class: column family + block type |
-| ts | Tomphson sampling |
-| linucb | Linear UCB |
+| ts | Thompson sampling <br> Daniel J. Russo, Benjamin Van Roy, Abbas Kazerouni, Ian Osband, and Zheng Wen. 2018. A Tutorial on Thompson Sampling. Found. Trends Mach. Learn. 11, 1 (July 2018), 1-96. DOI: https://doi.org/10.1561/2200000070 |
+| linucb | Linear UCB <br> Lihong Li, Wei Chu, John Langford, and Robert E. Schapire. 2010. A contextual-bandit approach to personalized news article recommendation. In Proceedings of the 19th international conference on World wide web (WWW '10). ACM, New York, NY, USA, 661-670. DOI=http://dx.doi.org/10.1145/1772690.1772758 |
 | trace | Trace |
+| *_hybrid | A hybrid cache that also caches row keys. |
 
+`py*` caches uses random sampling at eviction time. It samples 64 random entries in the cache, sorts these entries based on a priority function, e.g., LRU, and evicts from the lowest priority entry until the cache has enough capacity to insert the new entry.
 
+`pycc*` caches group cached entries by a cost class. The cache maintains aggregated statistics for each cost class such as number of hits, total size. A cached entry is also tagged with one cost class. At eviction time, the cache samples 64 random entries and group them by their cost class. It then evicts entries based on their cost class's statistics. 
+
+`ts` and `linucb` are two caches using reinforcement learning. The cache is configured with N policies, e.g., LRU, MRU, LFU, etc. The cache learns which policy is the best overtime and selects the best policy for eviction. The cache rewards the selected policy if it has not evicted the new key before. 
+`ts` does not use any feature of a block while `linucb` uses three features: a block's level, column family, and block type. 
+
+`trace` reports the misses observed in the collected trace. 
 
 # Analyzing Block Cache Traces
 Provides insights into how to improve a caching policy. 
