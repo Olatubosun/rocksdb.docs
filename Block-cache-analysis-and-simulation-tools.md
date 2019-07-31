@@ -116,9 +116,9 @@ It contains two important parameters:
 `cache_sim_warmup_seconds`: The number of seconds used for warmup. 
 
 The analyzer outputs a few files: 
-```
-TODO.
-```
+- A miss ratio curve file: {trace_duration_in_seconds}_{total_accesses}_mrc. 
+- Three miss ratio timeline files per second (1), per minute (60), and per hour (3600). 
+- Three number of misses timeline files per second (1), per minute (60), and per hour (3600). 
 
 ## Python Cache Simulators
 We need to first convert the binary trace file into human readable trace file. 
@@ -134,9 +134,21 @@ To simulate a batch of cache configurations:
 ```
 bash block_cache_pysim.sh /tmp/human_readable_block_trace_test_example /tmp/sim_results/bench 1 0 30
 ```
-A block_cache_pysim.py output the following files: 
+block_cache_pysim.py output the following files: 
+- A miss ratio curve file: `data-ml-mrc-{cache_type}-{cache_size}-{target_cf_name}`. 
+- Two files on the timeline of miss ratios per minute (60), and per hour (3600). 
+- Two files on the timeline of number of misses per second (1), per minute (60), and per hour (3600). 
+For `ts` and `linucb`, it also outputs the following files: 
+- Two files on the timeline of percentage of times a policy is selected:  per minute (60) and per hour (3600). 
+- Two files on the timeline of number of times a policy is selected: per minute (60) and per hour (3600). 
 
-A block_cache_pysim.sh combines outputs of block_cache_pysim.py into following files: 
+block_cache_pysim.sh combines the outputs of block_cache_pysim.py into following files: 
+- One miss ratio curve file per target column family: `ml_{target_cf_name}_mrc`
+- One files on the timeline of number of misses per `{target_cf_name}{capacity}{time_unit}`: `ml_{target_cf_name}{capacity}{time_unit}miss_timeline`
+- One files on the timeline of miss ratios per `{target_cf_name}{capacity}{time_unit}`: `ml_{target_cf_name}{capacity}{time_unit}miss_ratio_timeline`
+- One files on the timeline of number of times a policy is selected per `{target_cf_name}{capacity}{time_unit}`: `ml_{target_cf_name}{capacity}{time_unit}policy_timeline`
+- One files on the timeline of percentage of times a policy is selected per `{target_cf_name}{capacity}{time_unit}`: `ml_{target_cf_name}{capacity}{time_unit}policy_ratio_timeline`
+
 
 ### Supported Cache Simulators 
 
