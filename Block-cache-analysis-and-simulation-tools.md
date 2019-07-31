@@ -1,6 +1,12 @@
 RocksDB configures a certain amount of main memory as a block cache to accelerate data access. Understanding the efficiency of block cache is very important. The block cache analysis and simulation tools help a user to collect block cache access traces, analyze its access pattern, and evaluate alternative caching policies. 
 
-# Tracing block cache accesses
+### Table of Contents
+**[Tracing block cache accesses](#tracing-block-cache-accesses)**<br>
+**[Trace Format](#trace-format)**<br>
+**[Cache Simulations](#cache-simulations)**<br>
+**[Analyzing Block Cache Traces](#analyzing-block-cache-traces)**<br>
+
+# Tracing Block Cache Accesses
 RocksDB supports block cache tracing APIs `StartBlockCacheTrace` and `EndBlockCacheTrace`. When tracing starts, RocksDB logs detailed information of block cache accesses into a trace file. A user must specify a trace option and trace file path when start tracing block cache accesses.
 
 A trace option contains `max_trace_file_size` and `sampling_frequency`.
@@ -33,7 +39,9 @@ To trace block cache accesses in db_bench.
 ./db_bench --block_cache_trace_file=/tmp/block_trace_test_example --block_cache_trace_sampling_frequency=100 -block_cache_trace_max_trace_file_size_in_bytes=1024*1024*1024
 ```
 
-# Cache simulations
+# Trace file format
+
+# Cache Simulations
 Supported simulators. 
 - RocksDB cache simulators.
 - Python cache simulators. 
@@ -41,9 +49,9 @@ Supported simulators.
 Must first convert the binary trace file into human readable trace file. 
 
 
-# Analyzing block cache traces
+# Analyzing Block Cache Traces
 Provides insights into how to improve a caching policy. 
 
-# Trace file format
+
 
 
