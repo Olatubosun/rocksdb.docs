@@ -99,7 +99,7 @@ lru,0,0,16M,256M,1G,2G,4G,8G,12G,16G,1T
 ```
 | Column Name   |  Values     |
 | :------------- |:-------------|
-| Cache name     | lru: LRU <br> lru_priority: LRU with midpoint insertion <br> lru_hybrid: LRU that also caches row keys <br> ghost_*: A ghost cache for admission control  |
+| Cache name     | lru: LRU <br> lru_priority: LRU with midpoint insertion <br> lru_hybrid: LRU that also caches row keys <br> ghost_*: A ghost cache for admission control. It admits an entry on its second access.  |
 | Number of shard bits      |  unsigned long     |
 | Ghost cache capacity      |  unsigned long     |
 | Cache sizes      |  A list of comma separated cache sizes      |
