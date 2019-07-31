@@ -117,7 +117,7 @@ It contains two important parameters:
 `cache_sim_warmup_seconds`: The number of seconds used for warmup. The reported miss ratio does NOT include the number of misses/accesses during the warmup.
 
 The analyzer outputs a few files: 
-- A miss ratio curve file: {trace_duration_in_seconds}_{total_accesses}_mrc. 
+- A miss ratio curve file: `{trace_duration_in_seconds}_{total_accesses}_mrc`. 
 - Three miss ratio timeline files per second (1), per minute (60), and per hour (3600). 
 - Three number of misses timeline files per second (1), per minute (60), and per hour (3600). 
 
