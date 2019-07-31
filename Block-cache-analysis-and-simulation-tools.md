@@ -5,8 +5,8 @@ RocksDB configures a certain amount of main memory as a block cache to accelerat
 * **[Tracing block cache accesses](#tracing-block-cache-accesses)**<br>
 * **[Trace Format](#trace-format)**<br>
 * **[Cache Simulations](#cache-simulations)**<br>
-  * [RocksDB Cache Simulators](#rocksdb-cache-simulators)<br>
-  * [Python Cache Simulators](#python-cache-simulators)<br>
+  * [RocksDB Cache Simulations](#rocksdb-cache-simulations)<br>
+  * [Python Cache Simulations](#python-cache-simulations)<br>
     * [Supported Cache Simulators](#supported-cache-simulators)<br>
 * **[Analyzing Block Cache Traces](#analyzing-block-cache-traces)**<br>
 
@@ -64,7 +64,7 @@ db->EndBlockCacheTrace()
 ```
 
 # Trace Format
-We can convert the generated binary trace file into human readable trace file in csv format. It contains the following columns. 
+We can convert the generated binary trace file into human readable trace file in csv format. It contains the following columns: 
 
 | Column Name   |  Values     | Comment |
 | :------------- |:-------------|:-------------|
@@ -91,8 +91,9 @@ We can convert the generated binary trace file into human readable trace file in
 | Block offset in the SST file | unsigned long  | |
 
 # Cache Simulations
-We support running cache simulators using both RocksDB built-in caches and caching policies written in python. 
-## RocksDB Cache Simulators
+We support running cache simulators using both RocksDB built-in caches and caching policies written in python. The cache simulator replays the trace and reports the miss ratio given a cache capacity and a caching policy.
+
+## RocksDB Cache Simulations
 To replay the trace and evaluate alternative policies, we first need to provide a cache configuration file. An example file contains the following content: 
 ```
 lru,0,0,16M,256M,1G,2G,4G,8G,12G,16G,1T
@@ -111,26 +112,47 @@ Next, we can start simulating caches.
 
 It contains two important parameters: 
 
-`block_cache_trace_downsample_ratio`: The sampling frequency we used to collect trace. The simulator will scale down the given cache size by this factor. For example, with downsample_ratio of 100, the cache simulator will create a 1 GB cache to simulate a 100 GB cache. 
+`block_cache_trace_downsample_ratio`: The sampling frequency we used when collecting the trace. The simulator scales down the given cache size by this factor. For example, with downsample_ratio of 100, the cache simulator creates a 1 GB cache to simulate a 100 GB cache. 
 
-`cache_sim_warmup_seconds`: The number of seconds used for warmup. 
+`cache_sim_warmup_seconds`: The number of seconds used for warmup. The reported miss ratio does NOT include the number of misses/accesses during the warmup.
 
 The analyzer outputs a few files: 
 - A miss ratio curve file: {trace_duration_in_seconds}_{total_accesses}_mrc. 
 - Three miss ratio timeline files per second (1), per minute (60), and per hour (3600). 
 - Three number of misses timeline files per second (1), per minute (60), and per hour (3600). 
 
-## Python Cache Simulators
-We need to first convert the binary trace file into human readable trace file. 
+## Python Cache Simulations
+We also support a more diverse set of caching policies written in python. In addition to LRU, it provides replacement policies using reinforcement learning, cost class, and more. To use the python cache simulator, we need to first convert the binary trace file into human readable trace file. 
 ```
 ./block_cache_trace_analyzer -block_cache_trace_path=/tmp/binary_trace_test_example -human_readable_trace_file_path=/tmp/human_readable_block_trace_test_example
 ```
 
-Then, we can simulate a cache as follows: 
+block_cache_pysim.py options:
+```
+1) Cache type (ts, linucb, arc, lru, opt, pylru, pymru, pylfu, pyhb, gdsize, trace). 
+One may evaluate the hybrid row_block cache by appending '_hybrid' to a cache_type, e.g., ts_hybrid. 
+Note that hybrid is not supported with opt and trace. 
+2) Cache size (xM, xG, xT).
+3) The sampling frequency used to collect the trace. 
+(The simulation scales down the cache size by the sampling frequency).
+4) Warmup seconds (The number of seconds used for warmup).
+5) Trace file path.
+6) Result directory (A directory that saves generated results)
+7) Max number of accesses to process. (Replay the entire trace if set to -1.)
+8) The target column family. (The simulation will only run accesses on the target column family. 
+If it is set to all, it will run against all accesses.)
+```
+One example:
 ```
 python block_cache_pysim.py lru 16M 100 3600 /tmp/human_readable_block_trace_test_example /tmp/results 10000000 0 all 
 ```
-To simulate a batch of cache configurations: 
+We also provide a bash script to simulate a batch of cache configurations: 
+```
+Usage: ./block_cache_pysim.sh trace_file_path result_dir downsample_size warmup_seconds max_jobs
+
+-max_jobs: The maximum number of simulators to run at a time.
+```
+One example: 
 ```
 bash block_cache_pysim.sh /tmp/human_readable_block_trace_test_example /tmp/sim_results/bench 1 0 30
 ```
