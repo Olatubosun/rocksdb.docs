@@ -83,23 +83,23 @@ We can convert the generated binary trace file into human readable trace file in
 | Column Name   |  Values     | Comment |
 | :------------- |:-------------|:-------------|
 | Access timestamp in microseconds     | unsigned long | |
-| Block ID      |  unsigned long     | A unique block ID |
+| Block ID      |  unsigned long     | A unique block ID. |
 | Block type | 7: Index block <br> 8: Filter block <br> 9: Data block <br> 10: Uncompressed dictionary block <br> 11: Range deletion block   | |
-| Block size | unsigned long     | |
-| Column family ID | unsigned long | A unique column family ID | 
+| Block size | unsigned long     | Block size may be 0 when <br> 1) compaction observes cache misses and does not insert the missing blocks into the cache. <br> 2) IO error when fetching a block. <br> 3) prefetching filter blocks but the SST file does not have filter blocks.  |
+| Column family ID | unsigned long | A unique column family ID. | 
 | Column family name | string   | |
-| Level | unsigned long  | The LSM tree level of this block |
-| SST file number | unsigned long     | The SST file this block belongs to | 
-| Caller |  See [Caller](https://github.com/facebook/rocksdb/blob/master/table/table_reader_caller.h) | The caller that accesses this block |
+| Level | unsigned long  | The LSM tree level of this block. |
+| SST file number | unsigned long     | The SST file this block belongs to. | 
+| Caller |  See [Caller](https://github.com/facebook/rocksdb/blob/master/table/table_reader_caller.h) | The caller that accesses this block, e.g., Get, Iterator, Compaction, etc. |
 | No insert | 0: do not insert the block upon a miss <br> 1: insert the block upon a cache miss   |  | 
-| Get ID | unsigned long | A unique ID associated with a Get request |
-| Get key ID | unsigned long | The referenced key of the Get request |
-| Get referenced data size | unsigned long | The referenced data (key+value) size of the Get request |
-| Is a cache hit |  0: A cache hit <br> 1: A cache miss    | The running RocksDB instance observes a cache hit/miss on this block |
-| Does get referenced key exist in this block | 0: Does not exist <br> 1: Exist      | Data block only: Whether the referenced key is found in this block. |
-| Approximate number of keys in this block | unsigned long | Data block only |
-| Get table ID | unsigned long     | The table ID of the get request. We treat the first four bytes of the Get request as table ID |
-| Get sequence number | unsigned long | The sequence number associated with the Get request |
+| Get ID | unsigned long | A unique ID associated with the Get request. |
+| Get key ID | unsigned long | The referenced key of the Get request. |
+| Get referenced data size | unsigned long | The referenced data (key+value) size of the Get request. |
+| Is a cache hit |  0: A cache hit <br> 1: A cache miss    | The running RocksDB instance observes a cache hit/miss on this block. |
+| Get Does get referenced key exist in this block | 0: Does not exist <br> 1: Exist      | Data block only: Whether the referenced key is found in this block. |
+| Get Approximate number of keys in this block | unsigned long | Data block only. |
+| Get table ID | unsigned long     | The table ID of the Get request. We treat the first four bytes of the Get request as table ID. |
+| Get sequence number | unsigned long | The sequence number associated with the Get request. |
 | Block key size | unsigned long     |  |
 | Get referenced key size | unsigned long     | |
 | Block offset in the SST file | unsigned long  | |
