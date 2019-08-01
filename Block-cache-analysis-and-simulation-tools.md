@@ -1,4 +1,4 @@
-RocksDB configures a certain amount of main memory as a block cache to accelerate data access. Understanding the efficiency of block cache is very important. The block cache analysis and simulation tools help a user to collect block cache access traces, analyze its access pattern, and evaluate alternative caching policies. 
+RocksDB may configure a certain amount of main memory as a block cache to accelerate data access. Understanding the efficiency of block cache is very important. The block cache analysis and simulation tools help a user to collect block cache access traces, analyze its access pattern, and evaluate alternative caching policies. 
 
 ### Table of Contents
 * **[Quick Start](#quick-start)**<br>
@@ -116,7 +116,7 @@ Cache configuration file format:
 
 | Column Name   |  Values     |
 | :------------- |:-------------|
-| Cache name     | lru: LRU <br> lru_priority: LRU with midpoint insertion <br> lru_hybrid: LRU that also caches row keys <br> ghost_*: A ghost cache for admission control. It admits an entry on its second access.  |
+| Cache name     | lru: LRU <br> lru_priority: LRU with midpoint insertion <br> lru_hybrid: LRU that also caches row keys <br> ghost_*: A ghost cache for admission control. It admits an entry on its second access. <ul><li>Specifically,  the ghost cache only maintains keys and is managed by LRU.</li><li>Upon an access, the cache inserts the key into the ghost cache.</li><li>Upon a cache miss, the cache inserts the missing entry only if it observes a hit in the ghost cache.</li></ul> |
 | Number of shard bits      |  unsigned long     |
 | Ghost cache capacity      |  unsigned long     |
 | Cache sizes      |  A list of comma separated cache sizes      |
@@ -133,7 +133,7 @@ Next, we can start simulating caches.
 
 It contains two important parameters: 
 
-`block_cache_trace_downsample_ratio`: The sampling frequency we used when collecting the trace. The simulator scales down the given cache size by this factor. For example, with downsample_ratio of 100, the cache simulator creates a 1 GB cache to simulate a 100 GB cache. 
+`block_cache_trace_downsample_ratio`: The sampling frequency used to collect the trace. The simulator scales down the given cache size by this factor. For example, with downsample_ratio of 100, the cache simulator creates a 1 GB cache to simulate a 100 GB cache. 
 
 `cache_sim_warmup_seconds`: The number of seconds used for warmup. The reported miss ratio does NOT include the number of misses/accesses during the warmup.
 
@@ -214,11 +214,11 @@ block_cache_pysim.sh combines the outputs of block_cache_pysim.py into following
 | trace | Trace |
 | *_hybrid | A hybrid cache that also caches row keys. |
 
-`py*` caches uses random sampling at eviction time. It samples 64 random entries in the cache, sorts these entries based on a priority function, e.g., LRU, and evicts from the lowest priority entry until the cache has enough capacity to insert the new entry.
+`py*` caches use random sampling at eviction time. It samples 64 random entries in the cache, sorts these entries based on a priority function, e.g., LRU, and evicts from the lowest priority entry until the cache has enough capacity to insert the new entry.
 
 `pycc*` caches group cached entries by a cost class. The cache maintains aggregated statistics for each cost class such as number of hits, total size. A cached entry is also tagged with one cost class. At eviction time, the cache samples 64 random entries and group them by their cost class. It then evicts entries based on their cost class's statistics. 
 
-`ts` and `linucb` are two caches using reinforcement learning. The cache is configured with N policies, e.g., LRU, MRU, LFU, etc. The cache learns which policy is the best overtime and selects the best policy for eviction. The cache rewards the selected policy if it has not evicted the new key before. 
+`ts` and `linucb` are two caches using reinforcement learning. The cache is configured with N policies, e.g., LRU, MRU, LFU, etc. The cache learns which policy is the best overtime and selects the best policy for eviction. The cache rewards the selected policy if the policy has not evicted the missing key before. 
 `ts` does not use any feature of a block while `linucb` uses three features: a block's level, column family, and block type. 
 
 `trace` reports the misses observed in the collected trace. 
