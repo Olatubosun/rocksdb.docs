@@ -2,7 +2,7 @@ RocksDB may configure a certain amount of main memory as a block cache to accele
 
 ### Table of Contents
 * **[Quick Start](#quick-start)**<br>
-* **[Tracing block cache accesses](#tracing-block-cache-accesses)**<br>
+* **[Tracing Block Cache Accesses](#tracing-block-cache-accesses)**<br>
 * **[Trace Format](#trace-format)**<br>
 * **[Cache Simulations](#cache-simulations)**<br>
   * [RocksDB Cache Simulations](#rocksdb-cache-simulations)<br>
