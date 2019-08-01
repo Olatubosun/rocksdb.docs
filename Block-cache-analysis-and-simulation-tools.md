@@ -15,15 +15,29 @@ db_bench supports tracing block cache accesses. This section demonstrates how to
 
 Create a database: 
 ```
-./db_bench --benchmarks="fillseq" --key_size=20 --prefix_size=20 --keys_per_prefix=0 --value_size=100 --cache_index_and_filter_blocks --cache_size=1048576 --disable_auto_compactions=1 --disable_wal=1 --compression_type=none --min_level_to_compress=-1 --compression_ratio=1 --num=10000000
+./db_bench --benchmarks="fillseq" \
+--key_size=20 --prefix_size=20 --keys_per_prefix=0 --value_size=100 \
+--cache_index_and_filter_blocks --cache_size=1048576 \
+--disable_auto_compactions=1 --disable_wal=1 --compression_type=none \
+--min_level_to_compress=-1 --compression_ratio=1 --num=10000000
 ```
 To trace block cache accesses when running `readrandom` benchmark:
 ```
-./db_bench --benchmarks="readrandom" --use_existing_db --duration=60 --key_size=20 --prefix_size=20 --keys_per_prefix=0 --value_size=100 --cache_index_and_filter_blocks --cache_size=1048576 --disable_auto_compactions=1 --disable_wal=1 --compression_type=none --min_level_to_compress=-1 --compression_ratio=1 --num=10000000 --threads=16 -block_cache_trace_file="/tmp/binary_trace_test_example" -block_cache_trace_max_trace_file_size_in_bytes=1073741824 -block_cache_trace_sampling_frequency=1
+./db_bench --benchmarks="readrandom" --use_existing_db --duration=60 \
+--key_size=20 --prefix_size=20 --keys_per_prefix=0 --value_size=100 \
+--cache_index_and_filter_blocks --cache_size=1048576 \
+--disable_auto_compactions=1 --disable_wal=1 --compression_type=none \
+--min_level_to_compress=-1 --compression_ratio=1 --num=10000000 \
+--threads=16 \
+-block_cache_trace_file="/tmp/binary_trace_test_example" \
+-block_cache_trace_max_trace_file_size_in_bytes=1073741824 \
+-block_cache_trace_sampling_frequency=1
 ```
 Convert the trace file to human readable format:
 ```
-./block_cache_trace_analyzer -block_cache_trace_path=/tmp/binary_trace_test_example -human_readable_trace_file_path=/tmp/human_readable_block_trace_test_example
+./block_cache_trace_analyzer \
+-block_cache_trace_path=/tmp/binary_trace_test_example \
+-human_readable_trace_file_path=/tmp/human_readable_block_trace_test_example
 ```
 Evaluate alternative caching policies: 
 ```
@@ -98,6 +112,8 @@ To replay the trace and evaluate alternative policies, we first need to provide 
 ```
 lru,0,0,16M,256M,1G,2G,4G,8G,12G,16G,1T
 ```
+Cache configuration file format:
+
 | Column Name   |  Values     |
 | :------------- |:-------------|
 | Cache name     | lru: LRU <br> lru_priority: LRU with midpoint insertion <br> lru_hybrid: LRU that also caches row keys <br> ghost_*: A ghost cache for admission control. It admits an entry on its second access.  |
@@ -107,7 +123,12 @@ lru,0,0,16M,256M,1G,2G,4G,8G,12G,16G,1T
 
 Next, we can start simulating caches. 
 ```
-./block_cache_trace_analyzer -mrc_only=true -block_cache_trace_downsample_ratio=100 -block_cache_trace_path=/tmp/binary_trace_test_example -block_cache_sim_config_path=/tmp/cache_config -block_cache_analysis_result_dir=/tmp/binary_trace_test_example_results -cache_sim_warmup_seconds=3600
+./block_cache_trace_analyzer -mrc_only=true \
+-block_cache_trace_downsample_ratio=100 \
+-block_cache_trace_path=/tmp/binary_trace_test_example \
+-block_cache_sim_config_path=/tmp/cache_config \
+-block_cache_analysis_result_dir=/tmp/binary_trace_test_example_results \
+-cache_sim_warmup_seconds=3600
 ```
 
 It contains two important parameters: 
@@ -124,7 +145,9 @@ The analyzer outputs a few files:
 ## Python Cache Simulations
 We also support a more diverse set of caching policies written in python. In addition to LRU, it provides replacement policies using reinforcement learning, cost class, and more. To use the python cache simulator, we need to first convert the binary trace file into human readable trace file. 
 ```
-./block_cache_trace_analyzer -block_cache_trace_path=/tmp/binary_trace_test_example -human_readable_trace_file_path=/tmp/human_readable_block_trace_test_example
+./block_cache_trace_analyzer \
+-block_cache_trace_path=/tmp/binary_trace_test_example \
+-human_readable_trace_file_path=/tmp/human_readable_block_trace_test_example
 ```
 
 block_cache_pysim.py options:
@@ -320,7 +343,7 @@ An example that outputs a statistics summary of the access pattern:
 Another example: 
 ```
 ./block_cache_trace_analyzer \
--block_cache_trace_path=/tmp/test_trace_file_path \ 
+-block_cache_trace_path=/tmp/test_trace_file_path \
 -block_cache_analysis_result_dir=/tmp/sim_results/test_trace_results \
 -print_block_size_stats \
 -print_access_count_stats \
