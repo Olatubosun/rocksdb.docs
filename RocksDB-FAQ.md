@@ -192,7 +192,7 @@ A: Yes, but only for all previous writes with WriteOptions.disableWAL=false.
 
 **Q: I disabled write-ahead-log and rely on DB::Flush() to persist the data. It works well for single family. Can I do the same if I have multiple column families?**
 
-A: No, currently DB::Flush() is not atomic across multiple column families. We do have a plan to support that in the future.
+A: Yes. set option.atomic_flush=true support atomic flush multi column families.
 
 **Q: If I use non-default comparators or merge operators, can I still use ldb tool?**
 
