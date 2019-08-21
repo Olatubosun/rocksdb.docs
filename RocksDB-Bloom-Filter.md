@@ -78,19 +78,15 @@ Read [here](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters).
 
 ### The math
 
-Here is the math to compute the false positive rate (FPR) of bloom filters.
-- `m` bits split into `s` shards each of size `m/s`.
-- `n` keys
-- `k` probe/key
-- For each key a shard is selected randomly, and `k` bits are set randomly within the shard.
-- After inserting a key, the probability that a particular bit is still 0 is that all the previous hashes of the key are either set on other shards with probability `(s-1)/s` or set other bits in the same shard with probability `1 - 1/(m/s)`.
-   * prob_0 = `(s-1)/s + 1/s (1-s/m) ^ k`
-- Using binomial approximation of `(1+x)^k ~= 1 + xk` if `|xk| << 1` and `|x| < 1` we have
-   * prob_0 = `1-1/s + 1/s (1-sk/m)` = `1 - k/m` = `(1-1/m)^k`
-- Note that with the approximation prob_0(s=1) is equal to prob_0.
-- Probability of a bit remained 0 after inserting `n` keys is
-   * prob_0_n = `(1-1/m)^kn`
-- So the false positive probability is that all of the `k` bits are 1:
-   * FPR = `(1 - prob_0_n) ^ k` = `(1- (1-1/m)^kn) ^ k`
+Refer e.g. to [the wikipedia article](https://en.wikipedia.org/wiki/Bloom_filter#Probability_of_false_positives) for standard false positive rate of a Bloom filter.
 
-Note that the FPR rate is independent of `s`, number of shards. In other words sharding does not affect the FPR as long as `sk/m << 1`. For typical values of `s=512` and `k=6`, and 10 bits per key, this is satisfied as long as `n >> 307` keys. In full blooms, each shard is of CPU cache line size to allow them to be aligned with cpu cache lines and reduce cpu cache misses during next probes. `m` will be set `n * bits_per_key + epsilon` to ensure that it is a multiple of the shard size, i.e., the cpu cache line size.
+The CPU cache-friendly Bloom filter variant is presented and analyzed in [this 2007 paper](http://algo2.iti.kit.edu/documents/cacheefficientbloomfilters-jea.pdf)(page 4, formula 3). In short, the Bloom filter is sharded into `s` shards, each of size `m/s`. If `s` were much smaller than `n` (number of keys), each shard would have approximately `n/s` keys mapping to it, and the false positive rate is like a standard Bloom filter using `m/s` for `m` and `n/s` for `n`. This yields essentially the same false positive rate as for a standard Bloom filter with the original `m` and `n`.
+
+For CPU-cache locality of probes, `s` is within a couple orders of magnitude of `n`, which leads to noticeable variance in the number of keys mapped to each shard. (This is the phenomenon behind "clustering" in hashing.) This matters because the false positive rate is non-linear in the number of keys added. Even though the median false positive rate of a shard is the same as a standard Bloom filter, what matters is the mean false positive rate, or the expected value of the false positive rate of a shard.
+
+This can be understood using the [Poisson distribution](https://en.wikipedia.org/wiki/Poisson_distribution) ([as an approximation of a binomial distribution](https://en.wikipedia.org/wiki/Binomial_distribution#Poisson_approximation)), using parameter `n/s`, the expected number of keys mapping to each shard. You can compute the expected/effective false positive rate using a summation based on the pdf of a Poisson distribution (in 2007 paper referenced above), or you can use an approximation I have found to be very good:
+- The expected false positive rate is close to the average of the false positive rate for one standard deviation above and below the expected number of keys per shard.
+
+The standard deviation is the square root of that `n/s` parameter. In a standard configuration, `m/s = 512` and `m/n = 10`, so `n/s = 51.2` and `sqrt(n/s) = 7.16`. With `k=6`, we use the standard Bloom filter false positive rate formula, substituting `51.2 +/- 7.16` for `n` and `512` for `m`, yielding 0.43% and 1.48%, which averages to 0.95% for the CPU cache local Bloom filter. The same Bloom filter without cache locality has false positive rate 0.84%.
+
+This modest increase in false positive rate, here a factor of 1.13 higher, is considered quite acceptable for the speed boost, especially in environments heavily utilizing many cores.
