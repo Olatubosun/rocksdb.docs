@@ -29,7 +29,7 @@ At read time, the offset of the block that might contain the key/value is obtain
 ### Full Filters (new format)
 The individual filter blocks in the old format are not cache aligned and could result into a lot of cache misses during lookup. Moreover although negative responses (i.e., key does not exist) of the filter saves the search from the data block, the index is already loaded and looked into. The new format, full filter, addresses these issues by creating one filter for the entire SST file. The tradeoff is that more memory is required to cache a hash of every key in the file (versus only keys of a 2KB block in the old format).
 
-Full filter limits the probe bits for a key to be all within the same CPU cache line. This ensures fast lookups by limiting the CPU cache misses to one per key. Note that this is essentially sharding the bloom space and will not affect the false positive rate of the bloom as long as we have many keys. Refer to "The Math" section below for more details.
+Full filter limits the probe bits for a key to be all within the same CPU cache line. This ensures fast lookups and maximizes CPU cache effectiveness by limiting the CPU cache misses to one per key (per filter). Note that this is essentially sharding the bloom space and has only a small effect on the false positive rate as long as there are many keys. Refer to "The Math" section below for more details.
 
 At read time, RocksDB uses the same format that was used when creating the SST file. Users can specify the format for the newly created SST files by setting `filter_policy` in options. The helper function `NewBloomFilterPolicy` can be used to create both old block-based (the default) and new full filter.
 
