@@ -68,7 +68,7 @@ You can learn more by checking DB::IngestExternalFile() and DB::IngestExternalFi
 
 **When you call DB::IngestExternalFile() We will**
 - Copy or link the file into the DB directory
-- block (not skip) writes to the DB because we have to keep a consistent db state so we have to make sure we can safely assign the right sequence number to all the keys in the file we are gonna ingest
+- block (not skip) writes to the DB because we have to keep a consistent db state so we have to make sure we can safely assign the right sequence number to all the keys in the file we are going to ingest
 - If file key range overlap with memtable key range, flush memtable
 - Assign the file to the best level possible in the LSM-tree
 - Assign the file a global sequence number
@@ -81,7 +81,7 @@ You can learn more by checking DB::IngestExternalFile() and DB::IngestExternalFi
 
 **Global sequence number**
 
-Files created using SstFileWriter have a special field in their metablock called global sequence number, when this field is used, all the keys inside this file start acting as if they have such sequence number. When we ingest a file, we assign a sequence number to all the keys in this file. Before RocksDB 5.16, RocksDB always updates this global sequence number field in the metablock of the SST file using a random write. From RocksDB 5.16, RocksDB enables user to choose whether to update this field via `IngestExternalFileOptions::write_global_seqno`. If this field is not updated during ingestion, then RocksDB uses the information in MANIFEST and table properties to deduce the global sequence number when accessing the file. This can be useful if the underlying file system does not support random write. If backward compatibility is the concern, set this option to true so that external SST files ingested by RocksDB 5.16 or newer can be opened by RocksDB 5.15 or older.
+Files created using SstFileWriter have a special field in their metablock called global sequence number, when this field is used, all the keys inside this file start acting as if they have such sequence number. When we ingest a file, we assign a sequence number to all the keys in this file. Before RocksDB 5.16, RocksDB always updates this global sequence number field in the metablock of the SST file using a random write. From RocksDB 5.16, RocksDB enables user to choose whether to update this field via `IngestExternalFileOptions::write_global_seqno`. If this field is not updated during ingestion, then RocksDB uses the information in MANIFEST to deduce the global sequence number when accessing the file. This can be useful if the underlying file system does not support random write or if users wish to minimize sync operations. If backward compatibility is the concern, set this option to true so that external SST files ingested by RocksDB 5.16 or newer can be opened by RocksDB 5.15 or older.
 
 ## Ingestion Behind
 Starting from 5.5, IngestExternalFile() will load a list of external SST files with ingestion behind supported, which means duplicate keys will be skipped if `ingest_behind==true`. In this mode we will always ingest in the bottom mode level. Duplicate keys in the file being ingested to be skipped rather than overwriting existing data under that key.
