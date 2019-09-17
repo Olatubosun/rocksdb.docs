@@ -69,7 +69,7 @@ USAGE:
     -advise_random_on_open (Advise random access on table file open) type: bool
       default: true
     -allow_concurrent_memtable_write (Allow multi-writers to update mem tables
-      in parallel.) type: bool default: false
+      in parallel.) type: bool default: true
     -base_background_compactions (The base number of concurrent background
       compactions to occur in parallel.) type: int32 default: 1
     -batch_size (Batch size) type: int64 default: 1
@@ -207,7 +207,7 @@ USAGE:
     -enable_pipelined_write (Allow WAL and memtable writes to be pipelined)
       type: bool default: true
     -enable_write_thread_adaptive_yield (Use a yielding spin loop for brief
-      writer thread waits.) type: bool default: false
+      writer thread waits.) type: bool default: true
     -env_uri (URI for registry Env lookup. Mutually exclusive with --hdfs.)
       type: string default: ""
     -expand_range_tombstones (Expand range tombstone into sequential regular
