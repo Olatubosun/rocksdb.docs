@@ -120,6 +120,8 @@ For example,
 
   db->MultiGet(ReadOptions(), cf, keys.size(), keys.data(), values.data(), statuses.data());
 ```
+In order to avoid the overhead of memory allocations, the ```keys```, ```values``` and ```statuses``` above can be of type ```std::array``` on stack or any other type that provides contiguous storage.
+
 Or
 ```cpp
   std::vector<ColumnFamilyHandle*> column_families;
