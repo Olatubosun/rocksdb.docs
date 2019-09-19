@@ -228,6 +228,8 @@ A: When opening a rocksdb database with a different compaction style or compacti
 1. The database will refuse to open if the new configuration is incompatible with the current LSM layout.
 2. If the new configuration is compatible with the current LSM layout, then rocksdb will continue and open the database.  However, in order to make the new options take full effect, it might require a full compaction.
 
+Consider to use the migration helper function OptionChangeMigration(), which will compact the files to satisfy the new compaction style if needed.
+
 **Q: Does RocksDB have columns? If it doesn't have column, why there are column families?**
 
 A: No, RocksDB doesn't have columns. See https://github.com/facebook/rocksdb/wiki/Column-Families for what is column family.
