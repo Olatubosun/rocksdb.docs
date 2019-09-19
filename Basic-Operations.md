@@ -63,16 +63,25 @@ You may have noticed the <code>rocksdb::Status</code> type above. Values of this
 
 ## Closing A Database
 
-When you are done with a database, just delete the database object.
+When you are done with a database, there are 2 ways to gracefully close the database -
+1. Simply delete the database object. This will release all the resources that were held while the database was open. However, if any error is encountered when releasing any of the resources, for example error when closing the info_log file, it will be lost.
+2. Call ```DB::Close()```, followed by deleting the database object. The ```DB::Close()``` returns ```Status```, which can be examined to determine if there were any errors. Regardless of errors, ```DB::Close()``` will release all resources and is irreversible.
 
 Example:
 
 ```cpp
   ... open the db as described above ...
   ... do something with db ...
+  Status s = db->Close();
+  ... log status ...
   delete db;
 ```
-
+Or
+```cpp
+  ... open the db as described above ...
+  ... do something with db ...
+  delete db;
+```
 
 ## Reads And Writes
 
