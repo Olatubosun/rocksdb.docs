@@ -484,7 +484,7 @@ For AssociativeMergeOperator, the Merge() method follows the same "error" rules 
 
 # Get Merge Operands
 This is an API to allow for fetching all merge operands associated with a Key. The main motivation for this API is to support use cases where doing a full online merge is not necessary as it is performance sensitive. This API is available from version 6.4.0.
-```
+```cpp
  API: 
   // Returns all the merge operands corresponding to the key. If the
   // number of merge operands in DB is greater than
