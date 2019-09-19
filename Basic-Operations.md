@@ -86,7 +86,7 @@ Or
 
 ## Reads And Writes
 
-The database provides <code>Put</code>, <code>Delete</code>, and <code>Get</code> methods to modify/query the database. For example, the following code moves the value stored under key1 to key2.
+The database provides <code>Put</code>, <code>Delete</code>, <code>Get</code>, and <code>MultiGet</code> methods to modify/query the database. For example, the following code moves the value stored under key1 to key2.
 
 ```cpp
   std::string value;
@@ -103,6 +103,37 @@ Each `Get` results into at least a memcpy from the source to the value string. I
   rocksdb::Status s = db->Get(rocksdb::ReadOptions(), key1, &pinnable_val);
 ```
 The source will be released once pinnable_val is destructed or ::Reset is invoked on it. Read more [here](http://rocksdb.org/blog/2017/08/24/pinnableslice.html).
+
+When reading multiple keys from the database, `MultiGet` can be used. There are two variations of `MultiGet` - 1. Read multiple keys from a single column family in a more performant manner, i.e it can be faster than calling `Get` in a loop, and 2. Read keys across multiple column families consistent with each other.
+
+For example,
+```cpp
+  std::vector<Slice> keys;
+  std::vector<PinnableSlice> values;
+  std::vector<Status> statuses;
+
+  for ... {
+    keys.emplace_back(key);
+  }
+  values.resize(keys.size());
+  statuses.resize(keys.size());
+
+  db->MultiGet(ReadOptions(), cf, keys.size(), keys.data(), values.data(), statuses.data());
+```
+Or
+```cpp
+  std::vector<ColumnFamilyHandle*> column_families;
+  std::vector<Slice> keys;
+  std::vector<std::string> values;
+
+  for ... {
+    keys.emplace_back(key);
+    column_families.emplace_back(column_family);
+  }
+  values.resize(keys.size());
+
+  std::vector<Status> statuses = db->MultiGet(ReadOptions(), column_families, keys, values);
+```
 
 ## Atomic Updates
 
