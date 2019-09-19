@@ -482,6 +482,10 @@ Hence, the MergeOperator::FullMerge() method should only return false if there i
 
 For AssociativeMergeOperator, the Merge() method follows the same "error" rules as MergeOperator::FullMerge() in terms of error-handling. Return false only if there is no logical way of dealing with the values. In the Counters example above, our Merge() always returns true, since we can interpret any bad value as 0.
 
+# Get Merge Operands
+This is an API to allow for fetching all merge operands associated with a Key. The main motivation for this API is to support use cases where doing a full online merge is not necessary as it is performance sensitive. This API is available from version 6.4.0.
+
+
 # Review and Best Practices
 Altogether, we have described the Merge Operator, and how to use it. Here are a couple tips on when/how to use the MergeOperator and AssociativeMergeOperator depending on use-cases.
 
