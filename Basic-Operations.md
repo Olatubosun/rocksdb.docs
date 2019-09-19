@@ -137,6 +137,8 @@ Or
   std::vector<Status> statuses = db->MultiGet(ReadOptions(), column_families, keys, values);
 ```
 
+For a more in-depth discussion of performance benefits of using MultiGet, see [[MultiGet Performance]].
+
 ## Atomic Updates
 
 Note that if the process dies after the Put of key2 but before the delete of key1, the same value may be left stored under multiple keys. Such problems can be avoided by using the <code>WriteBatch</code> class to atomically apply a set of updates:
