@@ -176,7 +176,7 @@ A: No, they can be freed, unless you set `ReadOptions.pin_data = true` and your 
 
 **Q: Can I programmatically read data from an SST file?**
 
-A: We don't support it right now. But you can dump the data using sst_dump.
+A: We don't support it right now. But you can dump the data using sst_dump. Since version 6.5, you'll be able to do it using SstFileReader.
 
 **Q: RocksDB repair: when can I use it? Best-practices?**
 
