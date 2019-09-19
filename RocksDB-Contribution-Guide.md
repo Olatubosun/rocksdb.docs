@@ -118,3 +118,9 @@ If you can't use _GNU make_, you can manually build db_stress binary, and run sc
   python -u tools/db_crashtest.py --cf_consistency blackbox
   python -u tools/db_crashtest.py --cf_consistency whitebox 
 ```
+
+## Performance Improvement Changes
+For changes that might impact performance, we suggest normal benchmarks on flash are run to make sure there is no regression. If the change is to improve performance, bring at least one benchmark test case that favors the improvement and show the improvements.
+
+## Pull Request Summary
+We recommend a "Test Plan:" section is included in the pull request summary, in which what testing is done to validate the quality and performance of the change.
