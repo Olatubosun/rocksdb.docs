@@ -376,4 +376,4 @@ A: You can start with using one RocksDB database per shard/partition.
 
 **Q: DB operations fail because of out-of-space. How can I unblock myself?**
 
-A: First clear up some free space. And then you need to restart the DB to get it back to normal. Now there isn't a way to unblock the DB without restarting it.
+A: First clear up some free space. The DB will automatically start accepting operations once enough free space is available. The only exception is if 2PC is enabled and the WAL sync fails (in this case, the DB needs to be reopened). See [[Background Error Handling]] for more details.
