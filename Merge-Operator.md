@@ -484,7 +484,32 @@ For AssociativeMergeOperator, the Merge() method follows the same "error" rules 
 
 # Get Merge Operands
 This is an API to allow for fetching all merge operands associated with a Key. The main motivation for this API is to support use cases where doing a full online merge is not necessary as it is performance sensitive. This API is available from version 6.4.0.
+```
+ API: 
+  // Returns all the merge operands corresponding to the key. If the
+  // number of merge operands in DB is greater than
+  // merge_operands_options.expected_max_number_of_operands
+  // no merge operands are returned and status is Incomplete. Merge operands
+  // returned are in the order of insertion.
+  // merge_operands- Points to an array of at-least
+  //             merge_operands_options.expected_max_number_of_operands and the
+  //             caller is responsible for allocating it. If the status
+  //             returned is Incomplete then number_of_operands will contain
+  //             the total number of merge operands found in DB for key.
+  virtual Status GetMergeOperands(
+      const ReadOptions& options, ColumnFamilyHandle* column_family,
+      const Slice& key, PinnableSlice* merge_operands,
+      GetMergeOperandsOptions* get_merge_operands_options,
+      int* number_of_operands) = 0;
 
+  Example: 
+  int size = 100;
+  int number_of_operands = 0;
+  std::vector values(size);
+  GetMergeOperandsOptions merge_operands_info;
+  db_->GetMergeOperands(ReadOptions(), db_->DefaultColumnFamily(), "k1", values.data(), merge_operands_info, 
+  &number_of_operands);
+```
 
 # Review and Best Practices
 Altogether, we have described the Merge Operator, and how to use it. Here are a couple tips on when/how to use the MergeOperator and AssociativeMergeOperator depending on use-cases.
