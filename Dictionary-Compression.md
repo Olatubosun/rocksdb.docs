@@ -14,11 +14,10 @@ Also `rocksdb::CompressionOptions::zstd_max_train_bytes` may be used to generate
 
 Dictionary compression is only implemented for the bottom-most level. The dictionary will be constructed for each SST file in a subcompaction by sampling entire data blocks in the file. When dictionary compression is enabled, the uncompressed data blocks in the file being generated will be buffered in memory, upto ```target_file_size``` bytes. Once the limit is reached, or the file is finished, data blocks are taken uniformly/randomly from the buffered data blocks and used to train the ZStd dictionary trainer.
 
-The dictionary is stored in the file's meta-block in order for it to be known when uncompressing. During reads, if ```BlockBasedTableOptions::cache_index_and_filter_blocks``` is ```true```, the dictionary meta-block is cached in the block cache, though it is not prefetched unlike index and filter blocks. If it is ```false```, the dictionary meta-block is read and pinned in memory , but not charged to the block cache.
+The dictionary is stored in the file's meta-block in order for it to be known when uncompressing. During reads, if ```BlockBasedTableOptions::cache_index_and_filter_blocks``` is ```false```, the dictionary meta-block is read and pinned in memory but not charged to the block cache. If it is ```true```, the dictionary meta-block is cached in the block cache, with high priority if `cache_index_and_filter_blocks_with_high_priority` is `true`, and with low priority otherwise. As for prefetching and pinning the dictionary meta-block in the cache, the behavior depends on the RocksDB version. In RocksDB versions lower than 6.4, the dictionary meta-block is not prefetched or pinned in the cache, unlike index and filter blocks. Starting RocksDB version 6.4, the dictionary meta-block is prefetched and pinned in the block cache the same way as index/filter blocks (for instance, setting `pin_l0_filter_and_index_blocks_in_cache` to true results in the dictionary meta-block getting pinned as well).
 
 The in-memory uncompression dictionary is a digested form of the raw dictionary stored on disk, and is larger in size. The digested form makes uncompression faster, but does consume more memory.
 
 ## Limitations
 
 * Applies only to bottommost level
-* Dictionary meta-block is not prefetched into the block cache
