@@ -133,7 +133,7 @@ A: The performance is similar. MultiGet() reads from the same consistent view, b
 
 **Q: What's the default value of the block cache?**
 
-A: 8MB.
+A: 8MB. That's too low for most use cases, so it's likely that you need to set your own value.
 
 **Q: If I have multiple column families and call the DB functions without a column family handle, what the result will be?**
 
