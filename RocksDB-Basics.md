@@ -134,6 +134,9 @@ When a memtable is being flushed to storage, an inline-compaction process is exe
 #### Merge Operator
 RocksDB natively supports three types of records, a `Put` record, a `Delete` record and a `Merge` record. When a compaction process encounters a Merge record, it invokes an application-specified method called the Merge Operator. The Merge can combine multiple Put and Merge records into a single one. This powerful feature allows applications that typically do read-modify-writes to avoid the reads altogether. It allows an application to record the intent-of-the-operation as a Merge Record, and the RocksDB compaction process lazily applies that intent to the original value. This feature is described in detail in [Merge Operator](https://github.com/facebook/rocksdb/wiki/Merge-Operator)
 
+#### DB ID
+A globally unique ID created at the time of database creation and stored in IDENTITY file in the DB folder by default. Optionally it can only stored in the MANIFEST file. Storing in the MANIFEST file is recommended.  
+
 ## 5. Tools
 There are a number of interesting tools that are used to support a database in production. The `sst_dump` utility dumps all the keys-values in a sst file, as well as other information.  The `ldb` tool can put, get, scan the contents of a database. `ldb` can also dump contents of the `MANIFEST`, it can also be used to change the number of configured levels of the database. See [[Administration and Data Access Tool]] for details.
 
