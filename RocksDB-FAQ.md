@@ -146,7 +146,7 @@ A: No, you can't cancel one specific compaction.
 
 **Q: Can I close the DB when a manual compaction is in progress?**
 
-A: No, it's not safe to do that. However, you call CancelAllBackgroundWork(db, true) in another thread to abort the running compactions, so that you can close the DB sooner.
+A: No, it's not safe to do that. However, you call CancelAllBackgroundWork(db, true) in another thread to abort the running compactions, so that you can close the DB sooner. Since 6.5, you can also speed it up using DB::DisableManualCompaction().
 
 **Q: Is it safe to directly copy an open RocksDB instance?**
 
