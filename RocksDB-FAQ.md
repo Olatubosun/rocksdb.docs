@@ -131,10 +131,6 @@ A: The performance of reversed iterating is usually much worse than forward iter
 
 A: The performance is similar. MultiGet() reads from the same consistent view, but it is not faster.
 
-**Q: What's the default value of the block cache?**
-
-A: 8MB. That's too low for most use cases, so it's likely that you need to set your own value.
-
 **Q: If I have multiple column families and call the DB functions without a column family handle, what the result will be?**
 
 A: It will operate only the default column family.
@@ -187,6 +183,10 @@ A: We don't support it right now. But you can dump the data using sst_dump.
 A: Check https://github.com/facebook/rocksdb/wiki/RocksDB-Repairer
 
 ## Configuration and Tuning
+**Q: What's the default value of the block cache?**
+
+A: 8MB. That's too low for most use cases, so it's likely that you need to set your own value.
+
 **Q: Are bloom filter blocks of SST files always loaded to memory, or can they be loaded from disk?**
 
 A: The behavior is configurable.  When BlockBaseTableOptions::cache_index_and_filter_blocks is set to true, then bloom filters and index block will be loaded into a LRU cache only when related Get() requests are issued.  In the other case where cache_index_and_filter_blocks is set to false, then RocksDB will try to keep the index block and bloom filter in memory up to DBOptions::max_open_files number of SST files.
