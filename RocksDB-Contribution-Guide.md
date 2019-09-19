@@ -94,5 +94,27 @@ build_tools/format-diff.sh
 or simply `make format` if you use _GNU make_. If you lack of dependencies to run it, the script will print out instructions for you to install them. 
 
 # Requirements Before Sending a Pull Request
+## Add Unit Tests
+Almost all code changes need to go with changes in unit tests to validate the change. For new features, new unit tests or tests scenarios need to be added even if it has been validated manually. This is to make sure future contributors can rerun the tests to validate their changes don't cause problem with the feature.
 
-Coming soon.
+## Simple Changes
+Pull requests for simple changes can be sent after running all unit tests with any build favor and see all tests pass. If any public interface is changed, or Java code involved, Java tests also need to be run.
+
+## Complex Changes
+If the change is complicated enough, ASAN, TSAN and valgrind need to be run on your local environment before sending the pull request. If you run ASAN with higher version of llvm with covers almost all the functionality of valgrind, valgrind tests can be skipped.
+
+## Changes with Higher Risk or Some Unknowns
+For changes with higher risks, other than running all tests with multiple flavors, a crash test cycle needs to be executed and see no failure. If crash test doesn't cover the new feature, consider to add it there.
+To run all crash test, run
+```
+make crash_test -j
+```
+If you can't use _GNU make_, you can manually build db_stress binary, and run script:
+```
+  python -u tools/db_crashtest.py whitebox
+  python -u tools/db_crashtest.py blackbox
+  python -u tools/db_crashtest.py --simple whitebox
+  python -u tools/db_crashtest.py --simple blackbox
+  python -u tools/db_crashtest.py --cf_consistency blackbox
+  python -u tools/db_crashtest.py --cf_consistency whitebox 
+```
