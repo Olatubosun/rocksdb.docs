@@ -195,6 +195,7 @@ Merge operators provide efficient support for read-modify-write operation.
 More on the interface and implementation can be found on:
 * [[Merge Operator | Merge-Operator]]
 * [[Merge Operator Implementation | Merge-Operator-Implementation]]
+* [Get Merge Operands](https://github.com/facebook/rocksdb/wiki/Merge-Operator#get-merge-operands)
 
 
 ## Iteration
