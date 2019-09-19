@@ -1,7 +1,7 @@
 ## Building RocksDB
 **Q: What is the absolute minimum version of gcc that we need to build RocksDB?**
 
-A: 4.7, but 4.8 or up is recommended.
+A: 4.8.
 
 **Q: What is RocksDB's latest stable release?**
 
@@ -14,15 +14,15 @@ A: Yes.
 
 **Q: Can I write to RocksDB using multiple processes?**
 
-A: No. However, it can be opened in read-only mode from multiple processes.
+A: No. However, it can be opened using Secondary DB. If no write goes to the database, it can be opened in read-only mode from multiple processes.
 
 **Q: Does RocksDB support multi-process read access?**
 
-A: RocksDB support multi-process read only process without writing the database.  This can be done by opening the database with DB::OpenForReadOnly() call.
+A: Yes, you can read it using secondary database. RocksDB can also support multi-process read only process without writing the database.  This can be done by opening the database with DB::OpenForReadOnly() call.
 
 **Q: Is it safe to close RocksDB while another thread is issuing read, write or manual compaction requests?**
 
-A: No. The users of RocksDB need to make sure all functions have finished before they close RocksDB.
+A: No. The users of RocksDB need to make sure all functions have finished before they close RocksDB. You can speed up the waiting by calling CancelAllBackgroundWork().
 
 **Q: What's the maximum key and value sizes supported?**
 
@@ -41,6 +41,7 @@ A: A fast way to direct insert data to the DB:
 3-5 will be automatically done if you call Options::PrepareForBulkLoad() to your option
 
 If you can pre-process the data offline before inserting. There is a faster way: you can sort the data, generate SST files with non-overlapping ranges in parallel and bulkload the SST files. See https://github.com/facebook/rocksdb/wiki/Creating-and-Ingesting-SST-files
+
 **Q: What is the correct way to delete the DB?  Can I simply call DestroyDB() on a live DB?**
 
 A: Close the DB then destroy the DB is the correct way.  Calling DestroyDB() on a live DB is an undefined behavior.
@@ -63,7 +64,7 @@ A: No. See https://github.com/facebook/rocksdb/wiki/RocksDB-Basics#gets-iterator
 
 **Q: With DBWithTTL, is there a time bound for the expired keys to be removed?**
 
-A: No, DBwithTTL does not provide an upper time bound.  Expired keys will be removed when they are part of any compaction.  However, there's no guarantee that when such compaction will start.  For instance, if you have a certain key-range that is never updated, then compaction is less likely to apply to that key-range.
+A: DBwithTTL itself does not provide an upper time bound.  Expired keys will be removed when they are part of any compaction.  However, there's no guarantee that when such compaction will start.  For instance, if you have a certain key-range that is never updated, then compaction is less likely to apply to that key-range. For leveled compaction, you can enforce some limit using the feature of periodic comapaction to do that. The feature right now has a limitation: if the write rate is too slow that memtable flush is never triggered, the periodic compaction won't be triggered either.
 
 **Q: If I delete a column family, and I didn't yet delete the column family handle, can I still use it to access the data?**
 
@@ -81,14 +82,9 @@ A: block_size is for size before compression.
 
 A: There are limitations of options.prefix_extractor. If prefix iterating is used, doesn't support Prev() or SeekToLast(), and many operations don't support SeekToFirst() either. A common mistake to seek the last key of a prefix by calling Seek(), followed by Prev(). This is, however, not supported. Currently there is no way to find the last key of prefix with prefix iterating. Also, you can't continue iterating keys after finishing the prefix you seek to. In the places where those operations are needed, you can try to set ReadOptions.total_order_seek = true to disable prefix iterating.
 
-**Q: Are bloom filter blocks of SST files always loaded to memory, or can they be loaded from disk?**
-
-A: The behavior is configurable.  When BlockBaseTableOptions::cache_index_and_filter_blocks is set to true, then bloom filters and index block will be loaded into a LRU cache only when related Get() requests are issued.  In the other case where cache_index_and_filter_blocks is set to false, then RocksDB will try to keep the index block and bloom filter in memory up to DBOptions::max_open_files number of SST files.
-
 **Q: If issue a Put() or Write() with WriteOptions.sync=true, does it mean all previous writes are persistent too?**
 
 A: Yes, but only for all previous writes with WriteOptions.disableWAL=false.
-
 
 **Q: I disabled write-ahead-log and rely on DB::Flush() to persist the data. It works well for single family. Can I do the same if I have multiple column families?**
 
@@ -191,6 +187,10 @@ A: We don't support it right now. But you can dump the data using sst_dump.
 A: Check https://github.com/facebook/rocksdb/wiki/RocksDB-Repairer
 
 ## Configuration and Tuning
+**Q: Are bloom filter blocks of SST files always loaded to memory, or can they be loaded from disk?**
+
+A: The behavior is configurable.  When BlockBaseTableOptions::cache_index_and_filter_blocks is set to true, then bloom filters and index block will be loaded into a LRU cache only when related Get() requests are issued.  In the other case where cache_index_and_filter_blocks is set to false, then RocksDB will try to keep the index block and bloom filter in memory up to DBOptions::max_open_files number of SST files.
+
 **Q: Is it safe to configure different prefix extractor for different column family?**
 
 A: Yes.
