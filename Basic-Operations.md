@@ -69,17 +69,18 @@ When you are done with a database, there are 2 ways to gracefully close the data
 
 Example:
 
+
 ```cpp
   ... open the db as described above ...
   ... do something with db ...
-  Status s = db->Close();
-  ... log status ...
   delete db;
 ```
 Or
 ```cpp
   ... open the db as described above ...
   ... do something with db ...
+  Status s = db->Close();
+  ... log status ...
   delete db;
 ```
 
