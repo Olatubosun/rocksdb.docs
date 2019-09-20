@@ -22,6 +22,7 @@
 *** [[DeleteRange | DeleteRange]]
 *** [[Atomic flush | Atomic flush]]
 *** [[Secondary instance | Secondary instance]]
+*** [[User Timestamp (Experimental) | User Timestamp (Experimental)]]
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** Options
