@@ -98,7 +98,7 @@ or simply `make format` if you use _GNU make_. If you lack of dependencies to ru
 Consider updating HISTORY.md to mention your change, especially if it's a bug fix, public API change or an awesome new feature.
 
 ## Add Unit Tests
-Almost all code changes need to go with changes in unit tests to validate the change. For new features, new unit tests or tests scenarios need to be added even if it has been validated manually. This is to make sure future contributors can rerun the tests to validate their changes don't cause problem with the feature.
+Almost all code changes need to go with changes in unit tests for validation. For new features, new unit tests or tests scenarios need to be added even if it has been validated manually. This is to make sure future contributors can rerun the tests to validate their changes don't cause problem with the feature.
 
 ## Simple Changes
 Pull requests for simple changes can be sent after running all unit tests with any build favor and see all tests pass. If any public interface is changed, or Java code involved, Java tests also need to be run.
