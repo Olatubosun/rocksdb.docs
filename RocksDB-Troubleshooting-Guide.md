@@ -28,7 +28,7 @@ See --help and [[Administration and Data Access Tool]] for more details about th
 It’s a good idea to start with statistics. [[Statistics]] and the information returned by `DB::GetProperty()` are two good places to look.Information Logs contain some performance information about each flush or compaction. For slow reads, [[Perf Context and IO Stats Context]] can help break down the latency. [[RocksDB Tuning Guide]] has some information about RocksDB performance.
 
 ## Report Issues
-We use github issues only for bug reports, and use [Google Group](https://groups.google.com/forum/#!forum/rocksdb) or Facebook Group for other issues. It’s not always clear to users whether it is RocksDB bug or not, pick one using your best judgement.
+We use github issues only for bug reports, and use [RocksDB's Google group](https://groups.google.com/forum/#!forum/rocksdb) or Facebook Group for other issues. It’s not always clear to users whether it is RocksDB bug or not, pick one using your best judgement.
 
 To help the community to help more efficiently, provide as much information as possible. Try to include the RocksDB release number, options used (e.g. paste the option file under the DB directory), what’s seen when examining the database with `ldb` or `sst_dump`, related statistics, etc. You can even consider to attach the information files. Data itself is not logged there.
 
