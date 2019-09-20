@@ -97,6 +97,9 @@ or simply `make format` if you use _GNU make_. If you lack of dependencies to ru
 ## HISTORY.md
 Consider updating HISTORY.md to mention your change, especially if it's a bug fix, public API change or an awesome new feature.
 
+## Pull Request Summary
+We recommend a "Test Plan:" section is included in the pull request summary, which introduces what testing is done to validate the quality and performance of the change.
+
 ## Add Unit Tests
 Almost all code changes need to go with changes in unit tests for validation. For new features, new unit tests or tests scenarios need to be added even if it has been validated manually. This is to make sure future contributors can rerun the tests to validate their changes don't cause problem with the feature.
 
@@ -123,7 +126,4 @@ If you can't use _GNU make_, you can manually build db_stress binary, and run sc
 ```
 
 ## Performance Improvement Changes
-For changes that might impact performance, we suggest normal benchmarks on flash are run to make sure there is no regression. If the change is to improve performance, bring at least one benchmark test case that favors the improvement and show the improvements.
-
-## Pull Request Summary
-We recommend a "Test Plan:" section is included in the pull request summary, which introduces what testing is done to validate the quality and performance of the change.
+For changes that might impact performance, we suggest normal benchmarks are run to make sure there is no regression. Depending the actual performance, you may choose to run against a database backed by disks, or memory-backed file systems. Explain in the pull request summary why the performance environment is chosen, if it is not obvious. If the change is to improve performance, bring at least one benchmark test case that favors the improvement and show the improvements.
