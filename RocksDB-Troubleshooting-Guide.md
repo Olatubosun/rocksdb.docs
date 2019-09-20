@@ -33,9 +33,10 @@ We use github issues only for bug reports, and use [RocksDB's Google group](http
 To help the community to help more efficiently, provide as much information as possible. Try to include:
 * Your environment.
 * The language binding you are using: C++, C, Java, or third-party bindings.
-* RocksDB release number
-* Options used (e.g. paste the option file under the DB directory)
+* RocksDB release number.
+* Options used (e.g. paste the option file under the DB directory).
 * Findings when examining the database with `ldb` or `sst_dump`, related statistics, etc.
+* It may be helpful to paste the compaction summary.
 * You can even consider to attach the information files. Data itself is not logged there.
 
 When reporting bugs, [MyRocks's bug reporting guidelines](https://github.com/facebook/mysql-5.6/wiki/Reporting-bugs-and-asking-for-help) might be helpful too.
