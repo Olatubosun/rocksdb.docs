@@ -52,7 +52,7 @@ To create a clock cache, call `NewClockCache()`. To make clock cache available, 
 * `num_shard_bits`: Same as LRUCache.
 * `strict_capacity_limit`: Same as LRUCache.
 
-### Caching Index and Filter Blocks
+### Caching Index, Filter, and Compression Dictionary Blocks
 
 By default index, filter, and compression dictionary blocks are cached outside of block cache, and users won't be able to control how much memory should be used to cache these blocks, other than setting `max_open_files`. Users can opt to cache index and filter blocks in block cache, which allows for better control of memory used by RocksDB. To cache index, filter, and compression dictionary blocks in block cache:
 
