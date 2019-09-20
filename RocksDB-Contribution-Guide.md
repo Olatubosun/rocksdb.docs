@@ -1,3 +1,6 @@
+# Before Contribution
+Before contributing to RocksDB, please make sure that you are able to CLA. Your change will not be merged unless you have proper CLA signed. See https://code.facebook.com/cla for more information.
+
 # Basic Development Workflow
 
 As most open-source projects in github, RocksDB contributors work on their fork, and send pull requests to RocksDB’s facebook repo. After a reviewer approves the pull request, a RocksDB team member at Facebook will merge it.
