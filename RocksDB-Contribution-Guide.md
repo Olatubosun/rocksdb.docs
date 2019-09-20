@@ -5,11 +5,11 @@ As most open-source projects in github, RocksDB contributors work on their fork,
 
 # How to Run Unit Tests
 
-## build systems
+## Build Systems
 
 RocksDB uses gtest. The makefile used for _GNU make_ has some supports to help developers run all unit tests in parallel, which will be introduced below. If you use cmake, you might need find your way to run all the unit tests (you are welcome to contribute build system to make it easier).
 
-## run unit tests in parallel
+## Run Unit Tests In Parallel
 
 In order to run unit tests in parallel, first install _GNU parallel_ on your host, and run run
 ```
@@ -27,7 +27,7 @@ make clean
 make J=64 all check -j
 ```
 
-## Debug single unit test failures
+## Debug Single Unit Test Failures
 
 RocksDB uses _gtest_. You can running specific unit test by running the test binary contains it. If you use GNU make, the test binary will be just under your checkpoint. For example, test `DBBasicTest.OpenWhenOpen` is in binary `db_basic_test`, so just run
 ```
