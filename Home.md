@@ -17,7 +17,7 @@ RocksDB introduces dozens of new major features. See [the list of features not i
 ## Getting Started
 For a complete Table of Contents, see the sidebar to the right. Most readers will want to start with the [Overview](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics) and the [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations) section of the Developer's Guide. Get your initial options set-up following [[Setup Options and Basic Tuning]]. Also check [[RocksDB FAQ]]. There is also a [[RocksDB Tuning Guide]] for advanced RocksDB users.
 
-## Contribution to RocksDB
+## Contributing to RocksDB
 Feel free to send pull requests to contribute to RocksDB code base! Check [[RocksDB-Contribution-Guide]] for guideline.
 
 ## Reporting bugs and asking for help
