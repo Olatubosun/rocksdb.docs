@@ -1,5 +1,5 @@
 # Before Contribution
-Before contributing to RocksDB, please make sure that you are able to CLA. Your change will not be merged unless you have proper CLA signed. See https://code.facebook.com/cla for more information.
+Before contributing to RocksDB, please make sure that you are able to sign CLA. Your change will not be merged unless you have proper CLA signed. See https://code.facebook.com/cla for more information.
 
 # Basic Development Workflow
 
