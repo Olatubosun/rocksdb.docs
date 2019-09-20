@@ -32,4 +32,6 @@ We use github issues only for bug reports, and use [RocksDB's Google group](http
 
 To help the community to help more efficiently, provide as much information as possible. Try to include the RocksDB release number, options used (e.g. paste the option file under the DB directory), what’s seen when examining the database with `ldb` or `sst_dump`, related statistics, etc. You can even consider to attach the information files. Data itself is not logged there.
 
+When reporting bugs, [MyRocks's bug reporting guidelines](https://github.com/facebook/mysql-5.6/wiki/Reporting-bugs-and-asking-for-help) might be helpful too.
+
 For performance related questions, it may be helpful to check [[How to ask a performance related question]].
