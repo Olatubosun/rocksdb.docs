@@ -20,8 +20,8 @@ For a complete Table of Contents, see the sidebar to the right. Most readers wil
 ## Contributing to RocksDB
 You are welcome to send pull requests to contribute to RocksDB code base! Check [[RocksDB-Contribution-Guide]] for guideline.
 
-## Reporting bugs and asking for help
-If you will run into any issues then please use [these guidelines](https://github.com/facebook/mysql-5.6/wiki/Reporting-bugs-and-asking-for-help) to report bugs and ask for help.
+## Toubleshooting and asking for help
+Follow [[RocksDB Troubleshooting Guide]] for the guidelines.
 
 ## Blog 
 * Check out our blog at [rocksdb.org/blog](http://rocksdb.org/blog)
