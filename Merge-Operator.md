@@ -507,6 +507,7 @@ This is an API to allow for fetching all merge operands associated with a Key. T
   int number_of_operands = 0;
   std::vector values(size);
   GetMergeOperandsOptions merge_operands_info;
+  merge_operands_info.expected_max_number_of_operands = size;
   db_->GetMergeOperands(ReadOptions(), db_->DefaultColumnFamily(), "k1", values.data(), merge_operands_info, 
   &number_of_operands);
 ```
