@@ -20,6 +20,7 @@
 *** [[Snapshot | Snapshot]]
 *** [[DeleteRange | DeleteRange]]
 *** [[Atomic flush | Atomic flush]]
+*** [[Secondary instance | Secondary instance]]
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** Options
