@@ -3,6 +3,7 @@
 * [[RocksDB-Basics | Overview]]
 * [[RocksDB FAQ | RocksDB FAQ]]
 * [[Terminology|Terminology]]
+* [[RocksDB-Contribution-Guide|Contributor Guide]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
 *** [[Iterator | Iterator]]
