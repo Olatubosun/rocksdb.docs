@@ -483,7 +483,24 @@ Hence, the MergeOperator::FullMerge() method should only return false if there i
 For AssociativeMergeOperator, the Merge() method follows the same "error" rules as MergeOperator::FullMerge() in terms of error-handling. Return false only if there is no logical way of dealing with the values. In the Counters example above, our Merge() always returns true, since we can interpret any bad value as 0.
 
 # Get Merge Operands
-This is an API to allow for fetching all merge operands associated with a Key. The main motivation for this API is to support use cases where doing a full online merge is not necessary as it is performance sensitive. This API is available from version 6.4.0.
+This is an API to allow for fetching all merge operands associated with a Key. The main motivation for this API is to support use cases where doing a full online merge is not necessary as it is performance sensitive. This API is available from version 6.4.0.                                                                               
+Example use-cases:
+1. Storing a KV pair where V is a collection of sorted integers and new values may get appended to the collection and subsequently users want to search for a value in the collection.                                        
+Example KV:                                                                                                      
+Key: ‘Some-Key’                                                                                                 Value: [2], [3,4,5], [21,100], [1,6,8,9]                                                                                                                                                                  
+To store such a KV pair users would typically call the Merge API as:                                             
+           a. db→Merge(WriteOptions(), 'Some-Key', '2');                                                         
+           b. db→Merge(WriteOptions(), 'Some-Key', '3,4,5');                                                     
+           c. db→Merge(WriteOptions(), 'Some-Key', '21,100');                                                    
+           d. db→Merge(WriteOptions(), 'Some-Key', '1,6,8,9');                                                             
+and implement a Merge Operator that would simply convert the Value to [2,3,4,5,21,100,1,6,8,9] upon a Get API call and then search in the resultant value. In such a case doing the merge online is unnecessary and simply returning all the operands [2], [3,4,5], [21, 100] and [1,6,8,9] and then search through the sub-lists proves to be faster while saving CPU and achieving the same outcome.                                                                                                                                                                                          
+
+2. Update subset of columns and read subset of columns -
+    Imagine a SQL Table, a row maybe encoded as a KV pair. If there are many columns and users only updated one of them, we can use merge operator to reduce write amplification. While users only read one or two columns in the read query, this feature can avoid a full merging of the whole row, and save some CPU.
+
+3. Updating very few attributes in a value which is a JSON-like document -
+    Updating one attribute can be done efficiently using merge operator, while reading back one attribute can be done more efficiently if we don't need to do a full merge.
+
 ```cpp
  API: 
   // Returns all the merge operands corresponding to the key. If the
@@ -511,6 +528,11 @@ This is an API to allow for fetching all merge operands associated with a Key. T
   db_->GetMergeOperands(ReadOptions(), db_->DefaultColumnFamily(), "k1", values.data(), merge_operands_info, 
   &number_of_operands);
 ```
+The above API returns all the merge operands corresponding to the key. If the number of merge operands in DB is greater than merge_operands_options.expected_max_number_of_operands no merge operands are returned and status is Incomplete. Merge operands returned are in the order of insertion.
+
+DB Bench has a benchmark that uses Example 1 to demonstrate the performance difference of doing an online merge and then operating on the collection vs simply returning the sub-lists and operating on the sub-lists. To run the benchmark the command is :                                                                                        
+`./db_bench -benchmarks=getmergeoperands --merge_operator=sortlist`  
+The merge_operator used above is used to sort the data across all the sublists for the online merge case which happens automatically when Get API is called.   
 
 # Review and Best Practices
 Altogether, we have described the Merge Operator, and how to use it. Here are a couple tips on when/how to use the MergeOperator and AssociativeMergeOperator depending on use-cases.
