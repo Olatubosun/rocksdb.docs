@@ -22,6 +22,7 @@ std::string value;
 s = db_secondary->Get(ReadOptions(), "foo", &value);
 ...
 ```
+More detailed example can be found in examples/mult_processes_example.cc.
 
 Current Limitations and Caveats
 - The secondary instance must be opened with `max_open_files = -1`, indicating the secondary has to keep all file descriptors open in order to prevent them from becoming inaccessible after the primary unlinks them, which does not work on some non-POSIX file systems. We have a plan to relax this limitation in the future.
