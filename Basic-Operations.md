@@ -518,6 +518,8 @@ Advanced applications may provide a filter policy that does not use a bloom filt
 
 <li> <code>Options::paranoid_checks</code> may be set to true before opening a database to make the database implementation raise an error as soon as it detects an internal corruption. Depending on which portion of the database has been corrupted, the error may be raised when the database is opened, or later by another database operation. By default, paranoid checking is off so that the database can be used even if parts of its persistent storage have been corrupted.
 
+Checksum verification can also be manually triggered by calling ```DB::VerifyChecksum()```. This API walks through all the SST files in all levels for all column families, and for each SST file, verifies the checksum embedded in the metadata and data blocks. At present, it is only supported for the BlockBasedTable format. The files are verified serially, so the API call may take a significant amount of time to finish. This API can be useful for proactive verification of data integrity in a distributed system, for example, where a new replica can be created if the database is found to be corrupt.
+
 If a database is corrupted (perhaps it cannot be opened when paranoid checking is turned on), the <code>rocksdb::RepairDB</code> function may be used to recover as much of the data as possible.
 
 </ul>
