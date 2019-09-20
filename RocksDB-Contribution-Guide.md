@@ -111,6 +111,7 @@ Pull requests for simple changes can be sent after running all unit tests with a
 
 ## Complex Changes
 If the change is complicated enough, ASAN, TSAN and valgrind need to be run on your local environment before sending the pull request. If you run ASAN with higher version of llvm with covers almost all the functionality of valgrind, valgrind tests can be skipped.
+It may be hard for developers who use Windows. Just try to use the best equivalence tools available there.
 
 ## Changes with Higher Risk or Some Unknowns
 For changes with higher risks, other than running all tests with multiple flavors, a crash test cycle needs to be executed and see no failure. If crash test doesn't cover the new feature, consider to add it there.
