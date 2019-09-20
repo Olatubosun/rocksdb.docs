@@ -94,6 +94,9 @@ build_tools/format-diff.sh
 or simply `make format` if you use _GNU make_. If you lack of dependencies to run it, the script will print out instructions for you to install them. 
 
 # Requirements Before Sending a Pull Request
+## HISTORY.md
+Consider updating HISTORY.md to mention your change, especially if it's a bug fix, public API change or an awesome new feature.
+
 ## Add Unit Tests
 Almost all code changes need to go with changes in unit tests to validate the change. For new features, new unit tests or tests scenarios need to be added even if it has been validated manually. This is to make sure future contributors can rerun the tests to validate their changes don't cause problem with the feature.
 
