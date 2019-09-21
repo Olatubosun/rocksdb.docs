@@ -23,6 +23,7 @@
 *** [[Atomic flush | Atomic flush]]
 *** [[Secondary instance | Secondary instance]]
 *** [[User Timestamp (Experimental) | User Timestamp (Experimental)]]
+*** [[Approximate Size | Approximate Size]]
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** [[RocksDB-Troubleshooting-Guide|Troubleshooting Guide]]
