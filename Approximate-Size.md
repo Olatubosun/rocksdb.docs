@@ -39,3 +39,5 @@ The API counterpart for memtable usage is ```GetApproximateMemTableStats```, whi
 ```
 
 The ```GetApproximateMemTableStats``` is only supported for memtables created by ```SkipListFactory```.
+
+Note that the approximate size from SST files are size of compressed blocks. It might be significantly smaller than the actual key/value size.
