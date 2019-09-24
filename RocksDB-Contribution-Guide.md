@@ -78,7 +78,7 @@ To run all `valgrind tests`:
 ```
 make valgrind_test -j
 ```
-To run _UndefinedBehaviorSanitizer (UBSAN)`, set environment variable `COMPILE_WITH_UBSAN`:
+To run _UndefinedBehaviorSanitizer (UBSAN), set environment variable `COMPILE_WITH_UBSAN`:
 ```
 COMPILE_WITH_UBSAN=1 make all check -j
 ```
