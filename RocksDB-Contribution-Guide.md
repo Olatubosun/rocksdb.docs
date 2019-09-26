@@ -48,7 +48,10 @@ Run subset of tests using `--gtest_filter`. If you only want to run `DBBasicTest
 ```
 ./db_basic_test —gtest_filter=“*DBBasicTest.OpenWhenOpen*”
 ```
-By default, the test DB created by tests are cleared up even if test fails. You can try to preserve it by using `--gtest_throw_on_failure`. If you want to stop the debugger when assert fails, specify `--gtest_break_on_failure`.
+By default, the test DB created by tests are cleared up even if test fails. You can try to preserve it by using `--gtest_throw_on_failure`. If you want to stop the debugger when assert fails, specify `--gtest_break_on_failure`. `KEEP_DB=1` environment variable is another way to preserve the test DB from being deleted at the end of a unit-test run, irrespective of whether the test fails or not:
+```
+KEEP_DB=1 ./db_basic_test --gtest_filter=DBBasicTest.Open
+```
 
 By default, the temporary test files will be under /tmp/rocksdbtest-<number>/ (except when running in parallel they are under /dev/shm). You can override the location by using environment variable `TEST_TMPDIR`. For example:
 ```
