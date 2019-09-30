@@ -8,7 +8,7 @@ WAL files are generated with increasing sequence number in the WAL directory. In
 
 ## Reader/Writer
 
-Writer provides an abstraction for appending log records to a log file. The medium specific internal details are handled by WriteableFile interface. Similarly, Reader provides an abstraction for sequentially reading log records from the a log file. The internal medium specific details are handled by SequentialFile interface.
+Writer provides an abstraction for appending log records to a log file. The medium specific internal details are handled by WriteableFile interface. Similarly, Reader provides an abstraction for sequentially reading log records from the log file. The internal medium specific details are handled by SequentialFile interface.
 
 ## Log File Format
 
