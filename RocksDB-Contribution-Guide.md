@@ -40,13 +40,13 @@ will run all tests in the binary.
 
 gtest provides some useful command line parameters, and you can see them by calling `--help`:
 ```
-./db_basic_test —help
+./db_basic_test --help
 ```
  Here are some frequently used ones:
 
 Run subset of tests using `--gtest_filter`. If you only want to run `DBBasicTest.OpenWhenOpen`, call
 ```
-./db_basic_test —gtest_filter=“*DBBasicTest.OpenWhenOpen*”
+./db_basic_test --gtest_filter=“*DBBasicTest.OpenWhenOpen*”
 ```
 By default, the test DB created by tests are cleared up even if test fails. You can try to preserve it by using `--gtest_throw_on_failure`. If you want to stop the debugger when assert fails, specify `--gtest_break_on_failure`. `KEEP_DB=1` environment variable is another way to preserve the test DB from being deleted at the end of a unit-test run, irrespective of whether the test fails or not:
 ```
