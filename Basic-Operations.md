@@ -37,7 +37,7 @@ If you are porting code from <code>leveldb</code> to <code>rocksdb</code>, you c
 ```
 
 ## RocksDB Options
-Users can choose to always set options fields explicitly in code, as shown above. Alternatively, you can also set it though a string to string map, or an option string. See [[Option String and Option Map]]
+Users can choose to always set options fields explicitly in code, as shown above. Alternatively, you can also set it through a string to string map, or an option string. See [[Option String and Option Map]]
 
 Some options can be changed dynamically while DB is running. For example:
 
@@ -180,7 +180,7 @@ With non-sync writes, RocksDB only buffers WAL write in OS buffer or internal bu
 Non-sync writes can often be used safely. For example, when loading a large amount of data into the database you can handle lost updates by restarting the bulk load after a crash. A hybrid scheme is also possible where `DB::SyncWAL()` is called by a separate thread.
 
 
-We also provide a way to completely disable Write Ahead Log for a particular write. If you set <code>write_option.disableWAL</code> to true, the write will not go to the log at all and may be lost in an event of process crash.
+We also provide a way to completely disable Write Ahead Log for a particular write. If you set <code>write_options.disableWAL</code> to true, the write will not go to the log at all and may be lost in an event of process crash.
 
 
 RocksDB by default uses <code>fdatasync()</code> to sync files, which might be faster than fsync() in certain cases. If you want to use fsync(), you can set <code>Options::use_fsync</code> to true. You should set this to true on filesystems like ext3 that can lose files after a reboot.
@@ -308,7 +308,7 @@ RocksDB now supports multi-operation transactions. See [[Transactions]]
 
 ## Comparators
 
-The preceding examples used the default ordering function for key, which orders bytes lexicographically. You can however supply a custom comparator when opening a database. For example, suppose each database key consists of two numbers and we should sort by the firstnumber, breaking ties by the second number. First, define a proper subclass of <code>rocksdb::Comparator</code> that expresses these rules:
+The preceding examples used the default ordering function for key, which orders bytes lexicographically. You can however supply a custom comparator when opening a database. For example, suppose each database key consists of two numbers and we should sort by the first number, breaking ties by the second number. First, define a proper subclass of <code>rocksdb::Comparator</code> that expresses these rules:
 
 ```cpp
   class TwoPartComparator : public rocksdb::Comparator {
@@ -359,9 +359,9 @@ You can [[Creating and Ingesting SST files]] to bulk load a large amount of data
 [[Checkpoints]] provides the ability to take a snapshot of a running RocksDB database in a separate directory. Files are hardlinked, rather than copied, if possible, so it is a relatively lightweight operation.
 
 ## I/O
-By default, RocksDB's I/O go through operating system's page cache. Setting [[Rate Limiter]] can limit the speed that RocksDB issues file writes, to make room for read I/Os.
+By default, RocksDB's I/O goes through operating system's page cache. Setting [[Rate Limiter]] can limit the speed that RocksDB issues file writes, to make room for read I/Os.
 
-Users can also choose to by pass by page cache, using [Direct I/O](https://github.com/facebook/rocksdb/wiki/Direct-IO).
+Users can also choose to bypass operating system's page cache, using [Direct I/O](https://github.com/facebook/rocksdb/wiki/Direct-IO).
 
 See [[IO]] for more details.
 
@@ -396,7 +396,7 @@ Start with [[Set Up Options]]. For more information about RocksDB performance, s
 
 Related option is <code>Options::max_write_buffer_number</code>, which is maximum number of write buffers that are built up in memory. The default is 2, so that when 1 write buffer is being flushed to storage, new writes can continue to the other write buffer. The flush operation is executed in a [[Thread Pool]].
 
-<code>Options::min_write_buffer_number_to_merge</code> is the minimum number of write buffers that will be merged together before writing to storage. If set to 1, then all write buffers are flushed to L0 as individual files and this increases read amplification because a get request has to check in all of these files. Also, an in-memory merge may result in writing lesser data to storage if there are duplicate records in each of these individual write buffers. Default: 1
+<code>Options::min_write_buffer_number_to_merge</code> is the minimum number of write buffers that will be merged together before writing to storage. If set to 1, then all write buffers are flushed to L0 as individual files and this increases read amplification because a get request has to check all of these files. Also, an in-memory merge may result in writing lesser data to storage if there are duplicate records in each of these individual write buffers. Default: 1
 
 ## Compression
 
@@ -506,7 +506,7 @@ For example:
   };
 ```
 
-Advanced applications may provide a filter policy that does not use a bloom filter but uses some other mechanism for summarizing a set of keys. See <code>rocksdb/filter_policy.h</code> for detail.
+Advanced applications may provide a filter policy that does not use a bloom filter but uses some other mechanisms for summarizing a set of keys. See <code>rocksdb/filter_policy.h</code> for detail.
 
 ## Checksums
 
@@ -533,7 +533,7 @@ The information about compaction has been moved to [Compaction](https://github.c
 
 ## Approximate Sizes
 
-The <code>GetApproximateSizes</code> method can used to get the approximate number of bytes of file system space used by one or more key ranges.
+The <code>GetApproximateSizes</code> method can be used to get the approximate number of bytes of file system space used by one or more key ranges.
 
 ```cpp
    rocksdb::Range ranges[2];
