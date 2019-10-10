@@ -48,7 +48,7 @@ Snapshots are not persisted across database restarts: a reload of the RocksDB li
 RocksDB supports multi-operational transactions. It supports both of optimistic and pessimistic mode. See [[Transactions]].
 
 #### Prefix Iterators
-Most LSM-tree engines cannot support an efficient `RangeScan` API because it needs to look into multiple data file. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. RocksDB uses this to its advantage. Applications can configure a `prefix_extractor` to specify a key-prefix. RocksDB uses this to store blooms for every key-prefix. An iterator that specifies a prefix (via ReadOptions) will use these bloom bits to avoid looking into data files that do not contain keys with the specified key-prefix.
+Most LSM-tree engines cannot support an efficient `RangeScan` API because it needs to look into multiple data files. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. RocksDB uses this to its advantage. Applications can configure a `prefix_extractor` to specify a key-prefix. RocksDB uses this to store blooms for every key-prefix. An iterator that specifies a prefix (via ReadOptions) will use these bloom bits to avoid looking into data files that do not contain keys with the specified key-prefix.
 
 #### Persistence
 RocksDB has a [[Write Ahead Log]] (WAL). All Puts are stored in an in-memory buffer called the memtable as well as optionally inserted into WAL. On restart, it re-processes all the transactions that were recorded in the log.
