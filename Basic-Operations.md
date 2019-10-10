@@ -37,7 +37,7 @@ If you are porting code from <code>leveldb</code> to <code>rocksdb</code>, you c
 ```
 
 ## RocksDB Options
-Users can choose to always set options fields explicitly in code, as shown above. Alternatively, you can also set it through a string to string map, or an option string. See [[Option String and Option Map]]
+Users can choose to always set options fields explicitly in code, as shown above. Alternatively, you can also set it through a string to string map, or an option string. See [[Option String and Option Map]].
 
 Some options can be changed dynamically while DB is running. For example:
 
