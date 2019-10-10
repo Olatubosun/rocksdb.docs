@@ -496,7 +496,7 @@ To store such a KV pair users would typically call the Merge API as:
 and implement a Merge Operator that would simply convert the Value to [2,3,4,5,21,100,1,6,8,9] upon a Get API call and then search in the resultant value. In such a case doing the merge online is unnecessary and simply returning all the operands [2], [3,4,5], [21, 100] and [1,6,8,9] and then search through the sub-lists proves to be faster while saving CPU and achieving the same outcome.                                                                                                                                                                                          
 
 2. Update subset of columns and read subset of columns -
-    Imagine a SQL Table, a row maybe encoded as a KV pair. If there are many columns and users only updated one of them, we can use merge operator to reduce write amplification. While users only read one or two columns in the read query, this feature can avoid a full merging of the whole row, and save some CPU.
+    Imagine a SQL Table, a row may be encoded as a KV pair. If there are many columns and users only updated one of them, we can use merge operator to reduce write amplification. While users only read one or two columns in the read query, this feature can avoid a full merging of the whole row, and save some CPU.
 
 3. Updating very few attributes in a value which is a JSON-like document -
     Updating one attribute can be done efficiently using merge operator, while reading back one attribute can be done more efficiently if we don't need to do a full merge.
