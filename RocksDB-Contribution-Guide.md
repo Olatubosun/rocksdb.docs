@@ -14,7 +14,7 @@ RocksDB uses gtest. The makefile used for _GNU make_ has some supports to help d
 
 ## Run Unit Tests In Parallel
 
-In order to run unit tests in parallel, first install _GNU parallel_ on your host, and run run
+In order to run unit tests in parallel, first install _GNU parallel_ on your host, and run
 ```
 make all check [-j] 
 ```
@@ -32,7 +32,7 @@ make J=64 all check -j
 
 ## Debug Single Unit Test Failures
 
-RocksDB uses _gtest_. You can running specific unit test by running the test binary contains it. If you use GNU make, the test binary will be just under your checkpoint. For example, test `DBBasicTest.OpenWhenOpen` is in binary `db_basic_test`, so just run
+RocksDB uses _gtest_. You can run specific unit test by running the test binary contains it. If you use GNU make, the test binary will be just under your checkpoint. For example, test `DBBasicTest.OpenWhenOpen` is in binary `db_basic_test`, so just run
 ```
 ./db_basic_test
 ```
@@ -48,7 +48,7 @@ Run subset of tests using `--gtest_filter`. If you only want to run `DBBasicTest
 ```
 ./db_basic_test --gtest_filter=“*DBBasicTest.OpenWhenOpen*”
 ```
-By default, the test DB created by tests are cleared up even if test fails. You can try to preserve it by using `--gtest_throw_on_failure`. If you want to stop the debugger when assert fails, specify `--gtest_break_on_failure`. `KEEP_DB=1` environment variable is another way to preserve the test DB from being deleted at the end of a unit-test run, irrespective of whether the test fails or not:
+By default, the test DB created by tests is cleared up even if test fails. You can try to preserve it by using `--gtest_throw_on_failure`. If you want to stop the debugger when assert fails, specify `--gtest_break_on_failure`. `KEEP_DB=1` environment variable is another way to preserve the test DB from being deleted at the end of a unit-test run, irrespective of whether the test fails or not:
 ```
 KEEP_DB=1 ./db_basic_test --gtest_filter=DBBasicTest.Open
 ```
