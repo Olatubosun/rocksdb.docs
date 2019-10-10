@@ -160,7 +160,7 @@ https://github.com/facebook/rocksdb/blob/4.4.fb/include/rocksdb/db.h#L676-L687
 
 **Q: Does RocksDB support group commit?**
 
-A: Yes. Multiple write requests issued by multiple threads may be grouped together. One of he threads write WAL log for those write requests in one single write request and fsync once if configured.
+A: Yes. Multiple write requests issued by multiple threads may be grouped together. One of the threads writes WAL log for those write requests in one single write request and fsync once if configured.
 
 **Q: Is it possible to scan/iterate over keys only? If so, is that more efficient than loading keys and values?**
 
