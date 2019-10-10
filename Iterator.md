@@ -25,7 +25,7 @@ Note that in release 5.13.x or earlier (before https://github.com/facebook/rocks
 ## Iterating upper bound and lower bound
 A user can specify an upper bound of your range query by setting `ReadOptions.iterate_upper_bound` for the read option passed to `NewIterator()`. By setting this option, RocksDB doesn't have to find the next key after the upper bound. In some cases, some I/Os or computation can be avoided. In some specific workloads, the improvement can be significant. Note it applies to both of forward and backward iterating. The behavior is not defined when you do SeekForPrev() with a seek key higher than upper bound, or calling SeekToLast() with the last key to be higher than an iterator upper bound, although RocksDB will not crash.
 
-Similarly, `ReadOptions.iterate_lower_bound` can be used to with backward iterating to help RocksDB optimize the performance.
+Similarly, `ReadOptions.iterate_lower_bound` can be used with backward iterating to help RocksDB optimize the performance.
 
 See the comment of the options for more information.
 
