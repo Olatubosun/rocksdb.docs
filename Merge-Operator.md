@@ -528,7 +528,7 @@ and implement a Merge Operator that would simply convert the Value to [2,3,4,5,2
   db_->GetMergeOperands(ReadOptions(), db_->DefaultColumnFamily(), "k1", values.data(), merge_operands_info, 
   &number_of_operands);
 ```
-The above API returns all the merge operands corresponding to the key. If the number of merge operands in DB is greater than merge_operands_options.expected_max_number_of_operands no merge operands are returned and status is Incomplete. Merge operands returned are in the order of insertion.
+The above API returns all the merge operands corresponding to the key. If the number of merge operands in DB is greater than merge_operands_options.expected_max_number_of_operands, no merge operands are returned and status is Incomplete. Merge operands returned are in the order of insertion.
 
 DB Bench has a benchmark that uses Example 1 to demonstrate the performance difference of doing an online merge and then operating on the collection vs simply returning the sub-lists and operating on the sub-lists. To run the benchmark the command is :                                                                                        
 `./db_bench -benchmarks=getmergeoperands --merge_operator=sortlist`  
