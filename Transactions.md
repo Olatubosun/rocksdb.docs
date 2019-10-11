@@ -87,7 +87,7 @@ Using SetSnapshot():
 	// Transaction will NOT commit since key1 was written outside of this transaction after SetSnapshot() was called (even though this write
 	// occurred before this key was written in this transaction).
 
-Note that in the previous example, if this were a TransactionDB, the Put() would have failed. If this were an OptimisticTransactionDB, the Commit() would fail.	
+Note that in the SetSnapshot() case of the previous example, if this were a TransactionDB, the Put() would have failed. If this were an OptimisticTransactionDB, the Commit() would fail.	
 
 ### Repeatable Read
 Similar to normal RocksDB DB reads, you can achieve repeatable reads when reading through a transaction by setting a Snapshot in the ReadOptions.
