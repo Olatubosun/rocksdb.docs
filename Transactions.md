@@ -26,7 +26,7 @@ Optimistic Transactions provide light-weight optimistic concurrency control for 
 
 Optimistic Transactions do not take any locks when preparing writes. Instead, they rely on doing conflict-detection at commit time to validate that no other writers have modified the keys being written by the current transaction. If there is a conflict with another write (or it cannot be determined), the commit will return an error and no keys will be written.
 
-Optimistic concurrency control is useful for many workloads that need to protect against occasional write conflicts. However, this many not be a good solution for workloads where write-conflicts occur frequently due to many transactions constantly attempting to update the same keys. For these workloads, using a TransactionDB may be a better fit. An OptimisticTransactionDB may be more performant than a TransactionDB for workloads that have many non-transactional writes and few transactions. 
+Optimistic concurrency control is useful for many workloads that need to protect against occasional write conflicts. However, this may not be a good solution for workloads where write-conflicts occur frequently due to many transactions constantly attempting to update the same keys. For these workloads, using a TransactionDB may be a better fit. An OptimisticTransactionDB may be more performant than a TransactionDB for workloads that have many non-transactional writes and few transactions. 
 
 	DB* db;
 	OptimisticTransactionDB* txn_db;
