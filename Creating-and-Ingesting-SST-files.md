@@ -1,4 +1,4 @@
-RocksDB provide the user with APIs that can be used to create SST files that can be ingested later. This can be useful if you have a use case that need to load the data quickly, but the process of creating the data can be done offline.
+RocksDB provide the user with APIs that can be used to create SST files that can be ingested later. This can be useful if you have a use case that needs to load the data quickly, but the process of creating the data can be done offline.
 
 ## Creating SST file
 rocksdb::SstFileWriter can be used to create SST file. After creating a SstFileWriter object you can open a file, insert rows into it and finish.   
