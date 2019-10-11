@@ -1,4 +1,4 @@
-Users sometimes need to do large amount of background write. One example is that they want load a large amount of data. Another one is that they want to do some data migration.
+Users sometimes need to do large amount of background write. One example is that they want to load a large amount of data. Another one is that they want to do some data migration.
 
 The best way to handle these cases is to [[Creating and Ingesting SST files|Creating and Ingesting SST files]]. However, there may be use cases where users are not able to load in batch and have to directly write the data to the DB continuously. When doing that, they may hit this problem: if they issue background writes as fast as possible, it will trigger DB's throttling mechanism (see [[Write Stalls]]), it will slowdown not only the background writes, but the online queries by users too.
 
