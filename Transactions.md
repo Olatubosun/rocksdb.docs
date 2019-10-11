@@ -3,7 +3,7 @@ RocksDB supports Transactions when using a TransactionDB or OptimisticTransactio
 Note that RocksDB provides Atomicity by default when writing multiple keys via WriteBatch. Transactions provide a way to guarantee that a batch of writes will only be written if there are no conflicts. Similar to a WriteBatch, no other threads can see the changes in a transaction until it has been written (committed).
 
 ### TransactionDB
-When using a TransactionDB, all keys that are written are locked internally by RocksDB to perform conflict detection.  If a key cannot be locked, the operation will return an error.  When the transaction is committed it is guaranteed to succeed as long as the database is able to be written to.
+When using a TransactionDB, all keys that are written are locked internally by RocksDB to perform conflict detection.  If a key cannot be locked, the operation will return an error.  When the transaction is committed, it is guaranteed to succeed as long as the database is able to be written to.
 
 A TransactionDB can be better for workloads with heavy concurrency compared to an OptimisticTransactionDB.  However, there is a small cost to using a TransactionDB due to the locking overhead.  A TransactionDB will do conflict checking for all write operations, including writes performed outside of a Transaction.
 
