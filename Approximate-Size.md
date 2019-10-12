@@ -4,7 +4,7 @@ The approximate size APIs allow a user to get a reasonably accurate guess of dis
 
 The main APIs are ```GetApproximateSizes()``` and ```GetApproximateMemTableStats()```. The former takes a ```struct SizeApproximationOptions``` as an argument. It has the following fields -
 * ```include_memtabtles``` - Indicates whether to count the memory usage of a given key range in memtables towards the overall size of the key range.
-* ```include_files``` - Indicates whether to count the size of SST files occupied by the key range towards the overall size. Atleast one of this or ```include_memtabtles``` must be set to ```true```.
+* ```include_files``` - Indicates whether to count the size of SST files occupied by the key range towards the overall size. At least one of this or ```include_memtabtles``` must be set to ```true```.
 * ```files_size_error_margin``` - This option indicates the acceptable ratio of over/under estimation of file size to the actual file size. For example, a value of ```0.1``` means the approximate size will be within 10% of the actual size of the key range. The main purpose of this option is to make the calculation more efficient. Setting this to ```-1.0``` will force RocksDB to seek into SST files to accurately calculate the size, which will be more CPU intensive.
 
 Example,
