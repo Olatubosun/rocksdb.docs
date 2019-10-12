@@ -11,7 +11,7 @@ With the default logger, a log line might look like this:
 ```
 2019/09/17-13:42:20.597910 7fef48069300 [_impl/db_impl_compaction_flush.cc:1473] [default] Manual compaction starting
 ```
-After the timestamp, `7fef48069300` is the thread ID. Since usually a flush or compaction happens in one same thread, the thread ID might help you correlate which lines belong to the same job. `_impl/db_impl_compaction_flush.cc:1473` shows the source file and line number where the line is logged. It might be cut short to avoid long log lines. `default` the column family name.
+After the timestamp, `7fef48069300` is the thread ID. Since usually a flush or compaction happens in one same thread, the thread ID might help you correlate which lines belong to the same job. `_impl/db_impl_compaction_flush.cc:1473` shows the source file and line number where the line is logged. It might be cut short to avoid long log lines. `default` is the column family name.
 
 ## Examine data on disk
 If you see that RocksDB has returned unexpected results. You may consider to examine the database files and see whether the data on disk is wrong and if it is wrong in what way. `Ldb` is the best tool to do that (ldb stands for LevelDB and we never renamed it).
