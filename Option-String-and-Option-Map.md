@@ -80,5 +80,5 @@ If the option is a callback class, e.g. comparators, compaction filter, and merg
 There are exception. Some special callback classes are supported by the option string or map:
 * Prefix extractor (option name `prefix_extractor`), whose value can be passed as `rocksdb.FixedPrefix.<prefix_length>` or `rocksdb.CappedPrefix.<prefix_length>`.
 * Filter policy (option name `filter_policy`), whose value can be passed as `bloomfilter:<bits_per_key>:<use_block_based>`
-* Table factory (option name `table_factory`). The values will be either `BlockBasedTable` or `PlainTable`. Other than that, two special option string name is used to provide the options, `block_based_table_factory` or `plain_table_factory`. The value of the options will be the option string of BlockBasedTableOptions or PlainTableOptions.
+* Table factory (option name `table_factory`). The values will be either `BlockBasedTable` or `PlainTable`. Other than that, two special option string names are used to provide the options, `block_based_table_factory` or `plain_table_factory`. The value of the options will be the option string of BlockBasedTableOptions or PlainTableOptions.
 * Memtable Factory (option name `memtable_factory`). It can take value of `skip_list`, `prefix_hash`, `hash_linkedlist`, `vector` or `cuckoo`.
