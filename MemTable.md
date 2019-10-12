@@ -26,9 +26,9 @@ The biggest limitation of the hash based memtables is that doing scan across mul
 
 There are three scenarios where memtable flush can be triggered:
 
-1. Memtable size exceed `write_buffer_size` after a write.
-2. Total memtable size across all column families exceed `db_write_buffer_size`, or `write_buffer_manager` signals a flush. In this scenario the largest memtable will be flushed.
-3. Total WAL file size exceed `max_total_wal_size`. In this scenario the memtable with the oldest data will be flushed, in order to allow the WAL file with data from this memtable to be purged.
+1. Memtable size exceeds `write_buffer_size` after a write.
+2. Total memtable size across all column families exceeds `db_write_buffer_size`, or `write_buffer_manager` signals a flush. In this scenario the largest memtable will be flushed.
+3. Total WAL file size exceeds `max_total_wal_size`. In this scenario the memtable with the oldest data will be flushed, in order to allow the WAL file with data from this memtable to be purged.
 
 As a result, a memtable can be flushed before it is full. This is one reason the generated SST file can be smaller than the corresponding memtable. Compression is another factor to make SST file smaller than corresponding memtable, since data in memtable is uncompressed.
 
