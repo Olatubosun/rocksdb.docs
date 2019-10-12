@@ -25,4 +25,4 @@ Status s = db->Flush();
 Users could also dynamically change rate limiter's bytes per second with `SetBytesPerSecond()` when they need. see [include/rocksdb/rate_limiter.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/rate_limiter.h) for more API details.
 
 ## Customization
-For the users whose requirements are beyond the functions provided by RocksDB native Ratelimiter, they can implement there own Ratelimiter by extending [include/rocksdb/rate_limiter.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/rate_limiter.h)
+For the users whose requirements are beyond the functions provided by RocksDB native Ratelimiter, they can implement their own Ratelimiter by extending [include/rocksdb/rate_limiter.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/rate_limiter.h)
