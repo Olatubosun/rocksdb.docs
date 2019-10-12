@@ -43,7 +43,7 @@ db->Flush(FlushOptions(), handles[0]);
 // The older WAL will be archived and purged separetely
 ```
 
-To summarize, a WAL is created when 1) a new DB is opened, 2) a column family is flushed. A WAL is deleted (or archived if archival is enabled) when all column families have flushed beyond the largest sequence number contained in the WAL, or in other words, all data in the WAL have been persisted to SST files. Archived WALs will be moved to a separete location and purged from disk later on. The actual deletion might be delayed due to replication purposes, see Transcational Log Iterator section below.
+To summarize, a WAL is created when 1) a new DB is opened, 2) a column family is flushed. A WAL is deleted (or archived if archival is enabled) when all column families have flushed beyond the largest sequence number contained in the WAL, or in other words, all data in the WAL have been persisted to SST files. Archived WALs will be moved to a separate location and purged from disk later on. The actual deletion might be delayed due to replication purposes, see Transaction Log Iterator section below.
 
 ## WAL Configurations
 
