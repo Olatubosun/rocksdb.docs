@@ -68,7 +68,7 @@ Version edit records have the following format. The decoder identifies the recor
 
 ### Version Edit Record Types and Layout
 
-There are variety of edit record corresponding to different state changes of RocksDB.
+There are a variety of edit records corresponding to different state changes of RocksDB.
 
 Comparator edit record:
 ```
