@@ -17,7 +17,7 @@ It represents the amount of data to build up in memory (backed by an unsorted lo
 You need to budget for 2 x your worst case memory use. If you don't have enough memory for this, you should reduce this value. Otherwise, it is not recommended to change this option. For example:
 
 ```c++
-cf_options.write_buffer_size = 64 << 20
+cf_options.write_buffer_size = 64 << 20;
 ```
 
 See below for sharing memory across Column Families.
