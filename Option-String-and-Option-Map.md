@@ -68,7 +68,7 @@ Similarly, users can get option classes from a string map, by calling helper fun
       {"optimize_filters_for_hits", "true"},
   };
 ```
-To find the list of options supported, check [the section below](#find-the-supported-options-in-option-string-and-option-map)
+To find the list of options supported, check [the section below](#find-the-supported-options-in-option-string-and-option-map).
 
 ### Find the supported options in option string and option map
 In both of option string and option map, option name maps the variable names in the target class, `DBOptions`, `ColumnFamilyOptions`, `BlockBasedTableOptions`, or `PlainTableOptions`. For `DBOptions` and `ColumnFamilyOptions`, you can find the list of them and their descriptions in two respective classes in the source file [[options.h|https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h]] of the source code of your release. For the other two options, you can find them in file [[table.h|https://github.com/facebook/rocksdb/blob/master/include/rocksdb/table.h]]
