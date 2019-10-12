@@ -55,7 +55,7 @@ cf_options.table_factory.reset(table_factory);
 
 ## Compression
 
-You can only choose compression types which are supported on your host system. Using compression is a trade-off between CPU, I/O, and storage space.
+You can only choose compression types which are supported on your host system. Using compression is a trade-off between CPU, I/O and storage space.
 
 1. `cf_options.compression` controls the compression type used for the first `n-1` levels.
     We recommend to use LZ4 (`kLZ4Compression`), or if not available, to use Snappy (`kSnappyCompression`).
