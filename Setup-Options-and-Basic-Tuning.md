@@ -39,7 +39,7 @@ You can create a Block cache of your chosen the size for caching uncompressed da
 
 We recommend that this should be about 1/3 of your total memory budget. The remaining free memory can be left for the OS (Operating System) page cache. Leaving a large chunk of memory for OS page cache has the benefit of avoiding tight memory budgeting (see also: [Memory Usage in RocksDB](https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB)).
 
-Setting the block cache size requires that we also set table related options, for example if you wanted an LRU Cache of `128 MB`:
+Setting the block cache size requires that we also set table related options, for example if you want an LRU Cache of `128 MB`:
 
 ```c++
 auto cache = NewLRUCache(128 << 20);
