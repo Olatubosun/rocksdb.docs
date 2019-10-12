@@ -69,7 +69,7 @@ If the return value indicates OK status, we can proceed and use the loaded set o
 In cases where an options file of a newer version is used with an older RocksDB version (say, when downgrading due to a bug), the older RocksDB version might not know about some newer options. `ignore_unknown_options` flag can be used to handle such cases. `ignore_unknown_options` has been added as an argument to `LoadLatestOptions`, `LoadOptionsFromFile`, `CheckOptionsCompatibility`, `GetDBOptionsFromMap`, `GetColumnFamilyOptionsFromMap`, `GetBlockBasedTableOptionsFromMap` and `GetPlainTableOptionsFromMap`. By default it is set to `false`.
 
 # RocksDB Options File Format
-RocksDB options file is a text file that follows the [INI file format](https://en.wikipedia.org/wiki/INI_file).  Each RocksDB options file has one version section, one DBOptions section, and one CFOptions and TableOptions section for each column family.  Below is an example RocksDB options file.  A complete example can be found in [examples/rocksdb_option_file_example.ini](https://github.com/facebook/rocksdb/blob/master/examples/rocksdb_option_file_example.ini):
+RocksDB options file is a text file that follows the [INI file format](https://en.wikipedia.org/wiki/INI_file).  Each RocksDB options file has one Version section, one DBOptions section, and one CFOptions and TableOptions section for each column family.  Below is an example RocksDB options file.  A complete example can be found in [examples/rocksdb_option_file_example.ini](https://github.com/facebook/rocksdb/blob/master/examples/rocksdb_option_file_example.ini):
 
     [Version]
       rocksdb_version=4.3.0
