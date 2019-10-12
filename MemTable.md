@@ -1,6 +1,6 @@
 MemTable is an in-memory data-structure holding data before they are flushed to SST files. It serves both read and write - new writes always insert data to memtable, and reads has to query memtable before reading from SST files, because data in memtable is newer. Once a memtable is full, it becomes immutable and replace by a new memtable. A background thread will flush the content of the memtable into a SST file, after which the memtable can be destroyed.
 
-The most important options that affects memtable behavior are:
+The most important options that affect memtable behavior are:
 
 * `memtable_factory`: The factory object of memtable. By specifying factory object user can change the underlying implementation of memtable, and provide implementation specific options.
 * `write_buffer_size`: Size of a single memtable.
