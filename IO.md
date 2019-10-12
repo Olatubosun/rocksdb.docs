@@ -15,7 +15,7 @@ Deletion of obsolete DB files can be rate limited by configuring the delete sche
 
 ## Control Read I/O
 ### fadvise
-While opening an SST file for reads, users can decide whether RocksDB will call fadvise with FADV_RANDOM, by setting `options.advise_random_on_open = true` (default). If the value is `false`, no fadvise will be called while opening a file. Setting the option to be true usually works well if the dominating queries are either Get() or iterating a very short range, because read-ahead is not helpful in these cases anyway. Otherwise, `options.advise_random_on_open = false` can usually improve performance to hint the file system to do underlying read-ahead.
+While opening an SST file for reads, users can decide whether RocksDB will call fadvise with FADV_RANDOM, by setting `options.advise_random_on_open = true` (default). If the value is `false`, no fadvise will be called while opening a file. Setting the option to be `true` usually works well if the dominating queries are either Get() or iterating a very short range, because read-ahead is not helpful in these cases anyway. Otherwise, `options.advise_random_on_open = false` can usually improve performance to hint the file system to do underlying read-ahead.
 
 Unfortunately, there isn't a good setting for mixed workload. There is an ongoing project to address this, by doing read-ahead for iterators inside RocksDB.
 
