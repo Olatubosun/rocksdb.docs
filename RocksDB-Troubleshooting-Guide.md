@@ -14,13 +14,13 @@ With the default logger, a log line might look like this:
 After the timestamp, `7fef48069300` is the thread ID. Since usually a flush or compaction happens in one same thread, the thread ID might help you correlate which lines belong to the same job. `_impl/db_impl_compaction_flush.cc:1473` shows the source file and line number where the line is logged. It might be cut short to avoid long log lines. `default` is the column family name.
 
 ## Examine data on disk
-If you see that RocksDB has returned unexpected results. You may consider to examine the database files and see whether the data on disk is wrong and if it is wrong in what way. `Ldb` is the best tool to do that (ldb stands for LevelDB and we never renamed it).
+If you see that RocksDB has returned unexpected results. You may consider to examine the database files and see whether the data on disk is wrong and if it is wrong in what way. `ldb` is the best tool to do that (ldb stands for LevelDB and we never renamed it).
 
-Start with examining the data with `get` and `scan`. These commands will only examine keys visible to users. If you want to examine invisible keys, e.g. tombstones, older versions, you can use `idump`. Another useful command is manifest_dump, which shows the LSM-tree structure of the database. This can help narrow down the problem to LSM-tree metadata or certain SST files.
+Start with examining the data with `get` and `scan` commands. These commands will only examine keys visible to users. If you want to examine invisible keys, e.g. tombstones, older versions, you can use `idump` command. Another useful command is `manifest_dump`, which shows the LSM-tree structure of the database. This can help narrow down the problem to LSM-tree metadata or certain SST files.
 
-If you use a customized comparator, merge operator or Env, you may need to build a customized `ldb` for it to work with your database. You can do it by building a binary which calls `LDBTool::Run()` with customized options, or register your plug in your plug in using object registry before calling the function. See `ldb_tools.h` for details. 
+If you use a customized comparator, merge operator or Env, you may need to build a customized `ldb` for it to work with your database. You can do it by building a binary which calls `LDBTool::Run()` with customized options, or register your plug in using object registry before calling the function. See `ldb_tools.h` for details. 
 
-To examine a specific SST file, use `sst_dump` tool. Starting with scan to examine the logical data. If needed, command raw can help examine data in more details.
+To examine a specific SST file, use `sst_dump` tool. Starting with `scan` to examine the logical data. If needed, command `raw` can help examine data in more details.
 
 See --help and [[Administration and Data Access Tool]] for more details about the two tools.
 
