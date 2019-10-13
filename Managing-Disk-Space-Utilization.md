@@ -1,5 +1,5 @@
 # Overview
-It is possible to cap the total amount of disk space used by a RocksDB database instance, or multiple instance in aggregate. This might be useful in cases where a filesystem is shared by multiple applications and the other applications need to be insulated from unlimited database growth.
+It is possible to cap the total amount of disk space used by a RocksDB database instance, or multiple instances in aggregate. This might be useful in cases where a filesystem is shared by multiple applications and the other applications need to be insulated from unlimited database growth.
 
 The tracking of disk space utilization and, optionally, limiting the database size is done by ```rocksdb::SstFileManager```. It is allocated by calling ```NewSstFileManager()``` and the returned object is assigned to ```DBOptions::sst_file_manager```. It is possible for multiple DB instances to share an ```SstFileManager```.
 
