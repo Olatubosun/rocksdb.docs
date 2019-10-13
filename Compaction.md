@@ -4,7 +4,7 @@ Compaction algorithms constrain the LSM tree shape. They determine which sorted 
 ## Overview of Compaction algorithms
 Source: https://smalldatum.blogspot.com/2018/08/name-that-compaction-algorithm.html
 
-Here we present a taxonomy of compaction algorithms: Classic Leveled, Tiered, Tiered+Leveled, Leveled-N, FIFO. Out of them, Rocksdb implement Tiered+Leveled, termed Level Compaction in the code, Tiered termed Universal in the code, and FIFO.
+Here we present a taxonomy of compaction algorithms: Classic Leveled, Tiered, Tiered+Leveled, Leveled-N, FIFO. Out of them, Rocksdb implements Tiered+Leveled, termed Level Compaction in the code, Tiered termed Universal in the code, and FIFO.
 
 ### Classic Leveled
 
