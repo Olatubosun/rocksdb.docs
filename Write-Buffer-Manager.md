@@ -3,7 +3,7 @@ Write buffer manager helps users control the total memory use by memtables acros
 1. Try to limit to total memtable usage across multiple column families and DBs under a threshold.
 2. Cost the memtable memory usage to block cache
 
-The usage of write buffer manager is similar to rate_limiter and sst_file_manager. Users create one write buffer manager object and pass it to all the option of column families or DBs whose memtable size you want to be controlled by this object. See code comment of write_buffer_manager.h for how to use it.
+The usage of write buffer manager is similar to rate_limiter and sst_file_manager. Users create one write buffer manager object and pass it to all the options of column families or DBs whose memtable size you want to be controlled by this object. See code comment of write_buffer_manager.h for how to use it.
 
 ## Limit total memory of memtables
 A memory limit is given when creating the write buffer manager object. RocksDB will try to limit the total memory to under this limit.
