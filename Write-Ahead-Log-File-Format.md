@@ -57,7 +57,7 @@ record :=
   data: uint8[length]
 ```
 
-A record never starts within the last six bytes of a block (since itwon't fit).  Any leftover bytes here form the trailer, which must consist entirely of zero bytes and must be skipped by readers.
+A record never starts within the last six bytes of a block (since it won't fit).  Any leftover bytes here form the trailer, which must consist entirely of zero bytes and must be skipped by readers.
 
 > if exactly seven bytes are left in the current block, and a new non-zero length record is added, the writer must emit a FIRST record (which contains zero bytes of user data) to fill up the trailing seven bytes of the block and then emit all of the user data in subsequent blocks.
 
