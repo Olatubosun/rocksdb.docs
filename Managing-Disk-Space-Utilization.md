@@ -5,7 +5,7 @@ The tracking of disk space utilization and, optionally, limiting the database si
 
 # Usage
 ## Tracking DB Size
-A caller can get the total disk space used by the DB by calling ```SstFileManager::GetTotalSize()```. The returns the total size, in bytes, of all the SST files. WAL files are not included in the calculation. If the same ```SstFileManager``` object is shared by multiple DB instances, ```GetTotalSize()``` will report the size across all the instances.
+A caller can get the total disk space used by the DB by calling ```SstFileManager::GetTotalSize()```. It returns the total size, in bytes, of all the SST files. WAL files are not included in the calculation. If the same ```SstFileManager``` object is shared by multiple DB instances, ```GetTotalSize()``` will report the size across all the instances.
 
 ## Limiting the DB Size
 By calling ```SstFileManager::SetMaxAllowedSpaceUsage()``` and, optionally,  ```SstFileManager::SetCompactionBufferSize()```, it is possible to set limits on how much disk space is used. Both functions accept a single argument specifying the desired size in bytes. The former sets a hard limit on the DB size, and the latter specifies headroom that should be reserved before deciding whether to allow a compaction to proceed or not.
