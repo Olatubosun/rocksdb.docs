@@ -4,7 +4,7 @@ Here we explain the sub-compaction that is used in both Leveled and Universal co
 The goal of sub-compaction is to speed up a compaction job by partitioning it among multiple threads.
 
 ### When
-It is employed when one of the following conditions hold:
+It is employed when one of the following conditions holds:
 * L0 -> Lo where o > 0
   * Why: L0->Lo cannot be run in parallel with another L0->Lo, hence partitioning is the only way to speed it up.
 * Universal Compaction, except L0 -> L0.
