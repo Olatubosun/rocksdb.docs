@@ -263,8 +263,8 @@ Subcompaction is supported in universal compaction. If the output level of a com
 Following are options affecting universal compactions:
 * options.compaction_options_universal: various options mentioned above
 * options.level0_file_num_compaction_trigger the triggering condition of any compaction. It also means after all compactions' finishing, number of sorted runs will be under options.level0_file_num_compaction_trigger+1
-* options.level0_slowdown_writes_trigger: if number of sorted runs exceed this value, writes will be artificially slowed down.
-* options.level0_stop_writes_trigger: if number of sorted runs exceed this value, writes will stop until compaction finishes and number of sorted runs turn under this threshold.
+* options.level0_slowdown_writes_trigger: if number of sorted runs exceeds this value, writes will be artificially slowed down.
+* options.level0_stop_writes_trigger: if number of sorted runs exceeds this value, writes will stop until compaction finishes and number of sorted runs turns under this threshold.
 * options.num_levels: if this value is 1, all sorted runs will be stored as level 0 files. Otherwise, we will try to fill non-zero levels as much as possible. The larger num_levels is, the less likely we will have large files on level 0.
 * options.target_file_size_base: effective if options.num_levels > 1. Files of levels other than level 0 will be cut to file size not larger than this threshold.
 * options.target_file_size_multiplier: it is effective, but we don't know a way to use this option in universal compaction that makes sense. So we don't recommend you to tune it.
