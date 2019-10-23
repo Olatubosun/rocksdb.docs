@@ -340,7 +340,7 @@ Otherwise
 
 _S = total_size_
 
-Estimate SST file size flushed from memtable to be _M_. And we estimate maximum number of compactions for a update to reach maximum as:
+Estimate SST file size flushed from memtable to be _M_. And we estimate maximum number of compactions for an update to reach maximum as:
 
 _p = log(2, S/M)_
 
