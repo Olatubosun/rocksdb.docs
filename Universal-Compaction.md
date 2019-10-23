@@ -277,8 +277,8 @@ Following options **DO NOT** affect universal compactions:
 * options.source_compaction_factor: only for level-based compactions
 * options.max_grandparent_overlap_factor: only for level-based compactions
 * options.soft_rate_limit and options.hard_rate_limit: deprecated
-* options.hard_pending_compaction_bytes_limit: only used for level-based compaction
-* options.compaction_pri: only supported in level-based compaction
+* options.hard_pending_compaction_bytes_limit: only for level-based compaction
+* options.compaction_pri: only for level-based compaction
 
 ## Estimate Write Amplification
 Estimating write amplification will be very helpful to users to tune universal compaction. This, however, is hard. Since universal compaction always makes locally optimized decision, the shape of the LSM-tree is hard to predict. You can see it from the [example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction-Example) mentioned above. We still don't have a good Math model to predict the write amplification.
