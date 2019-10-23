@@ -219,7 +219,7 @@ They go on like that for several rounds:
 1 1 3 4 5 => 2 3 4 5
 ```
 
-Another flush bring it to be like 
+Another flush brings it to be like 
 
 ```
 1 2 3 4 5
