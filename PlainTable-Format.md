@@ -77,10 +77,10 @@ Each data row is encoded as:
 See [Key Encoding](#key-encoding) for format of encoded key.
  
 #### Key Encoding
-There are two encoding type to the key: `kPlain` and `kPrefix`, which can be specified when creating the plain table factory.
+There are two encoding types to the key: `kPlain` and `kPrefix`, which can be specified when creating the plain table factory.
 
 ##### Plain Encoding
-If fixed key length is given the plain internal key is encoded.
+If fixed key length is given, the plain internal key is encoded.
 
 If the fixed key length is not given, the key is variable length and will be encoded as
 
