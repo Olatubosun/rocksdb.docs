@@ -315,11 +315,11 @@ To look up a key, first calculate prefix of the key using Options.prefix_extract
 
 If Flag=0, it means there is only one prefix for the bucket and there are not many keys for the prefix, so the offset field points to the file offset of the prefix. We just need to do linear search from there.
 
-If Flag=1, a binary search is needed for this bucket. The binary search indexes can be retrieved from the offset field. After the binary search, do the linear search from the offset found by the binary search.
+If Flag=1, a binary search is needed for this bucket. The binary search index can be retrieved from the offset field. After the binary search, do the linear search from the offset found by the binary search.
 
 #### Building the Index
 
-When Building indexes, scan the file. For each key, calculate its prefix, remember (hash value of the prefix, offset) information for the (16n+1)th row of each prefix (n=0,1,2...), starting from the first one. 16 is the maximum number of rows that need to be checked in the linear search following the binary search. By increasing the number, we would save memory consumption for indexes but paying more costs for linear search. Decreasing the number vise verse. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and binary search buffer needed and fill in the indexes according to the bucket size.
+When building indexes, scan the file. For each key, calculate its prefix, remember (hash value of the prefix, offset) information for the (16n+1)th row of each prefix (n=0,1,2...), starting from the first one. 16 is the maximum number of rows that need to be checked in the linear search following the binary search. By increasing the number, we would save memory consumption for indexes but paying more costs for linear search. Decreasing the number vise verse. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and binary search buffer needed and fill in the indexes according to the bucket size.
 
 #### Bloom Filter
 A bloom filter on prefixes can be configured for queries. User can config how many bits are allocated for every prefix. When doing the query (Seek() or Get()), bloom filter is checked and filter out non-existing prefixes before looking up the indexes.
