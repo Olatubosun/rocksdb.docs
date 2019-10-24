@@ -1,7 +1,7 @@
 ### What is a Bloom Filter?
 For any arbitrary set of keys, an algorithm may be applied to create a bit array called a Bloom filter. Given an arbitrary key, this bit array may be used to determine if the key *may exist* or *definitely does not exist* in the key set. For a more detailed explanation of how Bloom filters work, see this [Wikipedia article](http://en.wikipedia.org/wiki/Bloom_filter).
 
-In RocksDB, when the filter policy is set every newly created SST file will contain a Bloom filter, which is used to determine if the file may contain the key we're looking for. The filter is essentially a bit array. Multiple hash functions are applied to the given key, each specifying a bit in the array that will be set to 1. At read time also the same hash functions are applied on the search key, the bits are checked, i.e., probe, and the key is definitely does not exists if at least one of the probes return 0.
+In RocksDB, when the filter policy is set, every newly created SST file will contain a Bloom filter, which is used to determine if the file may contain the key we're looking for. The filter is essentially a bit array. Multiple hash functions are applied to the given key, each specifying a bit in the array that will be set to 1. At read time also the same hash functions are applied on the search key, the bits are checked, i.e., probe, and the key definitely does not exist if at least one of the probes return 0.
 
 The example of setting up a bloom filter:
 
@@ -22,7 +22,7 @@ When we open an SST file, the corresponding Bloom filter is also opened and load
 ### Block-based Bloom Filter (old format)
 
 A Bloom filter may only be built if all keys fit in memory. On the other hand, sharding a bloom filter will not affect its false positive rate. Therefore, to alleviate the memory pressure when creating the SST file, in the old format a separate bloom filter is created per each 2KB block of key values.
-Details for the format can be found [here](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format#filter-meta-block). At the end an array of the offsets of individual bloom blocks are stored in SST file.
+Details for the format can be found [here](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format#filter-meta-block). At the end an array of the offsets of individual bloom blocks is stored in SST file.
 
 At read time, the offset of the block that might contain the key/value is obtained from the SST index. Based on the offset the corresponding bloom filter is then loaded. If the filter suggests that the key might exist, then it searches the actual data block for the key.
 
@@ -57,7 +57,7 @@ The following stats are updated after each point lookup. If `whole_key_filtering
 
 So the false positive rate of point lookups is computed by (positives - true positives) / (positives - true positives + true negatives).
 
-Pay attention to these the confusing scenarios:
+Pay attention to these confusing scenarios:
 1. If both whole_key_filtering and prefix are set, prefix are not checked during point lookups.
 2. If only the prefix is set, the total number of times prefix bloom is checked is the sum of the stats of point lookup and seeks. Due to absence of true positive stats in seeks, we then cannot have the total false positive rate: only that of of point lookups.
 
