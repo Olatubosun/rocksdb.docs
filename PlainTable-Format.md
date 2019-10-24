@@ -34,7 +34,7 @@ options.table_factory.reset(NewTotalOrderPlainTableFactory());
 
 See comments of the two functions in [`include/rocksdb/table.h`](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/table.h) for explanation to the parameters.
 
-`NewPlainTableFactory()` creates plain table factory for plain tables with hash-based index using key prefixes. It is what `PlainTable` is optimized for.
+`NewPlainTableFactory()` creates a plain table factory for plain tables with hash-based index using key prefixes. It is what `PlainTable` is optimized for.
 
 While `NewTotalOrderPlainTableFactory()` doesn't require a prefix extractor and uses a totally binary index. This function is mainly to make `PlainTable` feature-complete. We haven't yet highly optimized query performance in this case.
 
