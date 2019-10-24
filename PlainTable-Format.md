@@ -107,9 +107,9 @@ The 8 bits of the first byte:
     |  Type   |            Size             |
     +----+----+----+----+----+----+----+----+
 
-The first two bits indicate full key (00), prefix (01), or suffix (02). The last 6 bits are for size. If the size bits are not all 1, it means the size of the key. Otherwise, varint32 is written after this byte. This varint value + 0x3F (the value of all 1) will be the key size. In this way, shorter keys only need one byte.
+The first 2 bits indicate full key (00), prefix (01), or suffix (02). The last 6 bits are for size. If the size bits are not all 1, it means the size of the key. Otherwise, varint32 is written after this byte. This varint32 value + 0x3F (the value of all 1) will be the key size. In this way, shorter keys only need one byte.
 
-Here are the format for the three cases mentioned:
+Here are the formats for the three cases mentioned:
 
 (1) Full Key
 
@@ -149,7 +149,7 @@ Will be encoded like this:
     FK 7 AAABBAA
     FK 8 AAACAAAB
 
-(where FK means full key flag, PF means prefix flag and SF means suffix flag)
+(where FK means full key flag, PF means prefix flag and SF means suffix flag.)
 
 ##### Internal Bytes Encoding
 In both of Plain and Prefix encoding type, internal bytes of the internal key are encoded in the same way.
@@ -173,13 +173,13 @@ In Plain Table format, it is also the normal way one key can be optimized. Furth
 
 In-memory Index is built to be as compact as possible. On top level, the index is a hash table with each bucket to be either offset in the file or a binary search index. The binary search is needed in two cases:
 
-(1) Hash collisions: two or more prefixes are hashed to the same bucket
+(1) Hash collisions: two or more prefixes are hashed to the same bucket.
 
 (2) Too many keys for one prefix: need to speed-up the look-up inside the prefix.
 
 #### Format
 
-The index consists of two piece of memory: an array for hash buckets, and a buffer containing the binary searchable indexes (call it "binary search buffer" below, and "file" as the SST file). 
+The index consists of two pieces of memory: an array for hash buckets, and a buffer containing the binary searchable indexes (call it "binary search buffer" below, and "file" as the SST file). 
 
 Key is hashed to buckets based on hash of its prefix (extracted using Options.prefix_extractor).
 
