@@ -17,7 +17,7 @@ To eliminate the memory usage of buffered values in large transaction, unprepare
 
 Transactions need to be able to read their own uncommitted data. Previously this was done by looking into the buffered data before looking into the DB. We address this challenge by keeping the track of the sequence numbers of the written unprepared batches to the disk, and augment ReadCallback to return true if the sequence number of the read data matches them. This applies only to large transactions that do not have the write batch buffered in memory.
 
-The current rollback algorithm in WritePrepared can work only after recovery when there is no live snapshots. In WriteUnPrepared however transactions can rollback in presence of live snapshots. We redesign the rollback algorithm to i) append to the transaction the prior values of the keys that are modified by the transaction, hence essentially cancelling the writes, ii) committing the rolled back transaction. Treating a rollback transaction as committed greatly simplified the implementation as the existing mechanisms of handling live snapshots with committing transaction can seamless apply. WAL will still include a rollback marker to enable the recovery procedure to reattempt the rollback should the DB crash in the middle. To determine the set of prior values, the list of modified keys must be tracked in the Transaction object. In the absence of the buffered write batch, in the first stage of the project we still buffer the modified key set. In the 2nd stage, we retrieve the key set from the WAL when the transaction is large.
+The current rollback algorithm in WritePrepared can work only after recovery when there is no live snapshots. In WriteUnPrepared however transactions can rollback in presence of live snapshots. We redesign the rollback algorithm to i) append to the transaction the prior values of the keys that are modified by the transaction, hence essentially cancelling the writes, ii) commit the rolled back transaction. Treating a rollback transaction as committed greatly simplified the implementation as the existing mechanisms of handling live snapshots with committing transaction can seamless apply. WAL will still include a rollback marker to enable the recovery procedure to reattempt the rollback should the DB crash in the middle. To determine the set of prior values, the list of modified keys must be tracked in the Transaction object. In the absence of the buffered write batch, in the first stage of the project we still buffer the modified key set. In the 2nd stage, we retrieve the key set from the WAL when the transaction is large.
 
 RocksDB tracks the list of keys locked in a transaction in TransactionLockMgr. For large transactions, the list of locked keys will not fit in memory. Automatic lock escalation into range locks can be used to approximate a set of point locks. When RocksDB detects that a transaction is locking a large number keys within a certain range, it will automatically upgrade it to a range lock. We will tackle this in the 3rd stage of the project. More details in Section “Key Locking” below.
 
@@ -35,22 +35,22 @@ The plan is to execute this project in 3 stages:
 
 In the existing WritePrepared policy, the data structures are:
 
-* PrepareHeap: A heap of in-progress prepare sequence numbers
+* PrepareHeap: A heap of in-progress prepare sequence numbers.
 * CommitCache: a mapping between prepare sequence number to commit seq.
-    * max_evicted_seq_: the largest evicted sequence number from the commit cache
-* OldCommitMap: list of evicted entries from the commit cache if they are still invisible to some live snapshots
-* DelayedPrepared: list of prepared sequence numbers from PrepareHeap that are less than max_evicted_seq_
+    * max_evicted_seq_: the largest evicted sequence number from the commit cache.
+* OldCommitMap: list of evicted entries from the commit cache if they are still invisible to some live snapshots.
+* DelayedPrepared: list of prepared sequence numbers from PrepareHeap that are less than max_evicted_seq_.
 
 ## Put
 
-The writes into the the database will be need to be batched to avoid the overhead of going through write queues. To avoid confusion with “write batches”, these will be called “unprepared batches”. By batching, we also save on the number of unprepared sequence numbers that we have to generate and track in our data structures. Once a batch reaches a configurable threshold, it'll be written as if it were a prepare operation in WritePreparedTxn, except that a new WAL type called BeginUnprepareXID will be used as opposed to BeginPersistedPrepareXID used by the WritePreparedTxn policy. All the keys in the same unprepared batch will get the same sequence number (unless there is a duplicate key, which would divide the batch into multiple sub-batches).
+The writes into the database will need to be batched to avoid the overhead of going through write queues. To avoid confusion with “write batches”, these will be called “unprepared batches”. By batching, we also save on the number of unprepared sequence numbers that we have to generate and track in our data structures. Once a batch reaches a configurable threshold, it'll be written as if it were a prepare operation in WritePreparedTxn, except that a new WAL type called BeginUnprepareXID will be used as opposed to BeginPersistedPrepareXID used by the WritePreparedTxn policy. All the keys in the same unprepared batch will get the same sequence number (unless there is a duplicate key, which would divide the batch into multiple sub-batches).
 
 Proposed WAL format:
 [BeginUnprepareXID]...[EndPrepare(XID)]
 
 This implies that we'll need to know the XID of the transaction (where XID is a name uniq during lifetime of the transaction) before final prepare (this is true for MyRocks, since we generate the XID of the transaction when it begins).
 
-The Transaction object will need to track the list of unprepared batches that has written to the db. To do this, the Transaction object will contain a set of unprep_seq numbers, and when an unprepared batch is written, the unprep_seq is added to the set.
+The Transaction object will need to track the list of unprepared batches that have written to the db. To do this, the Transaction object will contain a set of unprep_seq numbers, and when an unprepared batch is written, the unprep_seq is added to the set.
 
 On unprepared batch write, the unprep_seq number is also added to the unprepared heap (similar to prepare heap in WritePreparedTxn).
 
@@ -69,11 +69,11 @@ Proposed WAL format:
 
 In this case, the final prepare gets BeginPersistedPrepareXID instead of BeginUnprepareXID to denote that the transaction has been truly prepared.
 
-Note that although the DB (sst files) are backward- and forward-compatible between WritePreparedTxn and WriteUnpreparedTxn, the WAL of WriteUnpreparedTxn is not forward-compatible with that of  WritePreparedTxn: WritePreparedTxn will successfully fail on recovering form a WAL files generated by WriteUnpreparedTxn because of the new marker types. However, WriteUnpreparedTxn is still fully backward compatible with WritePreparedTxn and will be able to read WritePreparedTxn WAL files, since they will look the same.
+Note that although the DB (sst files) are backward- and forward-compatible between WritePreparedTxn and WriteUnpreparedTxn, the WAL of WriteUnpreparedTxn is not forward-compatible with that of WritePreparedTxn: WritePreparedTxn will successfully fail on recovering from WAL files generated by WriteUnpreparedTxn because of the new marker types. However, WriteUnpreparedTxn is still fully backward compatible with WritePreparedTxn and will be able to read WritePreparedTxn WAL files, since they will look the same.
 
 ## Commit
 
-On commit, the commit map and unprepared heap needs to be updated. For WriteUnprepared, a commit will potentially have multiple prepare sequence numbers associated with it. All (unprep_seq, commit_seq) pairs must be added to the commit map and all unprep_seq must be removed from the unprepare_heap.
+On commit, the commit map and unprepared heap need to be updated. For WriteUnprepared, a commit will potentially have multiple prepare sequence numbers associated with it. All (unprep_seq, commit_seq) pairs must be added to the commit map and all unprep_seq must be removed from the unprepare_heap.
 
 If commit is performed without a prepare and the transaction has not previously written unprepared batches, then the current unprepared batch of writes will be written out directly similar to CommitWithoutPrepareInternal in the WritePreparedTxn case. If the transaction has already written unprepared batches, then an implicit prepare phase is added.
 
@@ -91,9 +91,9 @@ This implementation would not work if there are live snapshots to which prep_seq
 
 This shortcoming in WritePreparedTxn was tolerated because MySQL would only rollback prepared transactions on recovery, where there would be no live snapshots to observe this inconsistency. In WriteUnpreparedTxn, however, this scenario occurs not just on recovery, but also on user-initiated rollbacks of unprepared transactions.
 
-We fix the issue by writing a rollback marker, appending the rollback data to the aborted transaction, and then committing the transaction in the commit map. Since the transaction is appended with rolled back data, although committed, it does not change the state of db, and hence is effectively rolled back. If max_evicted_seq advances beyond prep_seq, since the <prep_seq, commit_seq> is added to the CommitCache, the existing procedure, i.e, adding evicted entry to old_commit_map, will take care of live snapshots with prep_seq < snapshot_seq < commit_seq. If it crashed in the middle of rollback, on recovery it reads the rollback marker and finish up the rollback process.
+We fix the issue by writing a rollback marker, appending the rollback data to the aborted transaction, and then committing the transaction in the commit map. Since the transaction is appended with rolled back data, although committed, it does not change the state of db, and hence is effectively rolled back. If max_evicted_seq advances beyond prep_seq, since the <prep_seq, commit_seq> is added to the CommitCache, the existing procedure, i.e, adding evicted entry to old_commit_map, will take care of live snapshots with prep_seq < snapshot_seq < commit_seq. If it crashed in the middle of rollback, on recovery it reads the rollback marker and finishes up the rollback process.
 
-If the DB crashes in the middle of rollback, the recovery will see some partially written rolled back data in the WAL. Since the recovery process will eventually reattempts the rollback, such partial data will be simply overwritten with the new rolled back batch containing the same prior values.
+If the DB crashes in the middle of rollback, the recovery will see some partially written rolled back data in the WAL. Since the recovery process will eventually reattempt the rollback, such partial data will be simply overwritten with the new rolled back batch containing the same prior values.
 
 The rollback batch could be written either at once or divided into multiple sub-patches in the case of a very large transaction. We will explore this option further during the implementation.
 
@@ -105,7 +105,7 @@ The read path is largely the same as WritePreparedTxn. The only difference is fo
 
 Recall that every transaction maintains a list of unprep_seq. Before entering the main visibility logic as described in WritePreparedTxn, check if the key has a sequence number that exists in the set of unprep_seq. If it is present, then the key is visible. This logic happens in ReadCallback which currently does not take a set of sequence numbers, but this can be extended so that the set of unprep_seq can be passed down.
 
-Currently, Get and Seek will seek directly to the sequence number specified by the snapshot when reading from DB, so uncommitted data written by the same transaction is potentially skipped before visibility logic can even be applied. To resolve this issue, this optimization would have be removed if the current transaction is large enough to have its buffered write batch removed and instead written to the DB as unprepared batches.
+Currently, Get and Seek will seek directly to the sequence number specified by the snapshot when reading from DB, so uncommitted data written by the same transaction is potentially skipped before visibility logic can even be applied. To resolve this issue, this optimization would have to be removed if the current transaction is large enough to have its buffered write batch removed and instead written to the DB as unprepared batches.
 
 ## Recovery
 
