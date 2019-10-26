@@ -170,7 +170,7 @@ As explained above, we have specified that commits are only done via the 2nd que
 
 # Experimental Results
 
-Here are a summary of improvements on some sysbench benchmarks as well as linkbench (done via MyRocks).
+Here is a summary of improvements on some sysbench benchmarks as well as linkbench (done via MyRocks).
 * benchmark...........tps.........p95 latency....cpu/query
 * insert...................68%
 * update-noindex...30%......38%
