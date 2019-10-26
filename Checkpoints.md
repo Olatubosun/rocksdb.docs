@@ -12,4 +12,4 @@ Status CreateCheckpoint(const std::string& checkpoint_dir);
 ```
 The directory should not already exist and will be created by this API. The directory will be an absolute path. The checkpoint can be used as a ​read-only copy of the DB or can be opened as a standalone DB. When opened read/write, the SST files continue to be hard links and these links are removed when the files are obsoleted. When the user is done with the snapshot, the user can delete the directory to remove the snapshot.
 
-Checkpoints are used for online backup in ​MyRocks. which is MySQL using RocksDB as the storage engine . (MySQL on RocksDB) ​
+Checkpoints are used for online backup in ​MyRocks, which is MySQL using RocksDB as the storage engine. (MySQL on RocksDB) ​
