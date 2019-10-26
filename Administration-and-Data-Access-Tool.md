@@ -155,7 +155,7 @@ The output can be interpreted like this
 ```
 '<key>' @ <sequence number>: <type> => <value>
 ```
-Please notice that if your key has non-ascii characters it will be hard to print it on screen, in this case it's a good idea to use --output_hex like this
+Please notice that if your key has non-ascii characters, it will be hard to print it on screen, in this case it's a good idea to use --output_hex like this
 ```bash
 ./sst_dump --file=/path/to/sst/000829.sst --command=scan --read_num=5 --output_hex
 ```
