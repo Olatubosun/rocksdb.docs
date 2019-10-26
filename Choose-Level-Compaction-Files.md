@@ -1,5 +1,5 @@
 ## Introduction
-Level compaction style is the default compaction style of RocksDB so it is also the most widely used compaction style among users. Sometimes users are curious that how level compaction choose which files to be compacted in each compaction. In this wiki, we will elaborate more on this topic to save your time in reading code :smirk:
+Level compaction style is the default compaction style of RocksDB, so it is also the most widely used compaction style among users. Sometimes users are curious that how level compaction chooses which files to be compacted in each compaction. In this wiki, we will elaborate more on this topic to save your time in reading code :smirk:.
 
 ## Steps
 1. Go from level 0 to highest level to pick the level, L<sub>b</sub>, that the score of this level is the largest and is larger than 1 as the compaction base level.
