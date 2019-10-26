@@ -46,14 +46,14 @@ To replay the trace:
 After the user finishes the tracing steps by using the trace_replay APIs, the user will get one binary trace file. In the trace file, Get, Seek, and SeekForPrev are tracked with separate trace record, while queries of Put, Merge, Delete, SingleDelete, and DeleteRange are packed into WriteBatches. One tool is needed to 1) interpret the trace into the human readable format for further analyzing, 2) provide rich and powerful in-memory processing options to analyze the trace and output the corresponding results, and 3) be easy to add new analyzing options and query types to the tool.
 
 
-The RocksDB team developed the initial version of the tool: trace_analyzer. It provide the following analyzing options and output results.
+The RocksDB team developed the initial version of the tool: trace_analyzer. It provides the following analyzing options and output results.
 
 Note that most of the generated analyzing results output files will be separated in different column families and different query types, which means, one query type in one column family will have its own output files. Usually, one specified output option will generate one output file.
 
 
 ## Analyze The Trace
 
-The trace analyer options
+The trace analyzer options
 
 ```
  -analyze_delete (Analyze the Delete query.) type: bool default: false
