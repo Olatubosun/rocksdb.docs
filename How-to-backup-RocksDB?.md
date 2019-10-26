@@ -109,7 +109,7 @@ Beware that backup engine's `Open()` takes time proportional to the number of ex
 
 Another way to keep engine initialization fast is to remove unnecessary backups. To delete unnecessary backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
-Also beware that performance is decided by reading from local db and copying to backup. Since you may use different environments for reading and copying, the parallelism bottleneck can be on one of the two side. For example, using more threads for backup (See Advanced usage) won't be helpful if local db is on HDD, because the bottleneck in this condition is disk reading capability, which is saturated. Also a poor small HDFS cluster cannot show good parallelism. It'll be beneficial if local db is on SSD and backup target is a high-capacity HDFS. In our benchmarks, using 16 threads will reduce the backup time to 1/3 of single-thread job.
+Also beware that performance is decided by reading from local db and copying to backup. Since you may use different environments for reading and copying, the parallelism bottleneck can be on one of the two sides. For example, using more threads for backup (See Advanced usage) won't be helpful if local db is on HDD, because the bottleneck in this condition is disk reading capability, which is saturated. Also a poor small HDFS cluster cannot show good parallelism. It'll be beneficial if local db is on SSD and backup target is a high-capacity HDFS. In our benchmarks, using 16 threads will reduce the backup time to 1/3 of single-thread job.
 
 ### Under the hood
 
