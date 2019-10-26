@@ -136,8 +136,8 @@ sst_dump --file=<data_dir_OR_sst_file> [--command=check|scan|raw]
 ```bash
 ./sst_dump --file=/path/to/sst/000829.sst --command=raw
 ``` 
-This command will generate a txt file named /path/to/sst/000829_dump.txt
-This file will contain all Index blocks and data blocks encoded in Hex. It will also contain information like table properties, footer details and meta index details
+This command will generate a txt file named /path/to/sst/000829_dump.txt.
+This file will contain all index blocks and data blocks encoded in Hex. It will also contain information like table properties, footer details and meta index details.
 
 ##### Printing entries in SST file
 ```bash
@@ -155,7 +155,7 @@ The output can be interpreted like this
 ```
 '<key>' @ <sequence number>: <type> => <value>
 ```
-Please notice that if your key have non-ascii characters it will be hard to print it on screen, in this case it's a good idea to use --output_hex like this
+Please notice that if your key has non-ascii characters it will be hard to print it on screen, in this case it's a good idea to use --output_hex like this
 ```bash
 ./sst_dump --file=/path/to/sst/000829.sst --command=scan --read_num=5 --output_hex
 ```
@@ -174,7 +174,7 @@ You can pass --from and --to using hexadecimal as well by using --input_key_hex
 ```bash
 ./sst_dump --file=/path/to/sst/000829.sst --command=check --verify_checksum
 ```
-This command will Iterate over all entries in the SST file but wont print any thing except if it encountered a problem in the SST file. It will also verify the checksum
+This command will Iterate over all entries in the SST file but wont print any thing except if it encountered a problem in the SST file. It will also verify the checksum.
 
 ##### Printing SST file properties
 ```bash
@@ -221,4 +221,4 @@ Compression: kLZ4HCCompression Size: 97234828
 Compression: kZSTDNotFinalCompression Size: 79821573
 ```
 
-These files are created in memory and they are generated with block size of 16KB, the block size can be change by using --set_block_size
+These files are created in memory and they are generated with block size of 16KB, the block size can be change by using --set_block_size.
