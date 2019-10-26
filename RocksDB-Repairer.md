@@ -73,7 +73,7 @@ We generate descriptor contents:
 * compaction pointers are cleared
 * every table file is added at level 0
 
-#### Possible optimization
+#### Possible optimizations
 
 1. Compute total size and use to pick appropriate max-level M
 2. Sort tables by largest sequence# in the table
