@@ -1,18 +1,18 @@
 # Setup
-We ran the benchmark on the following machine:
+We ran the benchmarks on the following machine:
 
 * 16 CPUs, HT enabled -> 32 vCPUs, Intel Xeon E5-2660 @ 2.20GHz
 * LSI 1.8TB Flash card (empty)
 * 144GB RAM
 * Linux 3.2.45
 
-The goal of these benchmark is to demonstrate the benefit of Merge operators on read-modify-write workloads, e.g. counters. Both benchmarks were executed using a single thread.
+The goal of these benchmarks is to demonstrate the benefit of Merge operators on read-modify-write workloads, e.g. counters. Both benchmarks were executed using a single thread.
 
 # Update random benchmark
 We ran "update random" benchmark that executes 50.000.000 iterations of:
 
 1. Read a random key
-2. Write a new value to a random key
+2. Write a new value to the random key
 
 Each value was 8 bytes, simulating uint64_t counter. Write Ahead Log was turned off.
 
