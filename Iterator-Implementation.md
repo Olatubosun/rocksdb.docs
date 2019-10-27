@@ -2,7 +2,7 @@
 # RocksDB Iterator
 
 RocksDB Iterator allows users to iterate over the DB forward and backward in a sorted manner. It also has the ability to seek to a specific key inside the DB, to achieve that .. the Iterator need to access the DB as a sorted stream.
-RocksDB Iterator implementation class is named `DBIter`, In this wiki page we will discuss how `DBIter` works and what is it composed of. In the following figure, you can see the design of `DBIter` and what it's composed of.
+RocksDB Iterator implementation class is named `DBIter`, In this wiki page we will discuss how `DBIter` works and what it is composed of. In the following figure, you can see the design of `DBIter` and what it's composed of.
 
 ![](https://i.postimg.cc/RS4TLCYW/Screen-Shot-2016-08-09-at-5-21-47-PM.png)
 
@@ -70,7 +70,7 @@ InternalKey(user_key="Key4", seqno=5,  Type=Put)    | Value = "KEY4_VAL1"
 
 > Interface: [InternalIterator](https://github.com/facebook/rocksdb/blob/master/table/internal_iterator.h)
 
-This is a wrapper around `MemtableRep::Iterator`, Every memtable representation implement it's own Iterator to expose the keys/values in the memtable as a sorted stream
+This is a wrapper around `MemtableRep::Iterator`, Every memtable representation implements its own Iterator to expose the keys/values in the memtable as a sorted stream.
 
 ## BlockIter
 > Implementation: [table/block.h](https://github.com/facebook/rocksdb/blob/master/table/block.h)
@@ -78,7 +78,7 @@ This is a wrapper around `MemtableRep::Iterator`, Every memtable representation 
 > Interface: [InternalIterator](https://github.com/facebook/rocksdb/blob/master/table/internal_iterator.h)
 
 
-This Iterator is used to read blocks from SST file, whether these blocks were index blocks or data blocks.
+This Iterator is used to read blocks from SST file, whether these blocks are index blocks or data blocks.
 Since SST file blocks are sorted and immutable, we load the block in memory and create a `BlockIter` for this sorted data.
 
 ## TwoLevelIterator
@@ -124,4 +124,4 @@ To read this file we will create a `TwoLevelIterator` with
 * `first_level_iter_`  => `BlockIter` over Index block
 * `second_level_iter_` => `BlockIter` over Data block that will be determined by `first_level_iter_`
 
-When we ask our `TwoLevelIterator` to Seek to `KEY8` for example, It will first use `first_level_iter_` (BlockIter over Index block) to figure out which block may contain this key. this will lead us to set the `second_level_iter_` to be (BlockIter over data block with offset `0x0250`). We will then use the `second_level_iter_` to find our key & value in the data block.
+When we ask our `TwoLevelIterator` to Seek to `KEY8` for example, it will first use `first_level_iter_` (BlockIter over Index block) to figure out which block may contain this key. this will lead us to set the `second_level_iter_` to be (BlockIter over data block with offset `0x0250`). We will then use the `second_level_iter_` to find our key & value in the data block.
