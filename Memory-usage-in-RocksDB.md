@@ -18,7 +18,7 @@ Block cache is where RocksDB caches uncompressed data blocks. You can configure 
 
 If the data block is not found in block cache, RocksDB reads it from file using buffered IO. That means it also uses page cache -- it contains raw compressed blocks. In a way, RocksDB's cache is two-tiered: block cache and page cache. Unintuitively, decreasing block cache size will not increase IO. The memory saved will likely be used for page cache, so even more data will be cached. However, CPU usage might grow because RocksDB needs to decompress pages it reads from page cache.
 
-To learn how much memory is block cache using, you can call a function GetUsage() on block cache object:
+To learn how much memory block cache is using, you can call a function GetUsage() on block cache object:
 
     table_options.block_cache->GetUsage();
 
