@@ -1,4 +1,4 @@
-These benchmark measures RocksDB performance when data resides on flash storage.
+These benchmarks measure RocksDB performance when data resides on flash storage.
 (The benchmarks on this page were generated in July 2018 with RocksDB 5.13.1)
 
 # Setup
@@ -51,7 +51,7 @@ Measure performance to randomly overwrite 2 billion keys into the database. The 
 
     rocksdb: 15 hours 38 min;  56.295 micros/op, 17K ops/sec,  13.8 MB/sec
     
-Rocksdb was configured with 20 compaction threads. These threads can simultaneously compact non-overlapping key ranges in the same or different levels. Rocksdb was also configured for a 1TB database by setting the number of levels to 6 so that write amplification is reduced. L0-L1 compactions were given priority to reduce stalls. zlib compression was enabled only for levels 2 and higher so that L0 compactions can occur faster. Files were configured to be 64 MB in size so that frequent fsyncs after creation of newly compacted files are reduced. Here are the commands to overwrite 2 B keys in rocksdb:
+Rocksdb was configured with 20 compaction threads. These threads can simultaneously compact non-overlapping key ranges in the same or different levels. Rocksdb was also configured for a 1TB database by setting the number of levels to 6 so that write amplification is reduced. L0-L1 compactions were given priority to reduce stalls. zlib compression was enabled only for levels 2 and higher so that L0 compactions can occur faster. Files were configured to be 64 MB in size so that frequent fsyncs after creation of newly compacted files are reduced. Here are the commands to overwrite 2 billion keys in rocksdb:
 
     NUM_KEYS=2000000000 NUM_THREADS=1 tools/benchmark.sh overwrite
 
@@ -61,7 +61,7 @@ Measure random read performance of a database with 1 Billion keys, each key is 1
 
     rocksdb:  18 hours,  64.7 micros/op, 15.4K ops/sec (checksum verification)
 
-Data was first loaded into the database by sequentially writing all the 8B keys to the database. Once the load is complete, the benchmark randomly picks a key and issues a read request. The above measure measurement does not include the data loading part, it measures only the part that issues the random reads to database. The reason rocksdb is faster is because it does not use mmaped IO because mmaped IOs on some linux platforms are known to be slow. Also, rocksdb shards the block cache into 64 parts to reduce lock contention. rocksdb is configured to avoid compactions triggered by seeks whereas leveldb does seek-compaction for this workload.
+Data was first loaded into the database by sequentially writing all the 8 billion keys to the database. Once the load is complete, the benchmark randomly picks a key and issues a read request. The above measure measurement does not include the data loading part, it measures only the part that issues the random reads to database. The reason rocksdb is faster is because it does not use mmaped IO because mmaped IOs on some Linux platforms are known to be slow. Also, rocksdb shards the block cache into 64 parts to reduce lock contention. rocksdb is configured to avoid compactions triggered by seeks whereas leveldb does seek-compaction for this workload.
 
 Here are the commands used to run the benchmark with rocksdb:
     
@@ -73,7 +73,7 @@ Measure performance to randomly read 100M keys out of database with 8B keys and 
 
     rocksdb: 75 minutes, 1.42 micros/read, 713376 reads/sec
 
-Data is first loaded into the database by sequentially writing all 1B keys to the database. Once the load is complete, the benchmark spawns 32 threads, which randomly pick keys and issue read requests. Another separate write thread randomly picks keys and issues write requests at the same time. The reported time does not include data loading phase. It measures duration to complete reading 100M keys. The test is done using rocksdb release 5.13
+Data is first loaded into the database by sequentially writing all 8B keys to the database. Once the load is complete, the benchmark spawns 32 threads, which randomly pick keys and issue read requests. Another separate write thread randomly picks keys and issues write requests at the same time. The reported time does not include data loading phase. It measures duration to complete reading 100M keys. The test is done using rocksdb release 5.13.
 
 Here are the commands used to run the benchmark with rocksdb:
 
