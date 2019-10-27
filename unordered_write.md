@@ -47,13 +47,13 @@ If the user can tolerate the relaxed guarantee they can enjoy the higher through
     * if a threshold is reached that requires memtable flush
         * wait on switch_cv_ until pending_memtable_writes_.load() == 0;
         * Flush memtable
-    * persist the writes in WAL if it is enabled
-    * inc pending_memtable_writes_ with number of write threads that will later write to memtbale
+    * persists the writes in WAL if it is enabled
+    * increases pending_memtable_writes_ with number of write threads that will later write to memtbale
     * updates last_visible_seq to the last sequence number in the write group
-* If the the write thread needs to write to memtable, it calls UnorderedWriteMemtable
-    * Write to memtable (in concurrent with other in-flight writes)
+* If the the write thread needs to write to memtable, it calls UnorderedWriteMemtable to
+    * write to memtable (in concurrent with other in-flight writes)
     * decrease pending_memtable_writes_
-    * If (pending_memtable_writes_ == 0) switch_cv_.notify_all(); 
+    * If (pending_memtable_writes_.load() == 0) switch_cv_.notify_all(); 
 
 ## WritePrepared Optimizations with unordered_write
 
@@ -100,11 +100,11 @@ Note: this is an upper-bound on the improvement as it improves only the bottlene
 
 *Q*: Do we need to use 2PC with WritePrepared Txns?
 
-*A*: No. All the user need to do is to open the same db with TransactionDB, and use it with the same standard API of vanilla rocksdb. The 2PC’s feature of WritePrepared Txns is irrelevant here and can be ignored.
+*A*: No. All the user needs to do is to open the same db with TransactionDB, and use it with the same standard API of vanilla rocksdb. The 2PC’s feature of WritePrepared Txns is irrelevant here and can be ignored.
 
 *Q*: 2nd write queue in WritePrepared transactions also does ordering between the commits. Why does not it suffer from the same performance problem of the main write queue in vanilla rocksdb?
 
-*A*: The write to commit table are mostly as fast as updating an element in an array. Therefore it is much less vulnerable to the slow writes problem that is hurting the throughput of ordering in vanilla rocksdb.
+*A*: The write to commit table is mostly as fast as updating an element in an array. Therefore it is much less vulnerable to the slow writes problem that is hurting the throughput of ordering in vanilla rocksdb.
 
 *Q:* Is memtable size accurately enforced in unordered_writes?
 
