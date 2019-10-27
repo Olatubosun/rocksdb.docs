@@ -81,14 +81,14 @@ rocksdb::DB* db;
 rocksdb::Options options;
 // To enjoy the benefits provided by plain table, you have to enable
 // allow_mmap_reads for plain table.
-options_.allow_mmap_reads = true;
+options.allow_mmap_reads = true;
 // plain table will extract the prefix from a key. The prefix will be
 // used for the calculating hash code, which will be used in hash-based
 // index.
 // Unlike Prefix_extractor is a raw pointer, please remember to delete it
 // after use.
 SliceTransform* prefix_extractor = new NewFixedPrefixTransform(8);
-options_.prefix_extractor = prefix_extractor;
+options.prefix_extractor = prefix_extractor;
 options.table_factory.reset(NewPlainTableFactory(
     // plain table has optimization for fix-sized keys, which can be
     // specified via user_key_len.  Alternatively, you can pass
