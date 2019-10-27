@@ -11,7 +11,7 @@ Since SimCache is a wrapper on top of normal block cache. User has to create a b
 std::shared_ptr<rocksdb::Cache> normal_block_cache =
   NewLRUCache(1024 * 1024 * 1024 /* capacity 1GB */);
 ```
-The wrap the normal_block_cache with [NewSimCache](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/utilities/sim_cache.h) and set the SimCache as the block_cache field of `rocksdb::BlockBasedTableOptions` and then generate the `options.table_factory`:
+Then wrap the normal_block_cache with [NewSimCache](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/utilities/sim_cache.h) and set the SimCache as the block_cache field of `rocksdb::BlockBasedTableOptions` and then generate the `options.table_factory`:
 ```cpp
 rocksdb::Options options;
 rocksdb::BlockBasedTableOptions bbt_opts;
@@ -30,6 +30,6 @@ People may concern the actual memory usage of SimCache, which can be estimated a
 
 **sim_capacity \* entry_size / (entry_size + block_size)**,
 * 76 <= entry_size (key_size + other) <= 104,
-* BlockBasedTableOptions.block_size = 4096 by default but is configurable
+* BlockBasedTableOptions.block_size = 4096 by default but is configurable.
 
 Therefore, by default the actual memory overhead of SimCache is around **sim_capacity \* 2%**.
