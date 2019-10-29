@@ -104,7 +104,7 @@ To benefit from more threads you might need to set these options to change the m
 
 **block_cache** -- We usually recommend setting this to the result of the call `rocksdb::NewLRUCache(cache_capacity, shard_bits)`. Block cache caches uncompressed blocks. OS cache, on the other hand, caches compressed blocks (since that's the way they are stored in files). Thus, it makes sense to use both block_cache and OS cache. We need to lock accesses to block cache and sometimes we see RocksDB bottlenecked on block cache's mutex, especially when DB size is smaller than RAM. In that case, it makes sense to shard block cache by setting shard_bits to a bigger number. If shard_bits is 4, total number of shards will be 16.
 
-**allow_os_buffer** -- If false, we will not buffer files in OS cache. See comments above.
+**allow_os_buffer** -- [Deprecated] If false, we will not buffer files in OS cache. See comments above.
 
 **max_open_files** -- RocksDB keeps all file descriptors in a table cache. If number of file descriptors exceeds max_open_files, some files are evicted from table cache and their file descriptors closed. This means that every read must go through the table cache to lookup the file needed. Set max_open_files to -1 to always keep all files open, which avoids expensive table cache calls.
 
