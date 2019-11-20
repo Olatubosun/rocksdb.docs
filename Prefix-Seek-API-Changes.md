@@ -30,8 +30,7 @@ Options options;
 
 // Enable prefix bloom for mem tables
 options.prefix_extractor.reset(NewFixedPrefixTransform(3));
-options.memtable_prefix_bloom_bits = 100000000;
-options.memtable_prefix_bloom_probes = 6;
+options.memtable_prefix_bloom_size_ratio = 0.1;
 
 // Enable prefix bloom for SST files
 BlockBasedTableOptions table_options;
