@@ -58,16 +58,16 @@ The resultant static library can be found in `%CODE_HOME%\snappy-1.1.7\build\Deb
 ### Build LZ4
 ```
 cd %CODE_HOME%
-wget https://github.com/lz4/lz4/archive/v1.9.1.zip
-unzip v1.9.1.zip
-cd lz4-1.9.1
+wget https://github.com/lz4/lz4/archive/v1.9.2.zip
+unzip v1.9.2.zip
+cd lz4-1.9.2
 cd visual\VS2010
 devenv lz4.sln /upgrade
 msbuild lz4.sln /p:Configuration=Debug /p:Platform=x64
 msbuild lz4.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-The resultant static library can be found in `%CODE_HOME%\lz4-1.9.1\visual\VS2010\bin\x64_Debug\liblz4_static.lib` or `%CODE_HOME%\lz4-1.9.1\visual\VS2010\bin\x64_Release\liblz4_static.lib`.
+The resultant static library can be found in `%CODE_HOME%\lz4-1.9.2\visual\VS2010\bin\x64_Debug\liblz4_static.lib` or `%CODE_HOME%\lz4-1.9.2\visual\VS2010\bin\x64_Release\liblz4_static.lib`.
 
 
 ### Build ZLib
@@ -93,15 +93,15 @@ The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vs
 
 ### Build ZStd
 ```
-wget https://github.com/facebook/zstd/archive/v1.4.0.zip
-unzip v1.4.0.zip
-cd zstd-1.4.0\build\VS2010
+wget https://github.com/facebook/zstd/archive/v1.4.4.zip
+unzip v1.4.4.zip
+cd zstd-1.4.4\build\VS2010
 devenv zstd.sln /upgrade
 msbuild zstd.sln /p:Configuration=Debug /p:Platform=x64
 msbuild zstd.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-The resultant static library can be found in `%CODE_HOME%\zstd-1.4.0\build\VS2010\bin\x64_Debug\libzstd_static.lib` or `%CODE_HOME%\zstd-1.4.0\build\VS2010\bin\x64_Release\libzstd_static.lib`.
+The resultant static library can be found in `%CODE_HOME%\zstd-1.4.4\build\VS2010\bin\x64_Debug\libzstd_static.lib` or `%CODE_HOME%\zstd-1.4.4\build\VS2010\bin\x64_Release\libzstd_static.lib`.
 
 
 ### Build RocksDB
@@ -124,7 +124,7 @@ set(SNAPPY_INCLUDE ${SNAPPY_HOME} ${SNAPPY_HOME}/build)
 set(SNAPPY_LIB_DEBUG ${SNAPPY_HOME}/build/Debug/snappy.lib)
 set(SNAPPY_LIB_RELEASE ${SNAPPY_HOME}/build/Release/snappy.lib)
 
-set(LZ4_HOME $ENV{THIRDPARTY_HOME}/lz4-1.9.1)
+set(LZ4_HOME $ENV{THIRDPARTY_HOME}/lz4-1.9.2)
 set(LZ4_INCLUDE ${LZ4_HOME}/lib)
 set(LZ4_LIB_DEBUG ${LZ4_HOME}/visual/VS2010/bin/x64_Debug/liblz4_static.lib)
 set(LZ4_LIB_RELEASE ${LZ4_HOME}/visual/VS2010/bin/x64_Release/liblz4_static.lib)
@@ -134,7 +134,7 @@ set(ZLIB_INCLUDE ${ZLIB_HOME})
 set(ZLIB_LIB_DEBUG ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatDebug/zlibstat.lib)
 set(ZLIB_LIB_RELEASE ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatRelease/zlibstat.lib)
 
-set(ZSTD_HOME $ENV{THIRDPARTY_HOME}/zstd-1.4.0)
+set(ZSTD_HOME $ENV{THIRDPARTY_HOME}/zstd-1.4.4)
 set(ZSTD_INCLUDE ${ZSTD_HOME}/lib ${ZSTD_HOME}/lib/dictBuilder)
 set(ZSTD_LIB_DEBUG ${ZSTD_HOME}/build/VS2010/bin/x64_Debug/libzstd_static.lib)
 set(ZSTD_LIB_RELEASE ${ZSTD_HOME}/build/VS2010/bin/x64_Release/libzstd_static.lib)
