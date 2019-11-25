@@ -1,6 +1,6 @@
 # Building on Windows
 
-This is a simple explanation of how to build RocksDB in **Win10 + Visual Studio 2015**(Method 1) and **Win10 + Visual Studio 2017/2019(Method)**. You could follow the steps below.
+This is a simple explanation of how to build RocksDB in **Win10 + Visual Studio 2015** (Method 1) or using `vcpkg` with **Win10 + Visual Studio 2017/2019** (Method).
 
 # Method 1 (Win10 + Visual Studio 2015)
 This is a simple step-by-step explanation of how I was able to build RocksDB (or RocksJava) and all of the 3rd-party libraries on Microsoft Windows 10. The Windows build system was already in place, however it took some trial-and-error for me to be able to build the 3rd-party libraries and incorporate them into the build.
