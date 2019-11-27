@@ -63,6 +63,8 @@ The index format in `format_version=4` would be as follows:
 
 #### `Filter` Meta Block
 
+Note: `format_version`=5 (Since RocksDB 6.6) uses a faster and more accurate [Bloom filter implementation](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter) for full and partitioned filters.
+
 ##### Full filter
 
 In this filter there is one filter block for the entire SST file.
