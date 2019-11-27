@@ -52,7 +52,7 @@ TransactionDB* db;
 TransactionDB::Open(Options(), TransactionDBOptions(), "foodb", &db);
 
 TransactionOptions txn_options;
-txn_options.two_phase_commit = tr
+txn_options.two_phase_commit = true
 txn_options.xid = "12345";
 Transaction* txn = db->BeginTransaction(write_options, txn_options);
     
