@@ -188,7 +188,7 @@ And it keeps going like this:
 We calculated a value of _size ratio trigger_ as
 
 ```
-     size_ratio_trigger = 100 + options.compaction_options_universal.size_ratio / 100
+     size_ratio_trigger = (100 + options.compaction_options_universal.size_ratio) / 100
 ```
 Usually options.compaction_options_universal.size_ratio is close to 0 so _size ratio trigger_ is close to 1.
 
