@@ -8,8 +8,9 @@ An simple example to use the tracing APIs:
 
 
 ```
+Options opt;
 Env* env = rocksdb::Env::Default();
-EnvOptions env_options;
+EnvOptions env_options(opt);
 std::string trace_path = "/tmp/trace_test_example";
 std::unique_ptr<TraceWriter> trace_writer;
 DB* db = nullptr;
@@ -17,9 +18,10 @@ std::string db_name = "/tmp/rocksdb";
 
 /*Create the trace file writer*/
 NewFileTraceWriter(env, env_options, trace_path, &trace_writer);
-DB::Open(options, dbname, &db);
+DB::Open(opt, db_name, &db);
 
 /*Start tracing*/
+TraceOptions trace_opt;
 db->StartTrace(trace_opt, std::move(trace_writer));
 
 /* your call of RocksDB APIs */
