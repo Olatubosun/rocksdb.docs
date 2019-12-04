@@ -10,10 +10,10 @@ An simple example to use the tracing APIs:
 ```
 Env* env = rocksdb::Env::Default();
 EnvOptions env_options;
-std::string trace_path = "/tmp/trace_test_example"
+std::string trace_path = "/tmp/trace_test_example";
 std::unique_ptr<TraceWriter> trace_writer;
 DB* db = nullptr;
-std::string db_name = "/tmp/rocksdb"
+std::string db_name = "/tmp/rocksdb";
 
 /*Create the trace file writer*/
 NewFileTraceWriter(env, env_options, trace_path, &trace_writer);
