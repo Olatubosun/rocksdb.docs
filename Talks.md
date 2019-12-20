@@ -1,3 +1,12 @@
+### 2019.12 6th Annual RocksDB Summit at Facebook
+
+* 
+* 
+* 
+* 
+* 
+
+
 ### 2017.12 10th RocksDB Meetup
 * [Kickoff: A quick overview of RocksDB new features](https://www.facebook.com/rocksdb/videos/1081829988625535/) (by Sagar Vemuri)
 * [Cassandra on RocksDB](https://www.facebook.com/rocksdb/videos/1081842498624284/) (by Pengchao Wang)
