@@ -8,7 +8,7 @@ A: 4.8.
 A: All the releases in https://github.com/facebook/rocksdb/releases are stable. For RocksJava, stable releases are available in https://oss.sonatype.org/#nexus-search;quick~rocksdb.
 
 ## Basic Read/Write
-**Q: Is basic operations Put(), Write(), Get() and NewIterator() thread safe?**
+**Q: Are basic operations Put(), Write(), Get() and NewIterator() thread safe?**
 
 A: Yes.
 
